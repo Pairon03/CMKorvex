@@ -3,362 +3,470 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Korvex Soluções Digitais</title>
+<!--HEAD-START-->
+<title>Korvex · Sites e landing pages que vendem</title>
 <meta name="claude:viewport-fit-sides" content="cover">
-<meta name="description" content="Landing pages, sites, aplicativos e Instagram para empresas. A Korvex une estratégia, tecnologia e texto que vende para transformar visitas em clientes.">
+<meta name="description" content="A Korvex cria landing pages, sites, aplicativos e conteúdo para Instagram sob medida, com estratégia, texto e código pensados para transformar visitas em clientes.">
 <meta name="theme-color" content="#07070A">
-<meta property="og:title" content="Korvex · Soluções Digitais">
-<meta property="og:description" content="Estratégia, tecnologia e resultados: landing pages, sites, apps e Instagram para a sua empresa.">
+<meta property="og:title" content="Korvex · Sites e landing pages que vendem">
+<meta property="og:description" content="Landing pages, sites, aplicativos e Instagram para a sua empresa. Estratégia, tecnologia e resultados.">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="pt_BR">
 <meta property="og:image" content="./assets/img/og-korvex.jpg">
 <link rel="icon" href="./assets/img/favicon.png" type="image/png">
 <link rel="apple-touch-icon" href="./assets/img/apple-touch-icon.png">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Michroma&family=Barlow+Condensed:ital,wght@1,800&family=Manrope:wght@400;500;600;700;800&display=swap">
+<link rel="preload" href="./assets/fonts/michroma.woff" as="font" type="font/woff" crossorigin>
+<link rel="preload" href="./assets/fonts/manrope-var.woff" as="font" type="font/woff" crossorigin>
 <link rel="stylesheet" href="./assets/css/style.css">
+<script>
+  // Marca a página antes de pintar: com JS, com WebGL. Se o 3D não subir em 4 s, volta para a imagem.
+  (function () {
+    var d = document.documentElement
+    d.classList.add('js')
+    try { if (document.createElement('canvas').getContext('webgl2')) { d.classList.add('webgl'); window.__webgl = true } } catch (e) {}
+    setTimeout(function () { if (!window.__kReady) d.classList.remove('webgl') }, 4000)
+    // se o script principal não rodar, nada fica escondido esperando animação
+    setTimeout(function () { if (!window.__mainReady) d.classList.remove('js') }, 3000)
+  })()
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "Korvex",
+  "description": "Landing pages, sites, aplicativos e conteúdo para Instagram.",
+  "email": "cv.korvex@gmail.com",
+  "founder": [
+    { "@type": "Person", "name": "Cauã Victor de Moura" },
+    { "@type": "Person", "name": "Vitor Ramos Pereira" }
+  ]
+}
+</script>
+<!--HEAD-END-->
 </head>
 <body>
 <!--CONTENT-START-->
 <a class="skip" href="#conteudo">Pular para o conteúdo</a>
 
-<header class="header" id="topo-header">
+<header class="site-header" data-header>
   <div class="bar">
     <a class="brand" href="#topo" aria-label="Korvex, início">
-      <img class="brand__k" src="./assets/img/k-mark-160.webp" alt="" width="44" height="32">
-      <span class="brand__name">KORVEX</span>
+      <img class="brand__k" src="./assets/img/k-mark-160.webp" alt="" width="42" height="31">
+      <span class="brand__name" aria-hidden="true">KORV<span class="flip">E</span>X</span>
     </a>
     <nav class="nav" id="menu" aria-label="Seções">
       <a href="#servicos">Serviços</a>
       <a href="#projetos">Projetos</a>
-      <a href="#processo">Como trabalhamos</a>
+      <a href="#processo">Processo</a>
       <a href="#quem-somos">Quem somos</a>
+      <a class="nav__cta" href="#contato">Pedir orçamento</a>
     </nav>
-    <a class="btn btn--neon header__cta" href="#contato">Pedir orçamento</a>
-    <button class="menu-btn" type="button" aria-controls="menu" aria-expanded="false" aria-label="Abrir menu">
-      <span></span><span></span>
+    <a class="btn btn--light btn--sm header__cta" href="#contato">Pedir orçamento</a>
+    <button class="menu-toggle" type="button" aria-controls="menu" aria-expanded="false" data-menu-toggle>
+      <span class="sr-only" data-menu-label>Abrir menu</span><i></i><i></i>
     </button>
   </div>
 </header>
 
 <main id="conteudo">
 
-  <!-- TOPO -->
-  <section class="hero" id="topo">
-    <div class="hero__glow" aria-hidden="true"></div>
-    <div class="shell hero__grid">
-      <div class="hero__copy">
-        <p class="eyebrow">Korvex · Soluções digitais</p>
-        <h1 class="hero__title">
-          <span class="ln">Sites que</span>
-          <span class="ln">trabalham pela</span>
-          <span class="ln"><em class="steel">sua empresa.</em></span>
-        </h1>
-        <p class="lead">Criamos landing pages, sites e aplicativos sob medida e cuidamos do seu Instagram. Cada página nasce com um objetivo: transformar quem visita em cliente.</p>
-        <div class="hero__actions">
-          <a class="btn btn--neon" href="#contato">Quero um orçamento</a>
-          <a class="btn btn--line" href="#projetos">Ver projetos</a>
-        </div>
-        <ul class="hero__facts" aria-label="Destaques">
-          <li><strong>Sob medida</strong><span>nada de template pronto</span></li>
-          <li><strong>Direto com os sócios</strong><span>quem atende é quem faz</span></li>
-          <li><strong>Feito pra vender</strong><span>texto, design e código juntos</span></li>
-        </ul>
-      </div>
-
-      <div class="hero__mark" aria-hidden="true">
-        <div class="emblem" id="emblem">
-          <img src="./assets/img/k-mark.webp" alt="" width="680" height="500">
-          <div class="emblem__sheen"></div>
-        </div>
-        <div class="hero__ring"></div>
-      </div>
+  <!-- TOPO: o K da marca, aceso como um objeto numa sala escura -->
+  <section class="hero" id="topo" aria-labelledby="hero-title">
+    <div class="hero__stage" data-k-stage>
+      <img class="hero__poster" src="./assets/img/k-render.webp" alt="" width="1600" height="900" fetchpriority="high" decoding="async">
+      <canvas class="hero__canvas" data-k-canvas aria-hidden="true"></canvas>
+    </div>
+    <p class="wordmark" aria-hidden="true"><span>K</span><span>O</span><span>R</span><span>V</span><span class="flip">E</span><span>X</span></p>
+    <h1 id="hero-title" class="hero__title"><span class="sr-only">Korvex: </span>Sites e landing pages que vendem</h1>
+    <div class="hero__row">
+      <p>Feito sob medida</p>
+      <a class="btn btn--light" href="#contato">Pedir orçamento</a>
+      <p>Direto com os sócios</p>
     </div>
   </section>
 
-  <!-- FAIXA DO LEMA -->
-  <div class="motto" aria-label="Estratégia, Tecnologia, Resultados">
-    <div class="motto__track" aria-hidden="true">
-      <span>Estratégia</span><i>/</i><span>Tecnologia</span><i>/</i><span>Resultados</span><i>/</i>
-      <span>Estratégia</span><i>/</i><span>Tecnologia</span><i>/</i><span>Resultados</span><i>/</i>
-      <span>Estratégia</span><i>/</i><span>Tecnologia</span><i>/</i><span>Resultados</span><i>/</i>
-      <span>Estratégia</span><i>/</i><span>Tecnologia</span><i>/</i><span>Resultados</span><i>/</i>
-    </div>
-  </div>
-
   <!-- SERVIÇOS -->
-  <section class="section" id="servicos">
+  <section class="section services" id="servicos" aria-labelledby="servicos-title">
     <div class="shell">
-      <header class="sec-head">
-        <p class="eyebrow">Serviços</p>
-        <h2 class="h2">Tudo o que sua marca precisa para vender na internet.</h2>
-        <p class="lead">Do primeiro clique até a mensagem no seu WhatsApp. Você escolhe por onde começar.</p>
-      </header>
+      <div class="section-head" data-reveal>
+        <h2 id="servicos-title" class="h2">Quatro formas de vender mais</h2>
+        <p class="lead">Você escolhe por onde começar. Tudo é feito do zero, com texto, design e código pensados para quem compra de você.</p>
+      </div>
 
-      <div class="services">
-        <article class="svc svc--main">
-          <div class="svc__top">
-            <svg class="svc__ico" viewBox="0 0 48 48" aria-hidden="true"><rect x="5" y="7" width="38" height="34" rx="3"/><path d="M5 14h38M11 21h18M11 26h12"/><rect x="11" y="31" width="13" height="5" rx="1.5" class="fill"/></svg>
-            <span class="svc__tag">Nosso carro-chefe</span>
+      <div class="bento">
+        <!-- Landing pages -->
+        <article class="tile tile--lp" data-glow data-reveal>
+          <span class="tile__glow" aria-hidden="true"></span>
+          <div class="tile__in">
+            <div class="tile__copy">
+              <h3 class="h3">Landing pages</h3>
+              <p>Nosso carro-chefe. Uma página com um objetivo só: fazer o visitante pedir orçamento. Texto que convence, visual forte e o botão do WhatsApp no lugar certo.</p>
+              <ul class="ticks">
+                <li>Texto pensado para conversão</li>
+                <li>Pedido direto no WhatsApp</li>
+                <li>Leve e rápida no celular</li>
+              </ul>
+            </div>
+            <div class="demo demo-lp" data-ui data-demo="lp" aria-hidden="true">
+              <div class="mb">
+                <div class="mb__bar"><i></i><i></i><i></i><span>suaempresa.com.br</span></div>
+                <div class="mb__page">
+                  <div class="mb__nav"><b>Doce Ponto</b><span>Cardápio</span><span>Encomendas</span><span>Contato</span></div>
+                  <div class="mb__hero">
+                    <div class="mb__words">
+                      <p class="mb__h">Bolos sob encomenda para o seu fim de semana</p>
+                      <p class="mb__s">Escolha o sabor, o tamanho e o dia. A gente confirma pelo WhatsApp.</p>
+                      <span class="mb__cta" data-cta>Pedir orçamento</span>
+                    </div>
+                    <svg class="mb__art" viewBox="0 0 120 100" aria-hidden="true">
+                      <ellipse cx="60" cy="88" rx="47" ry="7" fill="#2a1d24"/>
+                      <rect x="25" y="46" width="70" height="40" rx="6" fill="#f2d6c3"/>
+                      <rect x="25" y="63" width="70" height="5" fill="#e3949c"/>
+                      <path d="M25 54q0-10 10-10h50q10 0 10 10v3q-4 7-8 0q-4 7-8 0q-4 7-8 0q-4 7-8 0q-4 7-8 0q-4 7-8 0q-4 7-8 0q-4 7-8 0q-4 7-9 0z" fill="#fff3ec"/>
+                      <circle cx="60" cy="37" r="7" fill="#e2364f"/>
+                      <path d="M57 30q3-5 6 0q-3 2-6 0z" fill="#3d9a5b"/>
+                    </svg>
+                  </div>
+                  <div class="mb__cards"><span></span><span></span><span></span></div>
+                </div>
+                <svg class="cursor" data-cursor viewBox="0 0 24 24" aria-hidden="true"><path d="M5 3l14 8-6.2 1.6L10 19z" fill="#fff" stroke="#07070A" stroke-width="1.4" stroke-linejoin="round"/></svg>
+                <ol class="toasts" data-toasts></ol>
+              </div>
+            </div>
           </div>
-          <h3 class="h3">Landing pages</h3>
-          <p>Uma página, um objetivo. Texto persuasivo, visual forte e um caminho curto até o contato. Ideal para campanhas, lançamentos e para quem quer orçamento chegando todo dia.</p>
-          <ul class="ticks">
-            <li>Copy pensada para conversão</li>
-            <li>Botão e formulário direto para o WhatsApp</li>
-            <li>Rápida no celular, onde está o seu cliente</li>
-            <li>Publicação e domínio configurados</li>
-          </ul>
         </article>
 
-        <article class="svc">
-          <div class="svc__top">
-            <svg class="svc__ico" viewBox="0 0 48 48" aria-hidden="true"><rect x="5" y="7" width="38" height="34" rx="3"/><path d="M5 14h38M18 14v27"/><path d="M23 20h14M23 25h14M23 30h9M9 20h5M9 25h5M9 30h5"/></svg>
+        <!-- Sites -->
+        <article class="tile tile--site" data-glow data-reveal>
+          <span class="tile__glow" aria-hidden="true"></span>
+          <div class="tile__in">
+            <div class="tile__copy">
+              <h3 class="h3">Sites institucionais</h3>
+              <p>Quem vocês são, o que fazem e como falar com vocês, organizado para aparecer bem no Google.</p>
+            </div>
+            <div class="demo demo-serp" data-ui data-demo="serp" aria-hidden="true">
+              <div class="serp">
+                <div class="serp__box">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6" fill="none" stroke="currentColor" stroke-width="2"/><path d="M15 15l5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+                  <span class="serp__q" data-query>doceria perto de mim</span><i class="caret"></i>
+                </div>
+                <div class="serp__result" data-result>
+                  <span class="serp__skel" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+                  <p class="serp__url"><span class="serp__fav"></span>suaempresa.com.br</p>
+                  <p class="serp__title">Sua Empresa · Bolos e doces sob encomenda</p>
+                  <p class="serp__desc">Cardápio, horários, endereço e como pedir. Tudo o que o cliente procura antes de chamar.</p>
+                  <p class="serp__links"><span>Cardápio</span><span>Sobre</span><span>Contato</span></p>
+                </div>
+                <div class="serp__ghost" data-ghost><i></i><i></i><i></i></div>
+              </div>
+            </div>
           </div>
-          <h3 class="h3">Sites institucionais</h3>
-          <p>A casa da sua marca na internet: quem vocês são, o que fazem, onde atendem e como falar com vocês. Preparado para aparecer no Google.</p>
-          <ul class="ticks">
-            <li>Páginas de serviços, sobre e contato</li>
-            <li>Portfólio e depoimentos</li>
-            <li>Estrutura para buscas (SEO)</li>
-          </ul>
         </article>
 
-        <article class="svc">
-          <div class="svc__top">
-            <svg class="svc__ico" viewBox="0 0 48 48" aria-hidden="true"><rect x="14" y="4" width="20" height="40" rx="4"/><path d="M21 9h6M19 38h10"/><rect x="18" y="15" width="12" height="7" rx="1.5" class="fill"/><path d="M18 27h12M18 31h8"/></svg>
+        <!-- Aplicativos -->
+        <article class="tile tile--app" data-glow data-reveal>
+          <span class="tile__glow" aria-hidden="true"></span>
+          <div class="tile__in">
+            <div class="tile__copy">
+              <h3 class="h3">Aplicativos</h3>
+              <p>Apps para web e celular que resolvem uma tarefa do seu negócio: agendamentos, pedidos, cardápio digital ou um painel para a equipe.</p>
+            </div>
+            <div class="demo demo-app" data-ui data-demo="app" aria-hidden="true">
+              <div class="phone">
+                <div class="phone__screen">
+                  <p class="app__title">Agendar horário</p>
+                  <div class="app__days"><span>Seg<b>12</b></span><span class="is-on">Ter<b>13</b></span><span>Qua<b>14</b></span><span>Qui<b>15</b></span></div>
+                  <div class="app__slots"><span>09:00</span><span data-slot>10:30</span><span>14:00</span><span>16:30</span></div>
+                  <span class="app__btn" data-confirm>Confirmar</span>
+                  <div class="app__done" data-done>
+                    <svg viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="20" fill="none" stroke="currentColor" stroke-width="3"/><path data-check d="M15 25l6 6 12-13" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    <p>Horário confirmado</p>
+                    <small>Terça, 13 · 10:30</small>
+                  </div>
+                </div>
+                <span class="tap" data-tap></span>
+              </div>
+            </div>
           </div>
-          <h3 class="h3">Aplicativos</h3>
-          <p>Apps para web e celular que resolvem um problema real do seu negócio, como agendamentos, pedidos, cardápio digital ou um painel de gestão.</p>
-          <ul class="ticks">
-            <li>Android, iPhone e navegador</li>
-            <li>Feito do jeito que sua operação funciona</li>
-          </ul>
         </article>
 
-        <article class="svc">
-          <div class="svc__top">
-            <svg class="svc__ico" viewBox="0 0 48 48" aria-hidden="true"><rect x="7" y="7" width="34" height="34" rx="10"/><circle cx="24" cy="24" r="8"/><circle cx="34" cy="14" r="1.6" class="fill"/></svg>
+        <!-- Instagram -->
+        <article class="tile tile--ig" data-glow data-reveal>
+          <span class="tile__glow" aria-hidden="true"></span>
+          <div class="tile__in">
+            <div class="tile__copy">
+              <h3 class="h3">Instagram e conteúdo</h3>
+              <p>Perfil organizado, posts com identidade e uma linha visual igual à do site, para quem chega pelo Instagram reconhecer a sua marca.</p>
+              <div class="seg" role="radiogroup" aria-label="Exemplo de perfil" data-seg>
+                <span class="seg__thumb" aria-hidden="true"></span>
+                <button type="button" role="radio" aria-checked="false" data-ig="antes">Antes</button>
+                <button type="button" role="radio" aria-checked="true" data-ig="depois">Depois</button>
+              </div>
+            </div>
+            <div class="demo demo-ig is-after" data-ui data-demo="ig" aria-hidden="true">
+              <div class="ig">
+                <div class="ig__head">
+                  <span class="ig__avatar"><b>DP</b></span>
+                  <div class="ig__who">
+                    <p class="ig__name">doceponto</p>
+                    <p class="ig__bio"><span class="before">loja de doces. chama no direct pra saber os preços</span><span class="after">Bolos e doces sob encomenda<br>Pedidos pelo link · Entrega no bairro</span></p>
+                  </div>
+                  <div class="ig__hl"><span>Pedidos</span><span>Cardápio</span><span>Entrega</span></div>
+                </div>
+                <div class="ig__grid">
+                  <div class="post" style="--i:0"><div class="post__b b1">promoção!!!</div><div class="post__a a1"><b>Bolo de pote</b><small>Novo sabor</small></div></div>
+                  <div class="post" style="--i:1"><div class="post__b b2">Feliz sexta</div><div class="post__a a2"><span class="dot"></span></div></div>
+                  <div class="post" style="--i:2"><div class="post__b b3">SEGUE A GENTE</div><div class="post__a a3"><b>Como pedir</b><small>3 passos</small></div></div>
+                  <div class="post" style="--i:3"><div class="post__b b4">bolos</div><div class="post__a a4"><span class="slice"></span></div></div>
+                  <div class="post" style="--i:4"><div class="post__b b5">Horário: 9 às 18</div><div class="post__a a5"><b>9h às 18h</b><small>Seg a sáb</small></div></div>
+                  <div class="post" style="--i:5"><div class="post__b b6">!!!</div><div class="post__a a6"><span class="dot dot--sm"></span></div></div>
+                </div>
+              </div>
+            </div>
           </div>
-          <h3 class="h3">Instagram e conteúdo</h3>
-          <p>Perfil organizado, posts com identidade e conteúdo que conversa com quem compra de você.</p>
-          <ul class="ticks">
-            <li>Bio, destaques e organização do perfil</li>
-            <li>Criação de posts e carrosséis</li>
-            <li>Linha visual alinhada com o site</li>
-          </ul>
         </article>
       </div>
+      <p class="fineprint">As demonstrações acima são ilustrativas.</p>
     </div>
   </section>
 
   <!-- PROJETOS -->
-  <section class="section section--panel" id="projetos">
-    <div class="shell">
-      <header class="sec-head">
-        <p class="eyebrow">Projetos</p>
-        <h2 class="h2">Trabalho que já está no ar.</h2>
-        <p class="lead">Cada projeto começa entendendo como o cliente vende. Depois é que vem o design.</p>
-      </header>
+  <section class="section work" id="projetos" aria-labelledby="work-title">
+    <div class="shell work__head" data-reveal>
+      <h2 id="work-title" class="h2">AB Transportes</h2>
+    </div>
+    <div class="shell work__grid">
+      <div class="work__copy" data-reveal>
+        <p class="lead">Landing page para uma transportadora de coleta e entrega com moto, carro e caminhão. O objetivo é um só: o visitante pedir orçamento pelo WhatsApp, com os dados da carga já preenchidos.</p>
 
-      <article class="case">
-        <a class="case__shot" href="https://pairon03.github.io/ABtransportes-landing/" target="_blank" rel="noopener" aria-label="Abrir o site da AB Transportes em nova aba">
-          <div class="browser">
-            <div class="browser__bar">
-              <span class="dots" aria-hidden="true"><i></i><i></i><i></i></span>
-              <span class="browser__url">abtransportes · landing page</span>
+        <ul class="index" data-index>
+          <li><button class="index__row is-active" type="button" data-view="full" aria-pressed="true"><span>A página inteira</span><small>Computador e celular</small></button></li>
+          <li><button class="index__row" type="button" data-view="hero" aria-pressed="false"><span>O topo, com a estrada em movimento</span><small>WebGL</small></button></li>
+          <li><button class="index__row" type="button" data-view="chat" aria-pressed="false"><span>A linha do tempo da entrega</span><small>Do pedido à foto</small></button></li>
+          <li><button class="index__row" type="button" data-view="frota" aria-pressed="false"><span>A escolha do veículo</span><small>Moto, carro ou caminhão</small></button></li>
+          <li><button class="index__row" type="button" data-view="orcamento" aria-pressed="false"><span>O orçamento guiado</span><small>Pronto no WhatsApp</small></button></li>
+        </ul>
+
+        <dl class="work__facts">
+          <div><dt>Entrega</dt><dd>Landing page</dd></div>
+          <div><dt>Segmento</dt><dd>Logística</dd></div>
+          <div><dt>Tecnologia</dt><dd>Vue 3, Vite, GSAP e WebGL</dd></div>
+        </dl>
+
+        <a class="link" href="https://pairon03.github.io/ABtransportes-landing/" target="_blank" rel="noopener">Ver o site no ar <span aria-hidden="true">↗</span></a>
+      </div>
+
+      <div class="work__view" data-reveal>
+        <div class="browser" data-ui>
+          <div class="browser__bar"><i></i><i></i><i></i><span>abtransportes · landing page</span></div>
+          <div class="browser__screen" data-screen>
+            <div class="view is-on" data-panel="full">
+              <img class="scroller" src="./assets/img/work/ab-desktop-full.webp" alt="A landing page da AB Transportes inteira, do topo ao rodapé" width="1200" height="6035" loading="lazy" decoding="async">
             </div>
-            <div class="browser__view">
-              <img src="./assets/img/ab-hero.webp" alt="Topo do site da AB Transportes: caminhão da empresa na estrada" width="1400" height="594" loading="lazy">
-              <div class="browser__ui" aria-hidden="true">
-                <img src="./assets/img/ab-logo.webp" alt="" width="40" height="40">
-                <p>Do ponto <b>A</b><br>ao ponto <b>B</b>,<br>sem perder de vista.</p>
-                <span>Pedir orçamento</span>
-              </div>
+            <div class="view" data-panel="hero">
+              <img src="./assets/img/work/ab-desktop-hero.webp" alt="Topo da página: caminhão da AB na estrada e a manchete Do ponto A ao ponto B, sem perder de vista" width="1200" height="750" loading="lazy" decoding="async">
+            </div>
+            <div class="view view--crop" data-panel="chat">
+              <img src="./assets/img/work/ab-chat.webp" alt="Conversa de exemplo no WhatsApp, da linha do tempo da entrega" width="600" height="528" loading="lazy" decoding="async">
+            </div>
+            <div class="view view--crop" data-panel="frota">
+              <img src="./assets/img/work/ab-frota.webp" alt="Seletor de veículo com moto, carro e caminhão e a foto da moto" width="1020" height="456" loading="lazy" decoding="async">
+            </div>
+            <div class="view view--crop" data-panel="orcamento">
+              <img src="./assets/img/work/ab-orcamento.webp" alt="Primeira etapa do orçamento guiado, a ordem de coleta" width="628" height="540" loading="lazy" decoding="async">
             </div>
           </div>
-          <div class="case__phones" aria-hidden="true">
-            <img src="./assets/img/ab-coleta.webp" alt="" width="600" height="745" loading="lazy">
-            <img src="./assets/img/ab-entrega.webp" alt="" width="600" height="745" loading="lazy">
-          </div>
-        </a>
-
-        <div class="case__info">
-          <p class="case__client">AB Transportes</p>
-          <h3 class="h3">Landing page para uma transportadora de coleta e entrega</h3>
-          <p>Coletas e entregas com moto, carro e caminhão. O objetivo era um só: fazer o visitante pedir orçamento pelo WhatsApp com todas as informações da carga já preenchidas.</p>
-
-          <dl class="case__meta">
-            <div><dt>Entrega</dt><dd>Landing page</dd></div>
-            <div><dt>Segmento</dt><dd>Logística</dd></div>
-            <div><dt>Tecnologia</dt><dd>Vue 3 · Vite · GSAP</dd></div>
-          </dl>
-
-          <ul class="ticks">
-            <li>Topo animado com o caminhão da marca rodando na estrada</li>
-            <li>Linha do tempo de uma entrega, da conversa até a foto final</li>
-            <li>Escolha do veículo ideal pelo tamanho e peso da carga</li>
-            <li>Orçamento guiado que chega pronto no WhatsApp</li>
-          </ul>
-
-          <a class="btn btn--line" href="https://pairon03.github.io/ABtransportes-landing/" target="_blank" rel="noopener">Ver o site no ar <span aria-hidden="true">↗</span></a>
         </div>
-      </article>
+        <div class="phone phone--work" data-ui data-phone>
+          <div class="phone__screen">
+            <img class="scroller scroller--phone" src="./assets/img/work/ab-mobile-full.webp" alt="A mesma página no celular" width="600" height="12137" loading="lazy" decoding="async">
+          </div>
+        </div>
+      </div>
+    </div>
 
-      <a class="next-case" href="#contato">
-        <span class="next-case__k" aria-hidden="true"></span>
-        <span class="next-case__txt">
-          <strong>O próximo projeto pode ser o seu.</strong>
-          <span>Conte o que sua empresa faz e montamos a proposta.</span>
-        </span>
-        <span class="next-case__go" aria-hidden="true">→</span>
-      </a>
+    <div class="shell">
+      <div class="next" data-reveal>
+        <p class="next__text">O próximo projeto pode ser o seu.</p>
+        <a class="btn btn--light" href="#contato">Pedir orçamento</a>
+      </div>
     </div>
   </section>
 
-  <!-- PROCESSO -->
-  <section class="section" id="processo">
-    <div class="shell">
-      <header class="sec-head">
-        <p class="eyebrow">Como trabalhamos</p>
-        <h2 class="h2">Do primeiro papo ao site no ar, em quatro etapas.</h2>
-      </header>
+  <!-- PROCESSO: o controle desta seção é o único jeito de avançar -->
+  <section class="process" id="processo" aria-labelledby="processo-title">
+    <h2 id="processo-title" class="sr-only">Como trabalhamos</h2>
+    <div class="process__split" data-process data-stage="0">
+      <div class="process__words">
+        <div class="process__inner" aria-live="polite">
+          <p class="clause" data-clause>Primeiro, a conversa</p>
+          <p class="process__text" data-text>Entendemos o seu negócio, quem compra de você e o que precisa acontecer quando alguém abre o site.</p>
+          <p class="process__out" data-out>Você recebe: proposta com escopo, prazo e valor.</p>
+        </div>
+      </div>
 
-      <ol class="steps">
-        <li class="step">
-          <span class="step__n">1</span>
-          <h3 class="h3">Conversa</h3>
-          <p>Entendemos seu negócio, seu cliente e o que você quer que aconteça quando alguém entra no site.</p>
-          <p class="step__out">Você recebe: proposta com escopo, prazo e valor.</p>
-        </li>
-        <li class="step">
-          <span class="step__n">2</span>
-          <h3 class="h3">Estratégia e texto</h3>
-          <p>Definimos a ordem das seções e escrevemos a copy. É aqui que a página aprende a vender.</p>
-          <p class="step__out">Você recebe: estrutura e textos para aprovar.</p>
-        </li>
-        <li class="step">
-          <span class="step__n">3</span>
-          <h3 class="h3">Design e código</h3>
-          <p>Criamos o visual com a cara da sua marca e programamos do zero, leve e rápido no celular.</p>
-          <p class="step__out">Você recebe: um link de prévia para comentar.</p>
-        </li>
-        <li class="step">
-          <span class="step__n">4</span>
-          <h3 class="h3">Lançamento</h3>
-          <p>Publicamos, ligamos o domínio e acompanhamos os primeiros contatos para ajustar o que for preciso.</p>
-          <p class="step__out">Você recebe: o site no ar e no seu nome.</p>
-        </li>
-      </ol>
+      <div class="process__view">
+        <div class="build" data-ui data-build aria-hidden="true">
+          <div class="build__bar"><i></i><i></i><i></i><span data-url>Briefing</span><em class="live" data-live>No ar</em></div>
+          <div class="build__screen">
+            <!-- 0: briefing -->
+            <div class="layer layer--brief" data-layer="0">
+              <p class="brief__title">Briefing · AB Transportes</p>
+              <dl class="brief">
+                <div><dt>Objetivo</dt><dd>Pedidos de orçamento pelo WhatsApp</dd></div>
+                <div><dt>Quem contrata</dt><dd>Empresas e pessoas que precisam enviar cargas</dd></div>
+                <div><dt>Diferenciais</dt><dd>Coleta e entrega no mesmo dia, foto na coleta e na entrega</dd></div>
+                <div><dt>Veículos</dt><dd>Moto, carro e caminhão</dd></div>
+              </dl>
+            </div>
+            <!-- 1: estrutura e texto -->
+            <div class="layer layer--wire" data-layer="1">
+              <div class="wire__nav"><b></b><i></i><i></i><i></i><u></u></div>
+              <div class="wire__hero">
+                <p class="wire__h">Do ponto A ao ponto B, sem perder de vista.</p>
+                <i></i><i class="short"></i>
+                <div class="wire__cta"><span class="wire__btn">Pedir orçamento</span><em class="wire__tag wire__tag--c">Ação</em></div>
+              </div>
+              <div class="wire__blocks"><span>Como funciona</span><span>Frota</span><span>Orçamento</span></div>
+              <p class="wire__tag wire__tag--a">Promessa</p>
+              <p class="wire__tag wire__tag--b">Prova</p>
+            </div>
+            <!-- 2: design e código -->
+            <div class="layer layer--design" data-layer="2">
+              <img src="./assets/img/work/ab-desktop-hero.webp" alt="" width="1200" height="750" loading="lazy" decoding="async">
+              <span class="scan" aria-hidden="true"></span>
+              <pre class="code"><code><span class="t">&lt;TheHeader /&gt;</span>
+<span class="t">&lt;HeroLive /&gt;</span>
+<span class="t">&lt;RoadBand /&gt;</span>
+<span class="t">&lt;JourneyRoute /&gt;</span>
+<span class="t">&lt;FleetConfigurator /&gt;</span>
+<span class="t">&lt;QuoteWizard /&gt;</span></code></pre>
+            </div>
+            <!-- 3: no ar -->
+            <div class="layer layer--live" data-layer="3">
+              <ol class="leads">
+                <li style="--i:0"><b>Pedido de orçamento</b><span>3 caixas · Campinas → São Paulo</span></li>
+                <li style="--i:1"><b>Nova conversa no WhatsApp</b><span>Coleta para amanhã, 9h</span></li>
+                <li style="--i:2"><b>Pedido de orçamento</b><span>Palete · Jundiaí → Campinas</span></li>
+              </ol>
+            </div>
+          </div>
+        </div>
+        <p class="process__note">Arraste o controle ou toque nas etapas. Exemplo com a página da AB; pedidos ilustrativos.</p>
+      </div>
+
+      <div class="process__control">
+        <div class="slider">
+          <label class="sr-only" for="stage">Etapa do projeto</label>
+          <input type="range" id="stage" min="0" max="3" step="1" value="0" aria-valuetext="Conversa" data-range>
+          <ol class="stages">
+            <li><button type="button" data-go="0" aria-current="step">Conversa</button></li>
+            <li><button type="button" data-go="1">Estratégia</button></li>
+            <li><button type="button" data-go="2">Tecnologia</button></li>
+            <li><button type="button" data-go="3">Resultados</button></li>
+          </ol>
+        </div>
+      </div>
     </div>
   </section>
 
   <!-- QUEM SOMOS -->
-  <section class="section section--panel" id="quem-somos">
-    <div class="shell about">
-      <header class="sec-head">
-        <p class="eyebrow">Quem somos</p>
-        <h2 class="h2">Dois sócios, um compromisso: seu resultado.</h2>
-        <p class="lead">A Korvex nasceu da parceria entre Cauã Moura e Vitor Ramos. Somos uma empresa enxuta de propósito: você fala direto com quem pensa a estratégia e com quem escreve o código.</p>
-      </header>
-
-      <div class="founders">
-        <article class="founder">
-          <div class="founder__avatar" aria-hidden="true">CM</div>
-          <div class="founder__body">
-            <h3 class="h3">Cauã Moura</h3>
-            <p class="founder__role">Sócio · Desenvolvimento e tecnologia</p>
-            <p>Formado em Análise e Desenvolvimento de Sistemas. Transforma a estratégia em sites, landing pages e aplicativos, com Vue.js, Flutter e Python.</p>
-          </div>
-        </article>
-        <article class="founder">
-          <div class="founder__avatar" aria-hidden="true">VR</div>
-          <div class="founder__body">
-            <h3 class="h3">Vitor Ramos</h3>
-            <p class="founder__role">Sócio · Estratégia e relacionamento</p>
-            <p>Acompanha cada cliente de perto, do primeiro contato ao lançamento, e cuida para que o projeto entregue o que o negócio precisa.</p>
-          </div>
-        </article>
-      </div>
-
-      <ul class="values">
-        <li><h3 class="h4">Sob medida</h3><p>Cada projeto é desenhado para o seu negócio. Nada de modelo pronto com outra logo.</p></li>
-        <li><h3 class="h4">Rápido no celular</h3><p>Código próprio, leve, que abre bem no 4G e não espanta o visitante.</p></li>
-        <li><h3 class="h4">Texto que vende</h3><p>Design bonito sem mensagem clara não converte. A copy vem antes do layout.</p></li>
-        <li><h3 class="h4">Atendimento direto</h3><p>Sem intermediários. Quem responde sua mensagem é quem faz o seu projeto.</p></li>
+  <section class="section about" id="quem-somos" aria-labelledby="about-title">
+    <h2 id="about-title" class="sr-only">Quem somos</h2>
+    <div class="shell about__grid">
+      <ul class="about__facts" data-reveal>
+        <li>Korvex · Soluções digitais</li>
+        <li>Dois sócios, atendimento direto</li>
+        <li>cv.korvex@gmail.com</li>
       </ul>
+      <div class="about__text">
+        <p class="bio" data-reveal><span class="mono" aria-hidden="true">CM</span><strong>Cauã Moura</strong> cuida da tecnologia. Formado em Análise e Desenvolvimento de Sistemas, transforma a estratégia em código: sites, landing pages e aplicativos feitos do zero, com Vue.js, Flutter e Python.</p>
+        <p class="bio" data-reveal><span class="mono" aria-hidden="true">VR</span><strong>Vitor Ramos</strong> cuida da estratégia e do relacionamento. Acompanha cada cliente do primeiro contato ao lançamento, para o projeto entregar o que o negócio precisa.</p>
+        <p class="about__close" data-reveal>Sem intermediários: quem responde a sua mensagem é quem faz o seu projeto.</p>
+      </div>
     </div>
   </section>
 
   <!-- CONTATO -->
-  <section class="section contact" id="contato">
-    <div class="shell contact__grid">
-      <div class="contact__copy">
-        <p class="eyebrow">Contato</p>
-        <h2 class="h2">Vamos tirar seu projeto do papel?</h2>
-        <p class="lead">Conte o que você precisa. Respondemos com uma proposta clara, sem compromisso.</p>
-        <div class="mailbox">
-          <span class="mailbox__label">E-mail</span>
-          <span class="mailbox__addr" id="mail-addr">cv.korvex@gmail.com</span>
-          <button class="mailbox__copy" type="button" id="copy-mail">Copiar</button>
-        </div>
-      </div>
+  <section class="section contact" id="contato" aria-labelledby="contact-title">
+    <div class="shell">
+      <div class="contact__col">
+        <h2 id="contact-title" class="contact__prompt" data-reveal><span>Tem um projeto?</span> <span>Conte em uma frase</span></h2>
 
-      <form class="form" id="lead-form" novalidate>
-        <div class="field">
-          <label for="f-nome">Seu nome</label>
-          <input id="f-nome" name="nome" type="text" autocomplete="name" placeholder="Ex.: Ana Souza" required>
+        <div class="chips" role="group" aria-label="Começar com" data-reveal>
+          <button type="button" data-chip="Quero uma landing page para ">Landing page</button>
+          <button type="button" data-chip="Quero um site para ">Site</button>
+          <button type="button" data-chip="Quero um aplicativo para ">Aplicativo</button>
+          <button type="button" data-chip="Quero cuidar do Instagram da ">Instagram</button>
         </div>
-        <div class="field">
-          <label for="f-empresa">Empresa</label>
-          <input id="f-empresa" name="empresa" type="text" autocomplete="organization" placeholder="Ex.: Doceria da Ana">
-        </div>
-        <fieldset class="field">
-          <legend>O que você precisa?</legend>
-          <div class="chips">
-            <input type="checkbox" id="c-lp" name="servico" value="Landing page" checked><label for="c-lp">Landing page</label>
-            <input type="checkbox" id="c-site" name="servico" value="Site"><label for="c-site">Site</label>
-            <input type="checkbox" id="c-app" name="servico" value="Aplicativo"><label for="c-app">Aplicativo</label>
-            <input type="checkbox" id="c-insta" name="servico" value="Instagram"><label for="c-insta">Instagram</label>
+
+        <form class="ask" data-contact novalidate>
+          <div class="ask__wrap">
+            <canvas class="ask__glow" data-pulse aria-hidden="true"></canvas>
+            <div class="ask__field" data-field>
+              <label class="sr-only" for="msg">O que a sua empresa precisa?</label>
+              <input id="msg" name="msg" type="text" autocomplete="off" enterkeyhint="send" placeholder="Ex.: quero uma landing page para minha doceria">
+              <button class="ask__send" type="submit" aria-label="Enviar por e-mail">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h13M12 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </button>
+            </div>
           </div>
-        </fieldset>
-        <div class="field">
-          <label for="f-msg">Conte um pouco do projeto</label>
-          <textarea id="f-msg" name="mensagem" rows="4" placeholder="O que sua empresa faz e o que você espera do site."></textarea>
-        </div>
-        <p class="form__error" id="form-error" role="alert" hidden>Escreva seu nome para a gente saber com quem está falando.</p>
-        <div class="form__actions">
-          <button class="btn btn--neon" type="submit" data-via="email">Enviar por e-mail</button>
-          <button class="btn btn--line" type="submit" data-via="whatsapp" id="btn-wa" hidden>Enviar pelo WhatsApp</button>
-        </div>
-        <p class="form__note" id="form-note" hidden></p>
-      </form>
+          <p class="ask__note" data-note>Abrimos o seu e-mail com a mensagem pronta. É só enviar.</p>
+          <p class="ask__error" data-error role="alert" hidden>Escreva o que você precisa para a gente poder responder.</p>
+        </form>
+
+        <dl class="contact__rows">
+          <div>
+            <dt>E-mail</dt>
+            <dd><span class="mail" id="mail">cv.korvex@gmail.com</span><button type="button" class="copy" data-copy>Copiar</button></dd>
+          </div>
+          <div>
+            <dt>Quem responde</dt>
+            <dd>Cauã Moura e Vitor Ramos</dd>
+          </div>
+        </dl>
+      </div>
     </div>
   </section>
 </main>
 
 <footer class="footer">
-  <div class="shell footer__grid">
-    <div class="footer__brand">
-      <img src="./assets/img/k-mark-160.webp" alt="" width="64" height="47">
-      <div>
-        <p class="footer__name">KORVEX</p>
-        <p class="footer__tag">Soluções digitais</p>
-      </div>
+  <div class="shell">
+    <svg class="footer__mark" viewBox="0 0 1200 236" role="img" aria-label="Korvex. Estratégia, tecnologia, resultados.">
+      <defs>
+        <linearGradient id="chrome" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#ffffff"/>
+          <stop offset="0.38" stop-color="#c9ccd4"/>
+          <stop offset="0.55" stop-color="#6e717c"/>
+          <stop offset="0.78" stop-color="#e6e8ee"/>
+          <stop offset="1" stop-color="#9ea2ad"/>
+        </linearGradient>
+      </defs>
+      <g font-family="Michroma, Eurostile, Arial, sans-serif" font-size="150" fill="url(#chrome)" text-anchor="middle">
+        <text x="100" y="146">K</text>
+        <text x="300" y="146">O</text>
+        <text x="500" y="146">R</text>
+        <text x="700" y="146">V</text>
+        <text x="-900" y="146" transform="scale(-1 1)">E</text>
+        <text x="1100" y="146">X</text>
+      </g>
+      <text x="600" y="222" text-anchor="middle" font-family="Michroma, Eurostile, Arial, sans-serif" font-size="21" letter-spacing="9" fill="#a4a7b2">ESTRATÉGIA <tspan fill="#ff2d4f">/</tspan> TECNOLOGIA <tspan fill="#ff2d4f">/</tspan> RESULTADOS</text>
+    </svg>
+    <div class="footer__line">
+      <p>Korvex · Soluções digitais</p>
+      <nav aria-label="Rodapé">
+        <a href="#servicos">Serviços</a>
+        <a href="#projetos">Projetos</a>
+        <a href="#processo">Processo</a>
+        <a href="#quem-somos">Quem somos</a>
+        <a href="#contato">Contato</a>
+      </nav>
+      <p>© <span data-year>2026</span> · Cauã Moura e Vitor Ramos</p>
     </div>
-    <nav class="footer__nav" aria-label="Rodapé">
-      <a href="#servicos">Serviços</a>
-      <a href="#projetos">Projetos</a>
-      <a href="#processo">Como trabalhamos</a>
-      <a href="#quem-somos">Quem somos</a>
-      <a href="#contato">Contato</a>
-    </nav>
-    <p class="footer__legal">© <span id="year">2026</span> Korvex · Cauã Moura e Vitor Ramos</p>
   </div>
 </footer>
 
-<script src="./assets/js/main.js" defer></script>
+<script type="module" src="./assets/js/main.js"></script>
 <!--CONTENT-END-->
 </body>
 </html>
