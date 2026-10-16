@@ -1310,16 +1310,19 @@ button { cursor: pointer; }
   line-height: 1.4;
   color: var(--muted);
   font-weight: 500;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  column-gap: 0.8em;
+  align-items: start;
 }
 .bio strong { color: var(--ink); font-weight: 700; }
 .mono {
-  float: left;
   position: relative;
   display: grid;
   place-items: center;
   width: 3.7em;
   height: 3.7em;
-  margin: 0.24em 0.55em 0 0;
+  margin-top: 0.24em;
   background: var(--surface-2);
   font-family: var(--f-display);
   font-size: 1em;
@@ -1559,7 +1562,7 @@ button { cursor: pointer; }
   .next .btn { flex: 1 1 100%; }
   .about__grid { gap: 28px; }
   .bio { font-size: 20px; line-height: 1.42; }
-  .mono { width: 4.1em; height: 4.1em; }
+  .mono { width: 3em; height: 3em; font-size: 0.85em; }
   .contact .shell { display: block; }
   .contact__rows div { grid-template-columns: 1fr; gap: 2px; }
   .ask__field input { font-size: 16px; padding-left: 18px; }
