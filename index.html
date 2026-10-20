@@ -9,10 +9,10 @@
 <link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Korvex · Sites e landing pages que vendem">
-<meta property="og:description" content="Landing pages, sites, aplicativos e Instagram para pequenas empresas, feitos do zero por Cauã Moura e Vitor Ramos.">
+<meta property="og:description" content="Landing pages, sites e consultoria de marca no Instagram para pequenas empresas, feitos do zero por Cauã Moura e Vitor Ramos.">
 <meta property="og:image" content="https://cvkorvex.vercel.app/assets/img/og-korvex.jpg">
 <meta property="og:url" content="https://cvkorvex.vercel.app/">
-<meta name="description" content="Korvex, estúdio de Cauã Moura e Vitor Ramos. Landing pages, sites, aplicativos e Instagram para pequenas empresas.">
+<meta name="description" content="Korvex, estúdio de Cauã Moura e Vitor Ramos. Landing pages, sites e consultoria de marca no Instagram para pequenas empresas.">
 <style>
 /* Korvex · versão hologramas
    Ideia: o site é um projetor. Cada projeto aparece como um holograma em camadas de vidro,
@@ -116,7 +116,7 @@ button, input { font: inherit; color: inherit; }
 .holo { position: relative; z-index: 1; transform-style: preserve-3d; transform: scale(var(--sc, 1)) rotateX(var(--rx, 8deg)) rotateY(var(--ry, -14deg)); will-change: transform; }
 .L { position: absolute; transform-style: preserve-3d; }
 .glass {
-  background: linear-gradient(160deg, rgba(255,255,255,.08), rgba(255,255,255,.02));
+  background: var(--site-fill, linear-gradient(160deg, rgba(255,255,255,.08), rgba(255,255,255,.02)));
   box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--brand) 55%, rgba(255,255,255,.2)), 0 0 40px -10px var(--brand);
   border-radius: 14px; overflow: hidden;
 }
@@ -125,7 +125,7 @@ button, input { font: inherit; color: inherit; }
 .h-txt { font-family: var(--f-text); color: var(--ink); }
 .h-ln { height: 8px; border-radius: 4px; background: rgba(255,255,255,.14); }
 .h-btn { display: inline-block; padding: 9px 14px; border-radius: 8px; background: var(--brand); color: var(--brand-ink, #fff); font: 800 12px var(--f-text); box-shadow: 0 0 22px -2px var(--brand); white-space: nowrap; }
-.tag { position: absolute; font: 700 10px var(--f-text); letter-spacing: .14em; text-transform: uppercase; color: var(--ink); padding: 5px 9px; border-radius: 999px; background: rgba(7,7,10,.8); box-shadow: inset 0 0 0 1px var(--brand); white-space: nowrap; }
+.tag { position: absolute; font: 700 10px var(--f-text); letter-spacing: .14em; text-transform: uppercase; color: #F1F1F4; padding: 5px 9px; border-radius: 999px; background: rgba(7,7,10,.8); box-shadow: inset 0 0 0 1px var(--brand); white-space: nowrap; }
 .shot { border-radius: 12px; overflow: hidden; box-shadow: 0 0 0 1px color-mix(in srgb, var(--brand) 50%, rgba(255,255,255,.15)), 0 0 50px -12px var(--brand); }
 .shot img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 0; }
 
@@ -152,7 +152,8 @@ button, input { font: inherit; color: inherit; }
 
 /* ---------- 2 · serviços ---------- */
 .section { padding-block: 112px; }
-.svc { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+#fundoField[hidden] { display: none; }
+.svc { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
 .svc button {
   text-align: left; border: 0; cursor: pointer; padding: 24px 22px 22px; border-radius: 18px; background: var(--surface); box-shadow: inset 0 0 0 1px var(--line);
   display: grid; gap: 10px; align-content: start; min-height: 210px;
@@ -163,7 +164,7 @@ button, input { font: inherit; color: inherit; }
 .svc span { color: var(--muted); }
 .svc em { margin-top: auto; font-style: normal; font: 700 14px var(--f-text); color: var(--n2); }
 @media (hover: hover) and (pointer: fine) { .svc button:hover { box-shadow: inset 0 0 0 1px var(--n2), 0 0 40px -18px var(--n2); background: var(--surface-2); } }
-@media (max-width: 900px) { .svc { grid-template-columns: 1fr 1fr; } .svc button { min-height: 0; } }
+@media (max-width: 900px) { .svc { grid-template-columns: 1fr; } .svc button { min-height: 0; } }
 @media (max-width: 520px) { .svc { grid-template-columns: 1fr; } }
 
 /* ---------- 3 · monte o seu ---------- */
@@ -301,7 +302,7 @@ html.js [data-in].in > * { opacity: 1; transform: none; }
       <div data-in>
         <p class="k">Korvex · estúdio digital</p>
         <h1>Sites e landing pages que vendem.</h1>
-        <p class="lead">Landing pages, sites, aplicativos e Instagram para pequenas empresas, feitos do zero por Cauã Moura e Vitor Ramos.</p>
+        <p class="lead">Landing pages, sites e consultoria de marca no Instagram para pequenas empresas, feitos do zero por Cauã Moura e Vitor Ramos.</p>
         <div class="hero__cta">
           <a class="btn btn--light" href="#monte">Monte o seu projeto</a>
           <a class="btn btn--ghost" href="#contato">Falar com a Korvex</a>
@@ -324,13 +325,12 @@ html.js [data-in].in > * { opacity: 1; transform: none; }
     <div class="wrap">
       <div class="head" data-in>
         <p class="k">O que fazemos</p>
-        <h2 class="h2" id="svc-h">Quatro jeitos de começar</h2>
+        <h2 class="h2" id="svc-h">Três jeitos de começar</h2>
       </div>
       <div class="svc" data-in>
         <button type="button" data-go="landing"><b>Landing pages</b><span>Uma página com um objetivo só: o visitante pedir orçamento no seu WhatsApp.</span><em>Ver no holograma →</em></button>
         <button type="button" data-go="site"><b>Sites</b><span>Quem vocês são, o que fazem e como falar com vocês, pronto para o Google.</span><em>Ver no holograma →</em></button>
-        <button type="button" data-go="app"><b>Aplicativos</b><span>Agendamentos, pedidos, cardápio digital ou um painel para a equipe.</span><em>Ver no holograma →</em></button>
-        <button type="button" data-go="ig"><b>Instagram</b><span>Perfil organizado e posts com a mesma cara do seu site.</span><em>Ver no holograma →</em></button>
+        <button type="button" data-go="ig"><b>Instagram</b><span>Consultoria de marca: padronizamos os posts e o feed com a identidade do seu negócio e criamos o conteúdo.</span><em>Ver no holograma →</em></button>
       </div>
     </div>
   </section>
@@ -349,7 +349,6 @@ html.js [data-in].in > * { opacity: 1; transform: none; }
             <div class="chips" data-group="tipo">
               <button class="chip" type="button" data-v="landing" aria-pressed="true">Landing page</button>
               <button class="chip" type="button" data-v="site" aria-pressed="false">Site</button>
-              <button class="chip" type="button" data-v="app" aria-pressed="false">Aplicativo</button>
               <button class="chip" type="button" data-v="ig" aria-pressed="false">Instagram</button>
             </div>
           </fieldset>
@@ -367,16 +366,27 @@ html.js [data-in].in > * { opacity: 1; transform: none; }
           <div class="field"><label class="lbl" for="nome">Nome do seu negócio</label>
             <input class="input" id="nome" type="text" maxlength="28" placeholder="Ex.: Doce Ponto" autocomplete="organization">
           </div>
-          <fieldset class="field"><legend>Cor da marca</legend>
+          <fieldset class="field" id="fundoField"><legend>Cor de fundo do site</legend>
+            <div class="swatches" data-group="fundo">
+              <button class="sw" type="button" style="--c:#0E0E13" data-v="#0E0E13" aria-pressed="true" aria-label="Escuro"></button>
+              <button class="sw" type="button" style="--c:#FFFFFF" data-v="#FFFFFF" aria-pressed="false" aria-label="Branco"></button>
+              <button class="sw" type="button" style="--c:#F3EEE6" data-v="#F3EEE6" aria-pressed="false" aria-label="Areia"></button>
+              <button class="sw" type="button" style="--c:#0B1B3A" data-v="#0B1B3A" aria-pressed="false" aria-label="Azul-marinho"></button>
+              <button class="sw" type="button" style="--c:#16302A" data-v="#16302A" aria-pressed="false" aria-label="Verde-escuro"></button>
+              <label class="sw sw--pick" title="Escolher outra cor de fundo"><input type="color" value="#FAD7E0" aria-label="Escolher outra cor de fundo"><span aria-hidden="true">+</span></label>
+            </div>
+            <div class="hex"><span class="hex__dot" style="background:#0E0E13"></span><label class="sr" for="hexFundo">Código da cor de fundo</label><input class="input hex__in" id="hexFundo" type="text" value="#0E0E13" maxlength="7" spellcheck="false" autocomplete="off"><span class="small">A cor por trás de tudo no seu site.</span></div>
+          </fieldset>
+          <fieldset class="field"><legend id="corLegend">Cor de destaque</legend>
             <div class="swatches" data-group="cor">
               <button class="sw" type="button" style="--c:#FF2D4F" data-v="#FF2D4F" aria-pressed="true" aria-label="Vermelho"></button>
               <button class="sw" type="button" style="--c:#E23CCB" data-v="#E23CCB" aria-pressed="false" aria-label="Magenta"></button>
               <button class="sw" type="button" style="--c:#9B4DFF" data-v="#9B4DFF" aria-pressed="false" aria-label="Roxo"></button>
               <button class="sw" type="button" style="--c:#2EC5FF" data-v="#2EC5FF" aria-pressed="false" aria-label="Azul"></button>
               <button class="sw" type="button" style="--c:#2BD98C" data-v="#2BD98C" aria-pressed="false" aria-label="Verde"></button>
-              <label class="sw sw--pick" id="pickWrap" title="Escolher outra cor"><input type="color" id="corLivre" value="#F5A623" aria-label="Escolher outra cor"><span aria-hidden="true">+</span></label>
+              <label class="sw sw--pick" title="Escolher outra cor de destaque"><input type="color" value="#F5A623" aria-label="Escolher outra cor de destaque"><span aria-hidden="true">+</span></label>
             </div>
-            <div class="hex"><span class="hex__dot" id="hexDot"></span><label class="sr" for="hexIn">Código da cor</label><input class="input hex__in" id="hexIn" type="text" value="#FF2D4F" maxlength="7" spellcheck="false" autocomplete="off"><span class="small">Toque no + para escolher qualquer cor, ou digite o código.</span></div>
+            <div class="hex"><span class="hex__dot"></span><label class="sr" for="hexCor">Código da cor de destaque</label><input class="input hex__in" id="hexCor" type="text" value="#FF2D4F" maxlength="7" spellcheck="false" autocomplete="off"><span class="small" id="corHint">Contorno, brilho e botões.</span></div>
           </fieldset>
         </div>
         <div class="out">
@@ -435,7 +445,7 @@ html.js [data-in].in > * { opacity: 1; transform: none; }
     <div class="wrap">
       <div class="head" data-in><p class="k">Quem somos</p><h2 class="h2" id="who-h">Direto com quem faz</h2></div>
       <div class="duo" data-in>
-        <article class="person"><span class="mono" aria-hidden="true">CM</span><div><h3>Cauã Moura</h3><p class="role">Tecnologia</p><p>Formado em Análise e Desenvolvimento de Sistemas. Transforma a estratégia em código: sites, landing pages e aplicativos feitos do zero.</p></div></article>
+        <article class="person"><span class="mono" aria-hidden="true">CM</span><div><h3>Cauã Moura</h3><p class="role">Tecnologia</p><p>Formado em Análise e Desenvolvimento de Sistemas. Transforma a estratégia em código: sites e landing pages feitos do zero.</p></div></article>
         <article class="person"><span class="mono" aria-hidden="true">VR</span><div><h3>Vitor Ramos</h3><p class="role">Estratégia e relacionamento</p><p>Acompanha cada cliente do primeiro contato ao lançamento, para o projeto entregar o que o negócio precisa.</p></div></article>
       </div>
     </div>
@@ -489,12 +499,11 @@ html.js [data-in].in > * { opacity: 1; transform: none; }
     servicos:    { nome: 'Prumo Reformas', h: 'Orçamento sem sair de casa',          cta: 'Pedir orçamento',       app: ['Visita · Rua das Flores', 'Orçamento enviado', 'Obra · etapa 2 de 4'], post: 'Antes e depois', ic: 'Serviços', txt: 'serviços' },
     outro:       { nome: 'Seu Negócio',    h: 'Tudo sobre o seu negócio em um só lugar', cta: 'Falar no WhatsApp', app: ['Pedido #101 · novo', 'Mensagem respondida', 'Horário · 15h'], post: 'Novidade', ic: 'Pedidos', txt: 'outro' },
   }
-  const TIPO = { landing: 'Landing page', site: 'Site', app: 'Aplicativo', ig: 'Instagram' }
+  const TIPO = { landing: 'Landing page', site: 'Site', ig: 'Instagram' }
   const INCL = {
     landing: ['Uma página com um objetivo só', 'Texto escrito para vender', 'Botão do WhatsApp com a mensagem pronta', 'Feita primeiro para o celular'],
     site: ['Início, sobre, serviços e contato', 'Preparado para aparecer no Google', 'Formulário de contato', 'Fácil de atualizar depois'],
-    app: ['Funciona no navegador e no celular', 'Agendamentos, pedidos ou cardápio', 'Painel para a sua equipe', 'Avisos para o cliente'],
-    ig: ['Bio e destaques organizados', 'Modelos de post com a cara da marca', 'Capas e Stories', 'Link para pedido ou agenda'],
+    ig: ['Feed padronizado com a cor e a cara da marca', 'Modelos de post, capas e Stories', 'Criação de conteúdo', 'Bio e destaques organizados'],
   }
 
   /* ---------- montar um holograma ---------- */
@@ -535,33 +544,31 @@ html.js [data-in].in > * { opacity: 1; transform: none; }
         html += `<span class="tag" style="left:${narrow ? 120 : 165}px;top:${narrow ? 176 : 206}px;transform:translateZ(130px)">Ação</span>`
         html += `<span class="tag" style="left:${W - (narrow ? 96 : 150)}px;top:${narrow ? 150 : 214}px;transform:translateZ(110px)">Prova</span>`
         if (isSite) html += `<span class="tag" style="left:${W - 40}px;top:-48px;transform:translateZ(-150px)">+3 páginas</span>`
-      } else if (cfg.tipo === 'app') {
-        W = narrow ? 196 : 230; H = narrow ? 370 : 440
-        html += L(`left:0;top:0;width:${W}px;height:${H}px;border-radius:34px`, '', 0, 'glass')
-        html += L(`left:16px;top:22px;width:${W - 32}px;display:flex;justify-content:space-between;align-items:center`, `<span class="h-txt" style="font:400 10px var(--f-display);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:70%">${name}</span><span style="width:24px;height:24px;border-radius:50%;background:var(--brand);box-shadow:0 0 14px var(--brand)"></span>`, 30)
-        html += L(`left:16px;top:62px;width:${W - 32}px`, `<div class="h-txt" style="font:800 18px var(--f-text)">${esc(s.ic)}</div><div style="font-size:11px;color:var(--muted)">Hoje</div>`, 45)
-        s.app.forEach((item, i) => {
-          html += L(`left:14px;top:${112 + i * 62}px;width:${W - 28}px;padding:12px;border-radius:14px;background:rgba(255,255,255,.06);box-shadow:inset 0 0 0 1px rgba(255,255,255,.12);display:flex;gap:10px;align-items:center`,
-            `<span style="width:8px;height:8px;border-radius:50%;flex:none;background:${i === 0 ? 'var(--brand)' : 'rgba(255,255,255,.3)'};box-shadow:${i === 0 ? '0 0 10px var(--brand)' : 'none'}"></span><span class="h-txt" style="font:600 12px var(--f-text)">${esc(item)}</span>`, 40 + i * 14)
-        })
-        html += L(`left:14px;bottom:16px;width:${W - 28}px;display:flex;justify-content:space-around`, [0, 1, 2, 3].map((i) => `<span style="width:20px;height:20px;border-radius:6px;background:${i === 0 ? 'var(--brand)' : 'rgba(255,255,255,.18)'}"></span>`).join(''), 30)
-        html += L(`left:${W - 70}px;top:${narrow ? 292 : 340}px;width:${narrow ? 160 : 200}px;padding:12px 14px;border-radius:14px;background:rgba(14,14,19,.94);box-shadow:inset 0 0 0 1px var(--brand),0 0 30px -6px var(--brand)`,
-          `<div style="font:700 10px var(--f-text);letter-spacing:.12em;text-transform:uppercase;color:var(--brand)">Agora</div><div class="h-txt" style="font:700 13px var(--f-text)">Novo ${s.ic === 'Agenda' ? 'agendamento' : 'pedido'}</div>`, 140)
       } else {
+        // o Instagram tem sempre o mesmo visual; a marca aparece só nos posts
         W = narrow ? 206 : 240; H = narrow ? 384 : 450
         html += L(`left:0;top:0;width:${W}px;height:${H}px;border-radius:34px`, '', 0, 'glass')
-        html += L(`left:16px;top:26px;display:flex;gap:12px;align-items:center;width:${W - 32}px`, `<span style="width:46px;height:46px;flex:none;border-radius:50%;background:conic-gradient(var(--brand), #9B4DFF, var(--brand));box-shadow:0 0 18px -2px var(--brand)"></span><span class="h-txt" style="font:800 13px var(--f-text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${name}</span>`, 45)
-        html += L(`left:16px;top:84px;width:${W - 32}px;display:grid;gap:6px`, `<div class="h-txt" style="font:600 11px/1.4 var(--f-text)">${esc(s.h)}</div><div style="font:700 11px var(--f-text);color:var(--brand)">${esc(s.cta)}</div>`, 35)
-        html += L(`left:16px;top:140px;display:flex;gap:10px`, [0, 1, 2].map(() => `<span style="width:34px;height:34px;border-radius:50%;box-shadow:inset 0 0 0 2px var(--brand)"></span>`).join(''), 30)
-        const g = (W - 32 - 8) / 3
+        html += L(`left:16px;top:22px;display:flex;gap:12px;align-items:center;width:${W - 32}px`, `<span style="width:46px;height:46px;flex:none;border-radius:50%;display:grid;place-items:center;background:var(--brand);color:var(--brand-ink);font:400 16px var(--f-display);box-shadow:0 0 0 2px #fff,0 0 0 4px #DBDBDB">${esc(name.charAt(0).toUpperCase())}</span><span style="display:grid;gap:5px;min-width:0"><span class="h-txt" style="font:800 13px var(--f-text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${name}</span><span style="justify-self:start;padding:4px 12px;border-radius:7px;background:#0095F6;color:#fff;font:700 10px var(--f-text)">Seguir</span></span>`, 45)
+        html += L(`left:16px;top:82px;width:${W - 32}px`, `<div class="h-txt" style="font:600 11px/1.4 var(--f-text)">${esc(s.h)}</div>`, 35)
+        html += L(`left:16px;top:128px;display:flex;gap:12px`, [0, 1, 2].map(() => `<span style="width:34px;height:34px;border-radius:50%;background:color-mix(in srgb, var(--brand) 18%, #fff);box-shadow:0 0 0 2px #fff,0 0 0 3px #DBDBDB"></span>`).join(''), 30)
+        const g = (W - 32 - 4) / 3
+        // feed padronizado: o mesmo molde se repete, alternando cheio, claro e foto
+        const tile = (i) => [
+          'background:var(--brand)',
+          'background:color-mix(in srgb, var(--brand) 14%, #fff);box-shadow:inset 0 0 0 1px color-mix(in srgb, var(--brand) 30%, #fff)',
+          'background:linear-gradient(160deg, #3A3A44, #15151B);box-shadow:inset 0 -14px 0 0 var(--brand)',
+        ][(i + Math.floor(i / 3)) % 3]
         for (let i = 0; i < 9; i++) {
           const c = i % 3, r = Math.floor(i / 3)
-          html += L(`left:${16 + c * (g + 4)}px;top:${190 + r * (g + 4)}px;width:${g}px;height:${g}px;border-radius:4px;background:linear-gradient(${120 + i * 25}deg, color-mix(in srgb, var(--brand) ${30 + (i % 4) * 15}%, transparent), rgba(155,77,255,.18))`, '', 20 + i * 4)
+          html += L(`left:${16 + c * (g + 2)}px;top:${180 + r * (g + 2)}px;width:${g}px;height:${g}px;${tile(i)}`, '', 20 + i * 4)
         }
-        html += L(`left:${W - 70}px;top:60px;width:${narrow ? 146 : 180}px;padding:10px;border-radius:14px;background:rgba(14,14,19,.94);box-shadow:inset 0 0 0 1px var(--brand),0 0 30px -6px var(--brand)`,
-          `<div style="height:${narrow ? 78 : 100}px;border-radius:8px;background:linear-gradient(140deg, var(--brand), #9B4DFF)"></div><div class="h-txt" style="font:700 12px var(--f-text);margin-top:8px">${esc(s.post)}</div>`, 150)
+        html += L(`left:${W - 70}px;top:${narrow ? 236 : 262}px;width:${narrow ? 146 : 180}px;padding:10px;border-radius:14px;background:#fff;box-shadow:inset 0 0 0 1px #DBDBDB,0 0 30px -6px var(--brand)`,
+          `<div style="height:${narrow ? 78 : 100}px;border-radius:8px;background:var(--brand);display:grid;place-items:center;color:var(--brand-ink);font:400 13px var(--f-display);letter-spacing:.06em">${esc(s.post)}</div><div style="font:700 12px var(--f-text);margin-top:8px;color:#14141A">${name}</div>`, 150)
       }
     }
+    html = html.replace(/rgba\(255,255,255,(\.\d+)\)/g, (m, a) => `color-mix(in srgb, var(--ink) ${Math.round(a * 100)}%, transparent)`).replace(/rgba\(14,14,19,\.94\)/g, 'var(--site-card, rgba(14,14,19,.94))')
+    const ig = cfg.tipo === 'ig' && cfg.kind !== 'case'
+    for (const [k, v] of [['--ink', '#14141A'], ['--muted', '#5A5D69'], ['--site-fill', '#FFFFFF']]) ig ? holo.style.setProperty(k, v) : holo.style.removeProperty(k)
     holo.style.width = W + 'px'; holo.style.height = H + 'px'
     holo.style.setProperty('--sc', Math.min(1, (stage.clientHeight - 90) / H, (stage.clientWidth - 40) / W).toFixed(3))
     holo.innerHTML = html
@@ -602,9 +609,9 @@ html.js [data-in].in > * { opacity: 1; transform: none; }
   /* ---------- 1 · topo: o projetor troca de exemplo sozinho ---------- */
   const REEL = [
     { tipo: 'landing', seg: 'transporte', cor: '#FF2D4F' },
-    { tipo: 'app', seg: 'saude', cor: '#9B4DFF' },
     { tipo: 'site', seg: 'restaurante', cor: '#E23CCB' },
     { tipo: 'ig', seg: 'loja', cor: '#2EC5FF' },
+    { tipo: 'landing', seg: 'saude', cor: '#9B4DFF' },
   ]
   const heroStage = $('#heroStage'), dots = $('#dots'), reelLabel = $('#reelLabel')
   let reelI = 0, reelTimer = 0, heroHover = false, heroVisible = true
@@ -628,39 +635,57 @@ html.js [data-in].in > * { opacity: 1; transform: none; }
   addTilt(heroStage); showReel(0); restartReel()
 
   /* ---------- 3 · monte o seu ---------- */
-  const state = { tipo: 'landing', seg: 'loja', cor: '#FF2D4F', nome: '', segTxt: '' }
+  const state = { tipo: 'landing', seg: 'loja', cor: '#FF2D4F', fundo: '#0E0E13', nome: '', segTxt: '' }
   // texto legível em cima de qualquer cor escolhida
   function inkFor(hex) {
     const n = parseInt(hex.slice(1), 16), c = [n >> 16 & 255, n >> 8 & 255, n & 255].map((v) => { v /= 255; return v <= .03928 ? v / 12.92 : Math.pow((v + .055) / 1.055, 2.4) })
     return (.2126 * c[0] + .7152 * c[1] + .0722 * c[2]) > .4 ? '#07070A' : '#FFFFFF'
   }
-  const hexIn = $('#hexIn'), pick = $('#corLivre'), pickWrap = $('#pickWrap')
-  function setColor(hex, from) {
+  const COLORS = {
+    cor: { group: $('[data-group="cor"]'), hex: $('#hexCor') },
+    fundo: { group: $('[data-group="fundo"]'), hex: $('#hexFundo') },
+  }
+  for (const [key, c] of Object.entries(COLORS)) { c.pick = $('.sw--pick input', c.group); c.wrap = $('.sw--pick', c.group) }
+  function setColor(key, hex, from) {
     if (!/^#[0-9a-f]{6}$/i.test(hex)) return
-    state.cor = hex.toUpperCase()
-    const root = document.documentElement
-    root.style.setProperty('--brand', state.cor); root.style.setProperty('--brand-ink', inkFor(state.cor))
-    buildStage.style.setProperty('--brand-ink', inkFor(state.cor))
-    if (from !== 'hex') hexIn.value = state.cor
-    const preset = $(`[data-group="cor"] [data-v="${state.cor}"]`)
-    $$('[data-group="cor"] .sw').forEach((x) => x.setAttribute('aria-pressed', String(x === (preset || pickWrap))))
-    if (!preset) { pickWrap.style.setProperty('--c', state.cor); if (from !== 'pick') pick.value = state.cor.toLowerCase() }
+    const c = COLORS[key]
+    state[key] = hex.toUpperCase()
+    if (key === 'cor') document.documentElement.style.setProperty('--brand', state.cor)
+    if (from !== 'hex') c.hex.value = state[key]
+    $('.hex__dot', c.hex.parentNode).style.background = state[key]
+    const preset = $(`[data-v="${state[key]}"]`, c.group)
+    $$('.sw', c.group).forEach((x) => x.setAttribute('aria-pressed', String(x === (preset || c.wrap))))
+    if (!preset) { c.wrap.style.setProperty('--c', state[key]); c.wrap.style.setProperty('--brand-ink', inkFor(state[key])); if (from !== 'pick') c.pick.value = state[key].toLowerCase() }
     renderBuild(false)
   }
   const buildStage = $('#buildStage')
-  function renderBuild(anim) { buildStage.style.setProperty('--brand', state.cor); buildStage.style.setProperty('--brand-ink', inkFor(state.cor)); build(buildStage, state, anim); $('#incl').innerHTML = INCL[state.tipo].map((t) => `<li>${t}</li>`).join('') }
+  function renderBuild(anim) {
+    const st = buildStage.style, light = inkFor(state.fundo) !== '#FFFFFF'
+    st.setProperty('--brand', state.cor); st.setProperty('--brand-ink', inkFor(state.cor))
+    // o fundo escolhido vira o vidro do holograma; o texto acompanha para continuar legível
+    st.setProperty('--site', state.fundo)
+    st.setProperty('--site-fill', `color-mix(in srgb, ${state.fundo} ${light ? 94 : 86}%, transparent)`)
+    st.setProperty('--site-card', state.fundo)
+    st.setProperty('--ink', light ? '#14141A' : '#F1F1F4'); st.setProperty('--muted', light ? '#5A5D69' : '#A4A7B2')
+    const ig = state.tipo === 'ig'
+    $('#fundoField').hidden = ig
+    $('#corLegend').textContent = ig ? 'Cor da marca' : 'Cor de destaque'
+    $('#corHint').textContent = ig ? 'Vai nos seus posts. O Instagram mantém o visual dele.' : 'Contorno, brilho e botões.'
+    build(buildStage, state, anim); $('#incl').innerHTML = INCL[state.tipo].map((t) => `<li>${t}</li>`).join('') }
   $$('[data-group]').forEach((grp) => grp.addEventListener('click', (e) => {
     const b = e.target.closest('button'); if (!b) return
     const key = grp.dataset.group
-    if (key === 'cor') { setColor(b.dataset.v); return }
+    if (key === 'cor' || key === 'fundo') { setColor(key, b.dataset.v); return }
     state[key] = b.dataset.v
     $$('button', grp).forEach((x) => x.setAttribute('aria-pressed', String(x === b)))
     if (key === 'seg') { $('#otherWrap').hidden = b.dataset.v !== 'outro'; if (b.dataset.v === 'outro') setTimeout(() => $('#segOutro').focus(), 0) }
     renderBuild(true)
   }))
-  pick.addEventListener('input', () => setColor(pick.value, 'pick'))
-  hexIn.addEventListener('input', () => { let v = hexIn.value.trim(); if (v && v[0] !== '#') v = '#' + v; if (/^#[0-9a-f]{6}$/i.test(v)) setColor(v, 'hex') })
-  hexIn.addEventListener('blur', () => { hexIn.value = state.cor })
+  for (const [key, c] of Object.entries(COLORS)) {
+    c.pick.addEventListener('input', () => setColor(key, c.pick.value, 'pick'))
+    c.hex.addEventListener('input', () => { let v = c.hex.value.trim(); if (v && v[0] !== '#') v = '#' + v; if (/^#[0-9a-f]{6}$/i.test(v)) setColor(key, v, 'hex') })
+    c.hex.addEventListener('blur', () => { c.hex.value = state[key] })
+  }
   $('#segOutro').addEventListener('input', (e) => { state.segTxt = e.target.value; renderBuild(false) })
   $('#nome').addEventListener('input', (e) => { state.nome = e.target.value; renderBuild(false) })
   function setTipo(v) { const b = $(`[data-group="tipo"] [data-v="${v}"]`); if (b) b.click() }
@@ -672,14 +697,14 @@ html.js [data-in].in > * { opacity: 1; transform: none; }
   // pedido
   function message() {
     const s = SEG[state.seg], nome = state.nome.trim() || 'o meu negócio'
-    const o = { landing: 'uma landing page', site: 'um site', app: 'um aplicativo', ig: 'organizar o Instagram' }[state.tipo]
+    const o = { landing: 'uma landing page', site: 'um site', ig: 'a consultoria de marca no Instagram' }[state.tipo]
     const segTxt = state.seg === 'outro' ? (state.segTxt.trim() || 'um segmento que não está na lista') : s.txt
-    return `Olá, Korvex! Quero ${o} para ${nome}, do segmento de ${segTxt}.\nCor da marca: ${state.cor}.\nObjetivo: ${s.cta.charAt(0).toLowerCase() + s.cta.slice(1)}.\n\nPodemos conversar?`
+    return `Olá, Korvex! Quero ${o} para ${nome}, do segmento de ${segTxt}.\n${state.tipo === 'ig' ? `Cor da marca: ${state.cor}.\nObjetivo: padronizar os posts e o feed e criar conteúdo.` : `Cores: fundo ${state.fundo} e destaque ${state.cor}.\nObjetivo: ${s.cta.charAt(0).toLowerCase() + s.cta.slice(1)}.`}\n\nPodemos conversar?`
   }
   $('#gerar').addEventListener('click', () => {
     const m = message()
     $('#msg').textContent = m
-    $('#sendMail').href = `mailto:${EMAIL}?subject=${encodeURIComponent('Orçamento: ' + TIPO[state.tipo])}&body=${encodeURIComponent(m)}`
+    $('#sendMail').href = `mailto:${EMAIL}?subject=${encodeURIComponent('Orçamento: ' + (state.tipo === 'ig' ? 'consultoria de Instagram' : TIPO[state.tipo]))}&body=${encodeURIComponent(m)}`
     $('#sent').hidden = false
     if (!reduce) $('#sent').animate([{ opacity: 0, transform: 'translateY(8px)' }, { opacity: 1, transform: 'none' }], { duration: 300, easing: 'cubic-bezier(.23,1,.32,1)' })
   })
@@ -707,8 +732,7 @@ html.js [data-in].in > * { opacity: 1; transform: none; }
   const CMDS = [
     { t: 'Montar uma landing page', d: 'Abre o holograma com uma landing page', k: 'landing pagina vender orcamento', run: () => { setTipo('landing'); go('#monte') } },
     { t: 'Montar um site', d: 'Várias páginas, pronto para o Google', k: 'site institucional google', run: () => { setTipo('site'); go('#monte') } },
-    { t: 'Montar um aplicativo', d: 'Agenda, pedidos ou cardápio', k: 'app aplicativo agenda pedidos cardapio', run: () => { setTipo('app'); go('#monte') } },
-    { t: 'Organizar meu Instagram', d: 'Bio, destaques e posts', k: 'instagram insta posts', run: () => { setTipo('ig'); go('#monte') } },
+    { t: 'Consultoria de Instagram', d: 'Feed padronizado e criação de conteúdo', k: 'instagram insta posts feed conteudo marca consultoria', run: () => { setTipo('ig'); go('#monte') } },
     { t: 'Ver o projeto da AB Transportes', d: 'O case em holograma', k: 'ab transportes projeto case portfolio', run: () => go('#projeto') },
     { t: 'Falar com a Korvex', d: EMAIL, k: 'contato email falar orcamento', run: () => go('#contato') },
   ]
@@ -719,7 +743,7 @@ html.js [data-in].in > * { opacity: 1; transform: none; }
     const q = norm(input.value.trim())
     shown = !q ? CMDS : CMDS.filter((c) => q.split(/\s+/).every((w) => norm(c.t + ' ' + c.d + ' ' + c.k).includes(w)))
     sel = clamp(sel, 0, Math.max(0, shown.length - 1))
-    list.innerHTML = shown.length ? shown.map((c, i) => `<li role="option" id="opt${i}" aria-selected="${i === sel}" data-i="${i}"><span><b>${c.t}</b><small>${c.d}</small></span></li>`).join('') : '<li class="empty">Nada encontrado. Tente "landing", "app" ou "contato".</li>'
+    list.innerHTML = shown.length ? shown.map((c, i) => `<li role="option" id="opt${i}" aria-selected="${i === sel}" data-i="${i}"><span><b>${c.t}</b><small>${c.d}</small></span></li>`).join('') : '<li class="empty">Nada encontrado. Tente "landing", "instagram" ou "contato".</li>'
     input.setAttribute('aria-activedescendant', shown.length ? 'opt' + sel : '')
   }
   function openPal() { lastFocus = document.activeElement; back.hidden = false; input.value = ''; sel = 0; draw(); input.focus() }
