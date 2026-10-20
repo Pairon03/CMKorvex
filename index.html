@@ -124,7 +124,7 @@ button, input { font: inherit; color: inherit; }
 .scan { position: absolute; left: -10%; right: -10%; top: 0; height: 3px; z-index: 3; background: linear-gradient(90deg, transparent, var(--brand), transparent); box-shadow: 0 0 24px 6px color-mix(in srgb, var(--brand) 60%, transparent); opacity: 0; pointer-events: none; }
 .h-txt { font-family: var(--f-text); color: var(--ink); }
 .h-ln { height: 8px; border-radius: 4px; background: rgba(255,255,255,.14); }
-.h-btn { display: inline-block; padding: 9px 14px; border-radius: 8px; background: var(--brand); color: #fff; font: 800 12px var(--f-text); box-shadow: 0 0 22px -2px var(--brand); white-space: nowrap; }
+.h-btn { display: inline-block; padding: 9px 14px; border-radius: 8px; background: var(--brand); color: var(--brand-ink, #fff); font: 800 12px var(--f-text); box-shadow: 0 0 22px -2px var(--brand); white-space: nowrap; }
 .tag { position: absolute; font: 700 10px var(--f-text); letter-spacing: .14em; text-transform: uppercase; color: var(--ink); padding: 5px 9px; border-radius: 999px; background: rgba(7,7,10,.8); box-shadow: inset 0 0 0 1px var(--brand); white-space: nowrap; }
 .shot { border-radius: 12px; overflow: hidden; box-shadow: 0 0 0 1px color-mix(in srgb, var(--brand) 50%, rgba(255,255,255,.15)), 0 0 50px -12px var(--brand); }
 .shot img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 0; }
@@ -183,6 +183,15 @@ button, input { font: inherit; color: inherit; }
 .sw { width: 40px; height: 40px; border-radius: 50%; border: 0; cursor: pointer; background: var(--c); box-shadow: 0 0 0 3px var(--bg), 0 0 0 4px var(--line); transition: transform 160ms var(--ease-out), box-shadow 160ms ease; }
 .sw:active { transform: scale(.94); }
 .sw[aria-pressed="true"] { box-shadow: 0 0 0 3px var(--bg), 0 0 0 5px var(--c), 0 0 24px var(--c); }
+.swatches { flex-wrap: wrap; }
+.sw--pick { --c: #F5A623; position: relative; display: grid; place-items: center; overflow: hidden; background: conic-gradient(from 0deg, #ff2d4f, #f5a623, #f8e71c, #2bd98c, #2ec5ff, #9b4dff, #e23ccb, #ff2d4f); }
+.sw--pick input { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; border: 0; padding: 0; }
+.sw--pick span { width: 22px; height: 22px; border-radius: 50%; display: grid; place-items: center; background: rgba(7,7,10,.78); color: #fff; font: 700 16px/1 var(--f-text); pointer-events: none; }
+.sw--pick[aria-pressed="true"] span { background: var(--c); color: var(--brand-ink, #fff); box-shadow: 0 0 0 2px rgba(7,7,10,.6); }
+.hex { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.hex__dot { width: 22px; height: 22px; border-radius: 6px; background: var(--brand); box-shadow: 0 0 14px -2px var(--brand); flex: none; }
+.hex__in { width: 120px; padding: 10px 12px; font: 700 15px var(--f-text); text-transform: uppercase; letter-spacing: .04em; }
+.hex .small { flex: 1 1 180px; }
 .out { display: grid; gap: 22px; min-width: 0; }
 .build__stage { height: 560px; }
 .summary { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 22px; align-items: start; }
@@ -195,6 +204,8 @@ button, input { font: inherit; color: inherit; }
 .row { display: flex; flex-wrap: wrap; gap: 8px; }
 #sent { display: grid; gap: 10px; width: 100%; }
 #sent[hidden] { display: none; }
+.other[hidden] { display: none; }
+.other { margin-top: 4px; }
 @media (max-width: 900px) { .builder { grid-template-columns: 1fr; gap: 32px; } .build__stage { height: 440px; } }
 
 /* ---------- 4 · projeto ---------- */
@@ -349,7 +360,9 @@ html.js [data-in].in > * { opacity: 1; transform: none; }
               <button class="chip" type="button" data-v="transporte" aria-pressed="false">Transporte</button>
               <button class="chip" type="button" data-v="saude" aria-pressed="false">Saúde</button>
               <button class="chip" type="button" data-v="servicos" aria-pressed="false">Serviços</button>
+              <button class="chip" type="button" data-v="outro" aria-pressed="false">Outro</button>
             </div>
+            <div class="other" id="otherWrap" hidden><label class="sr" for="segOutro">Qual é o seu segmento?</label><input class="input" id="segOutro" type="text" maxlength="32" placeholder="Qual é o seu segmento? Ex.: pet shop" autocomplete="off"></div>
           </fieldset>
           <div class="field"><label class="lbl" for="nome">Nome do seu negócio</label>
             <input class="input" id="nome" type="text" maxlength="28" placeholder="Ex.: Doce Ponto" autocomplete="organization">
@@ -361,7 +374,9 @@ html.js [data-in].in > * { opacity: 1; transform: none; }
               <button class="sw" type="button" style="--c:#9B4DFF" data-v="#9B4DFF" aria-pressed="false" aria-label="Roxo"></button>
               <button class="sw" type="button" style="--c:#2EC5FF" data-v="#2EC5FF" aria-pressed="false" aria-label="Azul"></button>
               <button class="sw" type="button" style="--c:#2BD98C" data-v="#2BD98C" aria-pressed="false" aria-label="Verde"></button>
+              <label class="sw sw--pick" id="pickWrap" title="Escolher outra cor"><input type="color" id="corLivre" value="#F5A623" aria-label="Escolher outra cor"><span aria-hidden="true">+</span></label>
             </div>
+            <div class="hex"><span class="hex__dot" id="hexDot"></span><label class="sr" for="hexIn">Código da cor</label><input class="input hex__in" id="hexIn" type="text" value="#FF2D4F" maxlength="7" spellcheck="false" autocomplete="off"><span class="small">Toque no + para escolher qualquer cor, ou digite o código.</span></div>
           </fieldset>
         </div>
         <div class="out">
@@ -472,6 +487,7 @@ html.js [data-in].in > * { opacity: 1; transform: none; }
     transporte:  { nome: 'Rota Certa',     h: 'Coleta e entrega no mesmo dia',       cta: 'Pedir orçamento',       app: ['Coleta · 9h', 'Entrega · 14h', 'Coleta · 16h'], post: 'Entrega feita', ic: 'Rotas', txt: 'transporte' },
     saude:       { nome: 'Clínica Vita',   h: 'Agende sua consulta em um minuto',    cta: 'Agendar consulta',      app: ['08:30 · Ana · retorno', '10:00 · Bruno · avaliação', '14:30 · horário livre'], post: 'Dica da semana', ic: 'Agenda', txt: 'saúde' },
     servicos:    { nome: 'Prumo Reformas', h: 'Orçamento sem sair de casa',          cta: 'Pedir orçamento',       app: ['Visita · Rua das Flores', 'Orçamento enviado', 'Obra · etapa 2 de 4'], post: 'Antes e depois', ic: 'Serviços', txt: 'serviços' },
+    outro:       { nome: 'Seu Negócio',    h: 'Tudo sobre o seu negócio em um só lugar', cta: 'Falar no WhatsApp', app: ['Pedido #101 · novo', 'Mensagem respondida', 'Horário · 15h'], post: 'Novidade', ic: 'Pedidos', txt: 'outro' },
   }
   const TIPO = { landing: 'Landing page', site: 'Site', app: 'Aplicativo', ig: 'Instagram' }
   const INCL = {
@@ -612,16 +628,40 @@ html.js [data-in].in > * { opacity: 1; transform: none; }
   addTilt(heroStage); showReel(0); restartReel()
 
   /* ---------- 3 · monte o seu ---------- */
-  const state = { tipo: 'landing', seg: 'loja', cor: '#FF2D4F', nome: '' }
+  const state = { tipo: 'landing', seg: 'loja', cor: '#FF2D4F', nome: '', segTxt: '' }
+  // texto legível em cima de qualquer cor escolhida
+  function inkFor(hex) {
+    const n = parseInt(hex.slice(1), 16), c = [n >> 16 & 255, n >> 8 & 255, n & 255].map((v) => { v /= 255; return v <= .03928 ? v / 12.92 : Math.pow((v + .055) / 1.055, 2.4) })
+    return (.2126 * c[0] + .7152 * c[1] + .0722 * c[2]) > .4 ? '#07070A' : '#FFFFFF'
+  }
+  const hexIn = $('#hexIn'), pick = $('#corLivre'), pickWrap = $('#pickWrap')
+  function setColor(hex, from) {
+    if (!/^#[0-9a-f]{6}$/i.test(hex)) return
+    state.cor = hex.toUpperCase()
+    const root = document.documentElement
+    root.style.setProperty('--brand', state.cor); root.style.setProperty('--brand-ink', inkFor(state.cor))
+    buildStage.style.setProperty('--brand-ink', inkFor(state.cor))
+    if (from !== 'hex') hexIn.value = state.cor
+    const preset = $(`[data-group="cor"] [data-v="${state.cor}"]`)
+    $$('[data-group="cor"] .sw').forEach((x) => x.setAttribute('aria-pressed', String(x === (preset || pickWrap))))
+    if (!preset) { pickWrap.style.setProperty('--c', state.cor); if (from !== 'pick') pick.value = state.cor.toLowerCase() }
+    renderBuild(false)
+  }
   const buildStage = $('#buildStage')
-  function renderBuild(anim) { buildStage.style.setProperty('--brand', state.cor); build(buildStage, state, anim); $('#incl').innerHTML = INCL[state.tipo].map((t) => `<li>${t}</li>`).join('') }
+  function renderBuild(anim) { buildStage.style.setProperty('--brand', state.cor); buildStage.style.setProperty('--brand-ink', inkFor(state.cor)); build(buildStage, state, anim); $('#incl').innerHTML = INCL[state.tipo].map((t) => `<li>${t}</li>`).join('') }
   $$('[data-group]').forEach((grp) => grp.addEventListener('click', (e) => {
     const b = e.target.closest('button'); if (!b) return
-    const key = grp.dataset.group; state[key] = b.dataset.v
+    const key = grp.dataset.group
+    if (key === 'cor') { setColor(b.dataset.v); return }
+    state[key] = b.dataset.v
     $$('button', grp).forEach((x) => x.setAttribute('aria-pressed', String(x === b)))
-    if (key === 'cor') document.documentElement.style.setProperty('--brand', state.cor)
-    renderBuild(key !== 'cor')
+    if (key === 'seg') { $('#otherWrap').hidden = b.dataset.v !== 'outro'; if (b.dataset.v === 'outro') setTimeout(() => $('#segOutro').focus(), 0) }
+    renderBuild(true)
   }))
+  pick.addEventListener('input', () => setColor(pick.value, 'pick'))
+  hexIn.addEventListener('input', () => { let v = hexIn.value.trim(); if (v && v[0] !== '#') v = '#' + v; if (/^#[0-9a-f]{6}$/i.test(v)) setColor(v, 'hex') })
+  hexIn.addEventListener('blur', () => { hexIn.value = state.cor })
+  $('#segOutro').addEventListener('input', (e) => { state.segTxt = e.target.value; renderBuild(false) })
   $('#nome').addEventListener('input', (e) => { state.nome = e.target.value; renderBuild(false) })
   function setTipo(v) { const b = $(`[data-group="tipo"] [data-v="${v}"]`); if (b) b.click() }
   $$('[data-go]').forEach((b) => b.addEventListener('click', () => { setTipo(b.dataset.go); $('#monte').scrollIntoView({ behavior: reduce ? 'auto' : 'smooth' }) }))
@@ -633,7 +673,8 @@ html.js [data-in].in > * { opacity: 1; transform: none; }
   function message() {
     const s = SEG[state.seg], nome = state.nome.trim() || 'o meu negócio'
     const o = { landing: 'uma landing page', site: 'um site', app: 'um aplicativo', ig: 'organizar o Instagram' }[state.tipo]
-    return `Olá, Korvex! Quero ${o} para ${nome}, do segmento de ${s.txt}.\nObjetivo: ${s.cta.toLowerCase()}.\n\nPodemos conversar?`
+    const segTxt = state.seg === 'outro' ? (state.segTxt.trim() || 'um segmento que não está na lista') : s.txt
+    return `Olá, Korvex! Quero ${o} para ${nome}, do segmento de ${segTxt}.\nCor da marca: ${state.cor}.\nObjetivo: ${s.cta.charAt(0).toLowerCase() + s.cta.slice(1)}.\n\nPodemos conversar?`
   }
   $('#gerar').addEventListener('click', () => {
     const m = message()
