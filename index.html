@@ -3,16 +3,30 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Korvex · Sites e landing pages que vendem</title>
+<title>Korvex · Sites, landing pages e Instagram para empresas</title>
+<link rel="canonical" href="https://cvkorvex.vercel.app/">
+<meta name="robots" content="index, follow, max-image-preview:large">
 <meta name="theme-color" content="#07070A">
 <link rel="icon" href="assets/img/favicon.png">
 <link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
+<link rel="preload" href="assets/fonts/manrope-var.woff" as="font" type="font/woff" crossorigin>
+<link rel="preload" href="assets/fonts/michroma.woff" as="font" type="font/woff" crossorigin>
 <meta property="og:type" content="website">
-<meta property="og:title" content="Korvex · Sites e landing pages que vendem">
-<meta property="og:description" content="Landing pages, sites e consultoria de marca no Instagram para pequenas empresas, feitos do zero por Cauã Moura e Vitor Ramos.">
+<meta property="og:locale" content="pt_BR">
+<meta property="og:site_name" content="Korvex">
+<meta property="og:title" content="Korvex · Sites, landing pages e Instagram para empresas">
+<meta property="og:description" content="Landing pages, sites e consultoria de marca no Instagram para pequenas empresas, feitos do zero por Cauã Moura e Vitor Ramos. Monte o seu e peça orçamento.">
 <meta property="og:image" content="https://cvkorvex.vercel.app/assets/img/og-korvex.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Korvex: sites, landing pages e Instagram">
 <meta property="og:url" content="https://cvkorvex.vercel.app/">
-<meta name="description" content="Korvex, estúdio de Cauã Moura e Vitor Ramos. Landing pages, sites e consultoria de marca no Instagram para pequenas empresas.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Korvex · Sites, landing pages e Instagram para empresas">
+<meta name="twitter:description" content="Landing pages, sites e consultoria de marca no Instagram para pequenas empresas, feitos do zero por Cauã Moura e Vitor Ramos. Monte o seu e peça orçamento.">
+<meta name="twitter:image" content="https://cvkorvex.vercel.app/assets/img/og-korvex.jpg">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "Organization", "@id": "https://cvkorvex.vercel.app/#korvex", "name": "Korvex", "url": "https://cvkorvex.vercel.app/", "logo": "https://cvkorvex.vercel.app/assets/img/apple-touch-icon.png", "image": "https://cvkorvex.vercel.app/assets/img/og-korvex.jpg", "email": "cv.korvex@gmail.com", "description": "Landing pages, sites e consultoria de marca no Instagram para pequenas empresas, feitos do zero por Cauã Moura e Vitor Ramos. Monte o seu e peça orçamento.", "address": {"@type": "PostalAddress", "addressLocality": "Campinas", "addressRegion": "SP", "addressCountry": "BR"}, "areaServed": "Brasil e exterior", "founder": [{"@type": "Person", "name": "Cauã Moura", "jobTitle": "Sócio, tecnologia"}, {"@type": "Person", "name": "Vitor Ramos", "jobTitle": "Sócio, estratégia e relacionamento"}], "knowsAbout": ["Landing pages", "Criação de sites", "Consultoria de marca no Instagram", "Criação de conteúdo"], "makesOffer": [{"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Landing page", "description": "Uma página com um objetivo só: o visitante pedir orçamento pelo WhatsApp."}}, {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Site", "description": "Site com início, sobre, serviços e contato, preparado para aparecer no Google."}}, {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Consultoria de marca no Instagram", "description": "Padronização dos posts e do feed com a identidade do negócio, além da criação de conteúdo."}}]}, {"@type": "WebSite", "@id": "https://cvkorvex.vercel.app/#site", "url": "https://cvkorvex.vercel.app/", "name": "Korvex", "inLanguage": "pt-BR", "publisher": {"@id": "https://cvkorvex.vercel.app/#korvex"}}]}</script>
+<meta name="description" content="Landing pages, sites e consultoria de marca no Instagram para pequenas empresas, feitos do zero por Cauã Moura e Vitor Ramos. Monte o seu e peça orçamento.">
 <style>
 /* Korvex · versão hologramas
    Ideia: o site é um projetor. Cada projeto aparece como um holograma em camadas de vidro,
@@ -79,7 +93,7 @@ button, input { font: inherit; color: inherit; }
   background: rgba(7, 7, 10, .82); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
   border-bottom: 1px solid rgba(255, 255, 255, .05);
 }
-.logo { font: 400 15px var(--f-display); letter-spacing: .16em; text-decoration: none; white-space: nowrap; }
+.logo { font: 400 15px var(--f-display); letter-spacing: .16em; text-decoration: none; white-space: nowrap; display: inline-block; padding-block: 12px; margin-block: -12px; }
 .bar nav { margin-left: auto; display: flex; gap: 4px; }
 .bar nav a { color: var(--muted); text-decoration: none; font: 600 14px var(--f-text); padding: 8px 12px; border-radius: 999px; transition: color 160ms ease, background-color 160ms ease; }
 @media (hover: hover) and (pointer: fine) { .bar nav a:hover { color: var(--ink); background: rgba(255,255,255,.05); } }
@@ -87,7 +101,8 @@ button, input { font: inherit; color: inherit; }
 .kbtn:active { transform: scale(.97); }
 .kbtn kbd { display: grid; place-items: center; width: 24px; height: 24px; border-radius: 7px; background: var(--ink); color: var(--bg); font: 400 11px var(--f-display); }
 @media (hover: hover) and (pointer: fine) { .kbtn:hover { box-shadow: inset 0 0 0 1px var(--n2); } }
-@media (max-width: 860px) { .bar nav { display: none; } .kbtn { margin-left: auto; } }
+.kbtn__m { display: none; }
+@media (max-width: 860px) { .bar nav { display: none; } .kbtn { margin-left: auto; min-height: 44px; } .kbtn__d { display: none; } .kbtn__m { display: inline; } }
 
 /* ---------- o projetor (palco do holograma) ---------- */
 .stage {
@@ -140,7 +155,7 @@ button, input { font: inherit; color: inherit; }
 .reel__label { font: 600 14px var(--f-text); color: var(--muted); }
 .reel__label b { color: var(--ink); }
 .dots { display: flex; gap: 6px; }
-.dot { width: 34px; height: 30px; border: 0; padding: 0; background: none; cursor: pointer; display: grid; place-items: center; }
+.dot { width: 44px; height: 44px; border: 0; padding: 0; background: none; cursor: pointer; display: grid; place-items: center; }
 .dot i { display: block; width: 22px; height: 3px; border-radius: 2px; background: var(--line); transition: background-color 200ms ease, width 300ms var(--ease-out); }
 .dot[aria-current="true"] i { width: 30px; background: var(--brand-dot, var(--n1)); }
 @media (max-width: 900px) {
@@ -185,10 +200,28 @@ button, input { font: inherit; color: inherit; }
 .sw:active { transform: scale(.94); }
 .sw[aria-pressed="true"] { box-shadow: 0 0 0 3px var(--bg), 0 0 0 5px var(--c), 0 0 24px var(--c); }
 .swatches { flex-wrap: wrap; }
+@media (pointer: coarse) { .sw { width: 44px; height: 44px; } }
 .sw--pick { --c: #F5A623; position: relative; display: grid; place-items: center; overflow: hidden; background: conic-gradient(from 0deg, #ff2d4f, #f5a623, #f8e71c, #2bd98c, #2ec5ff, #9b4dff, #e23ccb, #ff2d4f); }
 .sw--pick input { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; border: 0; padding: 0; }
 .sw--pick span { width: 22px; height: 22px; border-radius: 50%; display: grid; place-items: center; background: rgba(7,7,10,.78); color: #fff; font: 700 16px/1 var(--f-text); pointer-events: none; }
 .sw--pick[aria-pressed="true"] span { background: var(--c); color: var(--brand-ink, #fff); box-shadow: 0 0 0 2px rgba(7,7,10,.6); }
+.pals { display: grid; grid-template-columns: repeat(auto-fill, minmax(104px, 1fr)); gap: 8px; }
+.pset { border: 0; cursor: pointer; padding: 8px; border-radius: 12px; background: var(--surface); color: var(--muted); font: 600 13px var(--f-text); text-align: left; display: grid; gap: 8px; box-shadow: inset 0 0 0 1px var(--line); transition: color 160ms ease, box-shadow 160ms ease, transform 160ms var(--ease-out); }
+.pset:active { transform: scale(.97); }
+.pset[aria-pressed="true"] { color: var(--ink); box-shadow: inset 0 0 0 1px var(--brand), 0 0 22px -6px var(--brand); }
+@media (hover: hover) and (pointer: fine) { .pset:hover { color: var(--ink); } }
+.pal__bar { display: flex; height: 26px; border-radius: 7px; overflow: hidden; box-shadow: 0 0 0 1px rgba(255,255,255,.24); }
+.pal__bar i { flex: 1; }
+.pal__bar i:first-child { flex: 1.6; }
+.xc { position: relative; }
+.xc .sw { position: relative; display: block; overflow: hidden; }
+.xc input { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; border: 0; padding: 0; }
+.xc__x { position: absolute; top: -8px; right: -8px; width: 24px; height: 24px; border-radius: 50%; border: 0; cursor: pointer; display: grid; place-items: center; background: var(--surface-2); color: var(--ink); font: 700 14px/1 var(--f-text); box-shadow: inset 0 0 0 1px var(--line); }
+.sw--add { background: none; color: var(--muted); font: 600 22px/1 var(--f-text); box-shadow: inset 0 0 0 1px var(--line); border: 1px dashed var(--muted); }
+@media (hover: hover) and (pointer: fine) { .sw--add:hover { color: var(--ink); border-color: var(--ink); } }
+.palline { display: flex; flex-wrap: wrap; gap: 6px 14px; font: 700 13px var(--f-text); letter-spacing: .04em; color: var(--ink); }
+.palline span { display: inline-flex; align-items: center; gap: 6px; }
+.palline i { width: 14px; height: 14px; border-radius: 4px; box-shadow: inset 0 0 0 1px rgba(255,255,255,.2); }
 .hex { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
 .hex__dot { width: 22px; height: 22px; border-radius: 6px; background: var(--brand); box-shadow: 0 0 14px -2px var(--brand); flex: none; }
 .hex__in { width: 120px; padding: 10px 12px; font: 700 15px var(--f-text); text-transform: uppercase; letter-spacing: .04em; }
@@ -244,7 +277,7 @@ button, input { font: inherit; color: inherit; }
 .contact h2 { font: 400 clamp(28px, 3.6vw, 48px)/1.15 var(--f-display); }
 .contact .lead { margin-top: 12px; }
 .mailbox { position: relative; display: grid; gap: 14px; }
-.mail { font: 800 clamp(22px, 2.6vw, 34px) var(--f-text); text-decoration: none; overflow-wrap: anywhere; }
+.mail { font: 800 clamp(22px, 2.6vw, 34px) var(--f-text); text-decoration: none; overflow-wrap: anywhere; padding-block: 7px; }
 @media (hover: hover) and (pointer: fine) { .mail:hover { color: var(--n1); } }
 @media (max-width: 900px) { .contact { grid-template-columns: 1fr; padding: 28px 22px; gap: 24px; } }
 
@@ -252,7 +285,7 @@ footer { padding-block: 56px 40px; color: var(--muted); font-size: 14px; }
 .foot { display: flex; flex-wrap: wrap; gap: 16px 32px; justify-content: space-between; align-items: center; }
 .foot .logo { color: var(--ink); }
 .foot nav { display: flex; flex-wrap: wrap; gap: 6px 20px; }
-.foot nav a { text-decoration: none; }
+.foot nav a { text-decoration: none; display: inline-flex; align-items: center; min-height: 44px; }
 @media (hover: hover) and (pointer: fine) { .foot nav a:hover { color: var(--ink); } }
 
 /* ---------- comandos K ---------- */
@@ -292,7 +325,7 @@ html.js [data-in].in > * { opacity: 1; transform: none; }
     <a href="#projeto">Projeto</a>
     <a href="#contato">Contato</a>
   </nav>
-  <button class="kbtn" id="openPal" type="button" aria-haspopup="dialog"><kbd>K</kbd>Comandos</button>
+  <button class="kbtn" id="openPal" type="button" aria-haspopup="dialog"><kbd>K</kbd><span class="kbtn__d">Comandos</span><span class="kbtn__m">Menu</span></button>
 </header>
 
 <main id="topo">
@@ -366,6 +399,10 @@ html.js [data-in].in > * { opacity: 1; transform: none; }
           <div class="field"><label class="lbl" for="nome">Nome do seu negócio</label>
             <input class="input" id="nome" type="text" maxlength="28" placeholder="Ex.: Doce Ponto" autocomplete="organization">
           </div>
+          <fieldset class="field"><legend>Paleta pronta</legend>
+            <div class="pals" id="pals"></div>
+            <span class="small">Comece por uma combinação e ajuste cada cor abaixo, se quiser.</span>
+          </fieldset>
           <fieldset class="field" id="fundoField"><legend>Cor de fundo do site</legend>
             <div class="swatches" data-group="fundo">
               <button class="sw" type="button" style="--c:#0E0E13" data-v="#0E0E13" aria-pressed="true" aria-label="Escuro"></button>
@@ -387,6 +424,11 @@ html.js [data-in].in > * { opacity: 1; transform: none; }
               <label class="sw sw--pick" title="Escolher outra cor de destaque"><input type="color" value="#F5A623" aria-label="Escolher outra cor de destaque"><span aria-hidden="true">+</span></label>
             </div>
             <div class="hex"><span class="hex__dot"></span><label class="sr" for="hexCor">Código da cor de destaque</label><input class="input hex__in" id="hexCor" type="text" value="#FF2D4F" maxlength="7" spellcheck="false" autocomplete="off"><span class="small" id="corHint">Contorno, brilho e botões.</span></div>
+          </fieldset>
+          <fieldset class="field"><legend>Mais cores da paleta</legend>
+            <div class="swatches" id="extras"></div>
+            <span class="small">Opcional: cor dos textos, detalhes ou uma cor de apoio. Até quatro.</span>
+            <div class="palline" id="palLine" aria-live="polite"></div>
           </fieldset>
         </div>
         <div class="out">
@@ -435,7 +477,7 @@ html.js [data-in].in > * { opacity: 1; transform: none; }
         <li style="--c: var(--n1)"><b>Conversa</b><p>Você fala direto com os sócios. Entendemos o negócio e o que a página precisa vender.</p></li>
         <li style="--c: #ff3cc8"><b>Estratégia</b><p>Escrevemos o texto e desenhamos o caminho do visitante até o botão.</p></li>
         <li style="--c: var(--n2)"><b>Tecnologia</b><p>Design e código feitos do zero, leves e rápidos no celular.</p></li>
-        <li style="--c: var(--n3)"><b>Resultados</b><p>O site vai ao ar e os pedidos chegam direto no seu WhatsApp.</p></li>
+        <li style="--c: var(--n3)"><b>Resultados</b><p>O projeto vai ao ar e os pedidos chegam direto no seu WhatsApp.</p></li>
       </ol>
     </div>
   </section>
@@ -475,7 +517,7 @@ html.js [data-in].in > * { opacity: 1; transform: none; }
 
 <div class="pal-back" id="palBack" hidden>
   <div class="pal" role="dialog" aria-modal="true" aria-label="Comandos">
-    <div class="pal-top"><kbd>K</kbd><input id="palInput" type="text" placeholder="O que você procura?" autocomplete="off" role="combobox" aria-expanded="true" aria-controls="palList" aria-autocomplete="list"></div>
+    <div class="pal-top"><kbd>K</kbd><input id="palInput" type="text" aria-label="Buscar no menu" placeholder="O que você procura?" autocomplete="off" role="combobox" aria-expanded="true" aria-controls="palList" aria-autocomplete="list"></div>
     <ul id="palList" role="listbox"></ul>
   </div>
 </div>
@@ -538,7 +580,7 @@ html.js [data-in].in > * { opacity: 1; transform: none; }
         html += L(`left:18px;top:${narrow ? 64 : 84}px;width:${narrow ? 170 : 260}px`, `<div class="h-txt" style="font:800 ${narrow ? 18 : 25}px/1.15 var(--f-text);text-wrap:balance">${esc(s.h)}</div>`, 60)
         html += L(`left:18px;top:${narrow ? 146 : 172}px;width:${narrow ? 150 : 210}px;display:grid;gap:7px`, `<div class="h-ln"></div><div class="h-ln" style="width:70%"></div>`, 40)
         html += L(`left:18px;top:${narrow ? 180 : 212}px`, `<span class="h-btn">${esc(s.cta)}</span>`, 95)
-        html += L(`right:18px;top:${narrow ? 64 : 84}px;width:${narrow ? 78 : 140}px;height:${narrow ? 96 : 140}px;border-radius:12px;background:linear-gradient(140deg, color-mix(in srgb, var(--brand) 55%, transparent), rgba(155,77,255,.2));box-shadow:0 0 30px -6px var(--brand)`, '', 70)
+        html += L(`right:18px;top:${narrow ? 64 : 84}px;width:${narrow ? 78 : 140}px;height:${narrow ? 96 : 140}px;border-radius:12px;background:linear-gradient(140deg, color-mix(in srgb, var(--brand) 55%, transparent), color-mix(in srgb, var(--c3, #9B4DFF) 45%, transparent));box-shadow:0 0 30px -6px var(--brand)`, '', 70)
         const cw = (W - 36 - 20) / 3
         for (let i = 0; i < 3; i++) html += L(`left:${18 + i * (cw + 10)}px;bottom:16px;width:${cw}px;height:${narrow ? 44 : 58}px;border-radius:10px;box-shadow:inset 0 0 0 1px rgba(255,255,255,.18);background:rgba(255,255,255,.04)`, '', 25 + i * 8)
         html += `<span class="tag" style="left:${narrow ? 120 : 165}px;top:${narrow ? 176 : 206}px;transform:translateZ(130px)">Ação</span>`
@@ -555,8 +597,8 @@ html.js [data-in].in > * { opacity: 1; transform: none; }
         // feed padronizado: o mesmo molde se repete, alternando cheio, claro e foto
         const tile = (i) => [
           'background:var(--brand)',
-          'background:color-mix(in srgb, var(--brand) 14%, #fff);box-shadow:inset 0 0 0 1px color-mix(in srgb, var(--brand) 30%, #fff)',
-          'background:linear-gradient(160deg, #3A3A44, #15151B);box-shadow:inset 0 -14px 0 0 var(--brand)',
+          'background:var(--c3, color-mix(in srgb, var(--brand) 14%, #fff));box-shadow:inset 0 0 0 1px rgba(0,0,0,.08)',
+          'background:linear-gradient(160deg, #3A3A44, #15151B);box-shadow:inset 0 -14px 0 0 var(--c4, var(--brand))',
         ][(i + Math.floor(i / 3)) % 3]
         for (let i = 0; i < 9; i++) {
           const c = i % 3, r = Math.floor(i / 3)
@@ -635,7 +677,7 @@ html.js [data-in].in > * { opacity: 1; transform: none; }
   addTilt(heroStage); showReel(0); restartReel()
 
   /* ---------- 3 · monte o seu ---------- */
-  const state = { tipo: 'landing', seg: 'loja', cor: '#FF2D4F', fundo: '#0E0E13', nome: '', segTxt: '' }
+  const state = { tipo: 'landing', seg: 'loja', cor: '#FF2D4F', fundo: '#0E0E13', pal: [], nome: '', segTxt: '' }
   // texto legível em cima de qualquer cor escolhida
   function inkFor(hex) {
     const n = parseInt(hex.slice(1), 16), c = [n >> 16 & 255, n >> 8 & 255, n & 255].map((v) => { v /= 255; return v <= .03928 ? v / 12.92 : Math.pow((v + .055) / 1.055, 2.4) })
@@ -658,6 +700,41 @@ html.js [data-in].in > * { opacity: 1; transform: none; }
     if (!preset) { c.wrap.style.setProperty('--c', state[key]); c.wrap.style.setProperty('--brand-ink', inkFor(state[key])); if (from !== 'pick') c.pick.value = state[key].toLowerCase() }
     renderBuild(false)
   }
+  /* ---------- paleta: combinações prontas e cores extras ---------- */
+  const PALS = [
+    { n: 'Noite', c: ['#0E0E13', '#FF2D4F', '#F1F1F4', '#9B4DFF'] },
+    { n: 'Areia', c: ['#F3EEE6', '#C2185B', '#2B2B2B', '#E8B4A0'] },
+    { n: 'Oceano', c: ['#0B1B3A', '#2EC5FF', '#FFFFFF', '#F5A623'] },
+    { n: 'Mata', c: ['#16302A', '#2BD98C', '#F3EEE6', '#E9C46A'] },
+    { n: 'Limpo', c: ['#FFFFFF', '#1E5BFF', '#14141A', '#FFB800'] },
+  ]
+  const palette = () => state.tipo === 'ig' ? [state.cor, ...state.pal] : [state.fundo, state.cor, ...state.pal]
+  $('#pals').innerHTML = PALS.map((p, i) => `<button type="button" class="pset" data-i="${i}" aria-pressed="false"><span class="pal__bar" aria-hidden="true">${p.c.map((c) => `<i style="background:${c}"></i>`).join('')}</span>${p.n}</button>`).join('')
+  $('#pals').addEventListener('click', (e) => {
+    const b = e.target.closest('.pset'); if (!b) return
+    const c = PALS[b.dataset.i].c
+    if (state.tipo === 'ig') state.pal = [c[0], c[2], c[3]]
+    else { state.pal = [c[2], c[3]]; setColor('fundo', c[0]) }
+    renderExtras(); setColor('cor', c[1])
+  })
+  const extras = $('#extras'), SPARE = ['#F1F1F4', '#F5A623', '#2EC5FF', '#2BD98C', '#9B4DFF', '#14141A']
+  function renderExtras() {
+    extras.innerHTML = state.pal.map((c, i) => `<span class="xc"><label class="sw" style="--c:${c}" title="Trocar a cor ${c}"><input type="color" value="${c.toLowerCase()}" data-i="${i}" aria-label="Cor extra ${i + 1}, ${c}"></label><button type="button" class="xc__x" data-x="${i}" aria-label="Tirar ${c} da paleta">×</button></span>`).join('') +
+      (state.pal.length < 4 ? '<button type="button" class="sw sw--add" data-add aria-label="Adicionar uma cor à paleta">+</button>' : '')
+  }
+  extras.addEventListener('input', (e) => {
+    const i = e.target.dataset.i; if (i === undefined) return
+    state.pal[i] = e.target.value.toUpperCase(); e.target.parentNode.style.setProperty('--c', state.pal[i]); renderBuild(false)
+  })
+  extras.addEventListener('click', (e) => {
+    const x = e.target.closest('[data-x]'), add = e.target.closest('[data-add]')
+    if (x) { state.pal.splice(+x.dataset.x, 1); renderExtras(); renderBuild(false); const n = $('[data-add]', extras) || $('input', extras); if (n) n.focus() }
+    if (add) {
+      state.pal.push(SPARE.find((c) => !palette().includes(c)) || '#F1F1F4'); renderExtras(); renderBuild(false)
+      const inp = $$('input', extras).at(-1); inp.focus(); try { inp.showPicker() } catch (_) {}
+    }
+  })
+  renderExtras()
   const buildStage = $('#buildStage')
   function renderBuild(anim) {
     const st = buildStage.style, light = inkFor(state.fundo) !== '#FFFFFF'
@@ -671,7 +748,14 @@ html.js [data-in].in > * { opacity: 1; transform: none; }
     $('#fundoField').hidden = ig
     $('#corLegend').textContent = ig ? 'Cor da marca' : 'Cor de destaque'
     $('#corHint').textContent = ig ? 'Vai nos seus posts. O Instagram mantém o visual dele.' : 'Contorno, brilho e botões.'
-    build(buildStage, state, anim); $('#incl').innerHTML = INCL[state.tipo].map((t) => `<li>${t}</li>`).join('') }
+    ;['--c3', '--c4'].forEach((k, i) => state.pal[i] ? st.setProperty(k, state.pal[i]) : st.removeProperty(k))
+    const all = palette()
+    $$('.pset').forEach((b) => { const c = PALS[b.dataset.i].c; b.setAttribute('aria-pressed', String(all.join() === (ig ? [c[1], c[0], c[2], c[3]] : c).join())) })
+    $('#palLine').innerHTML = 'Sua paleta: ' + all.map((c) => `<span><i style="background:${c}"></i>${c}</span>`).join('')
+    build(buildStage, state, anim); $('#incl').innerHTML = INCL[state.tipo].map((t) => `<li>${t}</li>`).join('')
+    // se o pedido já foi gerado, ele acompanha cada mudança
+    if (!$('#sent').hidden) updateMsg()
+  }
   $$('[data-group]').forEach((grp) => grp.addEventListener('click', (e) => {
     const b = e.target.closest('button'); if (!b) return
     const key = grp.dataset.group
@@ -699,12 +783,16 @@ html.js [data-in].in > * { opacity: 1; transform: none; }
     const s = SEG[state.seg], nome = state.nome.trim() || 'o meu negócio'
     const o = { landing: 'uma landing page', site: 'um site', ig: 'a consultoria de marca no Instagram' }[state.tipo]
     const segTxt = state.seg === 'outro' ? (state.segTxt.trim() || 'um segmento que não está na lista') : s.txt
-    return `Olá, Korvex! Quero ${o} para ${nome}, do segmento de ${segTxt}.\n${state.tipo === 'ig' ? `Cor da marca: ${state.cor}.\nObjetivo: padronizar os posts e o feed e criar conteúdo.` : `Cores: fundo ${state.fundo} e destaque ${state.cor}.\nObjetivo: ${s.cta.charAt(0).toLowerCase() + s.cta.slice(1)}.`}\n\nPodemos conversar?`
+    const extraTxt = state.pal.length ? `\nOutras cores da paleta: ${state.pal.join(', ')}.` : ''
+    return `Olá, Korvex! Quero ${o} para ${nome}, do segmento de ${segTxt}.\n${state.tipo === 'ig' ? `Cor da marca: ${state.cor}.${extraTxt}\nObjetivo: padronizar os posts e o feed e criar conteúdo.` : `Cores: fundo ${state.fundo} e destaque ${state.cor}.${extraTxt}\nObjetivo: ${s.cta.charAt(0).toLowerCase() + s.cta.slice(1)}.`}\n\nPodemos conversar?`
   }
-  $('#gerar').addEventListener('click', () => {
+  function updateMsg() {
     const m = message()
     $('#msg').textContent = m
     $('#sendMail').href = `mailto:${EMAIL}?subject=${encodeURIComponent('Orçamento: ' + (state.tipo === 'ig' ? 'consultoria de Instagram' : TIPO[state.tipo]))}&body=${encodeURIComponent(m)}`
+  }
+  $('#gerar').addEventListener('click', () => {
+    updateMsg()
     $('#sent').hidden = false
     if (!reduce) $('#sent').animate([{ opacity: 0, transform: 'translateY(8px)' }, { opacity: 1, transform: 'none' }], { duration: 300, easing: 'cubic-bezier(.23,1,.32,1)' })
   })
@@ -735,6 +823,9 @@ html.js [data-in].in > * { opacity: 1; transform: none; }
     { t: 'Consultoria de Instagram', d: 'Feed padronizado e criação de conteúdo', k: 'instagram insta posts feed conteudo marca consultoria', run: () => { setTipo('ig'); go('#monte') } },
     { t: 'Ver o projeto da AB Transportes', d: 'O case em holograma', k: 'ab transportes projeto case portfolio', run: () => go('#projeto') },
     { t: 'Falar com a Korvex', d: EMAIL, k: 'contato email falar orcamento', run: () => go('#contato') },
+    { t: 'Serviços', d: 'Landing pages, sites e Instagram', k: 'servicos o que fazemos', run: () => go('#servicos') },
+    { t: 'Como trabalhamos', d: 'Da conversa ao resultado', k: 'processo como funciona etapas', run: () => go('#processo') },
+    { t: 'Quem somos', d: 'Cauã Moura e Vitor Ramos', k: 'quem somos socios equipe caua vitor', run: () => go('#quem-somos') },
   ]
   const norm = (s) => s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '')
   const back = $('#palBack'), input = $('#palInput'), list = $('#palList')

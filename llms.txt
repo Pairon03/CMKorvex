@@ -1,0 +1,15 @@
+# Korvex
+
+> Korvex é um estúdio digital de Campinas (SP), de Cauã Moura e Vitor Ramos, que atende clientes de todo o Brasil e do exterior. Faz landing pages, sites e consultoria de marca no Instagram para pequenas empresas, tudo feito do zero.
+
+## Serviços
+- Landing page: uma página com um objetivo só, para o visitante pedir orçamento pelo WhatsApp.
+- Site: início, sobre, serviços e contato, preparado para aparecer no Google.
+- Consultoria de marca no Instagram: padronização dos posts e do feed com a identidade do negócio, além da criação de conteúdo.
+
+## Projeto
+- AB Transportes: landing page para uma transportadora de cargas, com pedido de orçamento pelo WhatsApp. https://abtransportes.vercel.app/
+
+## Contato
+- E-mail: cv.korvex@gmail.com
+- Site: https://cvkorvex.vercel.app/
