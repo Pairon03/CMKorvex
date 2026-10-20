@@ -186,6 +186,25 @@ button, input { font: inherit; color: inherit; }
 .builder { display: grid; grid-template-columns: minmax(0, 420px) minmax(0, 1fr); gap: 48px; align-items: start; }
 .controls { display: grid; gap: 26px; min-width: 0; }
 .field { display: grid; gap: 10px; margin: 0; padding: 0; border: 0; min-width: 0; }
+.colors { border-radius: 14px; background: var(--surface); box-shadow: inset 0 0 0 1px var(--line); min-width: 0; transition: box-shadow 160ms ease; }
+.colors[open] { box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--brand) 50%, var(--line)); }
+.colors summary { list-style: none; cursor: pointer; display: flex; align-items: center; gap: 14px; padding: 14px 16px; min-height: 60px; border-radius: 14px; -webkit-tap-highlight-color: transparent; }
+.colors summary::-webkit-details-marker { display: none; }
+.colors summary:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }
+.colors summary:active .colors__chev { transform: scale(.9); }
+.colors__t { display: grid; gap: 2px; min-width: 0; flex: 1; }
+.colors__t b { font: 700 16px var(--f-text); color: var(--ink); }
+.colors__hint { font: 500 13px var(--f-text); color: var(--muted); }
+.colors[open] .colors__hint { display: none; }
+.colors__sum { display: flex; flex: none; }
+.colors__sum i { width: 22px; height: 22px; border-radius: 50%; margin-left: -6px; box-shadow: 0 0 0 2px var(--surface), inset 0 0 0 1px rgba(255,255,255,.2); }
+.colors__sum i:first-child { margin-left: 0; }
+.colors__chev { flex: none; width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center; background: var(--surface-2); transition: transform 200ms var(--ease-out); }
+.colors__chev::before { content: ""; width: 7px; height: 7px; border: solid var(--ink); border-width: 0 2px 2px 0; transform: translateY(-2px) rotate(45deg); }
+.colors[open] .colors__chev { transform: rotate(180deg); }
+.colors__body { display: grid; gap: 26px; padding: 6px 16px 20px; min-width: 0; }
+.colors[open] .colors__body { animation: colorsIn 220ms var(--ease-out); }
+@keyframes colorsIn { from { opacity: 0; transform: translateY(-6px); } }
 .field legend, .field .lbl { padding: 0; margin-bottom: 10px; font: 700 12px var(--f-text); letter-spacing: .16em; text-transform: uppercase; color: var(--muted); }
 .chips { display: flex; flex-wrap: wrap; gap: 8px; }
 .chip { border: 0; cursor: pointer; padding: 10px 16px; border-radius: 999px; background: var(--surface); color: var(--muted); font: 600 15px var(--f-text); box-shadow: inset 0 0 0 1px var(--line); transition: color 160ms ease, box-shadow 160ms ease, background-color 160ms ease, transform 160ms var(--ease-out); }
@@ -310,7 +329,8 @@ html.js [data-in].in > * { opacity: 1; transform: none; }
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   html.js [data-in] > * { transform: none; transition: opacity 250ms ease; }
-  .pal { animation: none; }
+  .pal, .colors[open] .colors__body { animation: none; }
+  .colors__chev { transition: none; }
 }
 </style>
 <script>document.documentElement.classList.add('js')</script>
@@ -399,6 +419,9 @@ html.js [data-in].in > * { opacity: 1; transform: none; }
           <div class="field"><label class="lbl" for="nome">Nome do seu negócio</label>
             <input class="input" id="nome" type="text" maxlength="28" placeholder="Ex.: Doce Ponto" autocomplete="organization">
           </div>
+          <details class="colors" id="colors">
+            <summary><span class="colors__t"><b>Cores do seu projeto</b><span class="colors__hint">Toque para escolher a paleta</span></span><span class="colors__sum" id="colorSum" aria-hidden="true"></span><span class="colors__chev" aria-hidden="true"></span></summary>
+            <div class="colors__body">
           <fieldset class="field"><legend>Paleta pronta</legend>
             <div class="pals" id="pals"></div>
             <span class="small">Comece por uma combinação e ajuste cada cor abaixo, se quiser.</span>
@@ -430,6 +453,8 @@ html.js [data-in].in > * { opacity: 1; transform: none; }
             <span class="small">Opcional: cor dos textos, detalhes ou uma cor de apoio. Até quatro.</span>
             <div class="palline" id="palLine" aria-live="polite"></div>
           </fieldset>
+            </div>
+          </details>
         </div>
         <div class="out">
           <div class="stage build__stage" id="buildStage" aria-label="Prévia do seu projeto em holograma" role="img">
@@ -751,6 +776,7 @@ html.js [data-in].in > * { opacity: 1; transform: none; }
     ;['--c3', '--c4'].forEach((k, i) => state.pal[i] ? st.setProperty(k, state.pal[i]) : st.removeProperty(k))
     const all = palette()
     $$('.pset').forEach((b) => { const c = PALS[b.dataset.i].c; b.setAttribute('aria-pressed', String(all.join() === (ig ? [c[1], c[0], c[2], c[3]] : c).join())) })
+    $('#colorSum').innerHTML = all.slice(0, 6).map((c) => `<i style="background:${c}"></i>`).join('')
     $('#palLine').innerHTML = 'Sua paleta: ' + all.map((c) => `<span><i style="background:${c}"></i>${c}</span>`).join('')
     build(buildStage, state, anim); $('#incl').innerHTML = INCL[state.tipo].map((t) => `<li>${t}</li>`).join('')
     // se o pedido já foi gerado, ele acompanha cada mudança
