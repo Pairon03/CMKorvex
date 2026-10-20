@@ -6,52 +6,36 @@ Site institucional e portfólio da **Korvex**, de Cauã Moura e Vitor Ramos: lan
 
 ## O que tem no site
 
-Uma página só, com navegação por âncoras:
+Uma página só, pensada como um projetor de hologramas (CSS 3D, sem WebGL, leve no celular):
 
-1. **Topo**: o K da marca em 3D cromado, renderizado ao vivo (Three.js). Ele segue o mouse, acende as linhas neon ao carregar e inclina quando a página rola.
-2. **Serviços**: quatro blocos com demonstrações animadas.
-   - Landing page: um cursor clica em "Pedir orçamento" e os pedidos chegam.
-   - Site: uma busca no Google encontra o site.
-   - Aplicativo: alguém agenda um horário.
-   - Instagram: um botão "Antes / Depois" organiza o perfil.
-   - As bordas acendem perto do mouse (efeito "Glowing Effect", 21st.dev).
-3. **Projetos**: o case da AB Transportes com prints reais. A página inteira rola sozinha no computador e no celular, e cada item da lista mostra uma parte do site.
-4. **Processo**: um controle de arrastar leva a página da AB do briefing ao ar, nas etapas Conversa, Estratégia, Tecnologia e Resultados.
-5. **Quem somos**: Cauã e Vitor.
-6. **Contato**: um campo só com borda neon pulsante (shader "Pulsing Border", 21st.dev / Paper Shaders). Ele monta a mensagem e abre o e-mail (ou o WhatsApp, se configurado).
-7. **Rodapé**: o KORVƎX cromado em largura total.
+1. **Topo**: o projetor monta exemplos de projeto sozinho (landing page, aplicativo, site, Instagram).
+2. **Serviços**: quatro cartões; cada um abre o "Monte o seu" com o serviço escolhido.
+3. **Monte o seu**: o visitante escolhe tipo, segmento, nome do negócio e cor, vê o holograma e gera a mensagem do pedido.
+4. **Projeto**: AB Transportes, com as telas reais em camadas e o link do site no ar.
+5. **Como trabalhamos**, **Quem somos** e **Contato**.
+6. Atalho de comandos: tecla K (ou o botão "Comandos").
 
-Tudo respeita a configuração de "reduzir movimento". Sem WebGL, o topo mostra uma imagem do K. Sem JavaScript, todo o conteúdo continua visível.
+Os negócios de exemplo nos hologramas são fictícios. Tudo respeita "reduzir movimento".
 
 ## Estrutura
 
 ```
-index.html                    conteúdo e textos
-assets/css/style.css          cores, fontes, layout e animações (variáveis no :root)
-assets/js/main.js             menu, demonstrações, projetos, processo, contato (CONFIG no topo)
-assets/js/k3d.js              o K em 3D (geometria traçada da logo, metal escovado, neon, bloom)
-assets/js/pulse-border.js     a borda neon do campo de contato (WebGL)
-assets/vendor/three/          Three.js r169 (licença MIT)
-assets/fonts/                 Michroma e Manrope (licença OFL), servidas pelo próprio site
-assets/img/                   K renderizado, favicon, imagem de compartilhamento, prints da AB
+index.html          página, estilos e código (tudo num arquivo)
+assets/fonts/       Michroma e Manrope (licença OFL)
+assets/img/         favicon, imagem de compartilhamento, K e telas da AB
 ```
-
-Site estático, sem build: abre direto em qualquer servidor e é bom para o Google, porque o texto já está no HTML.
 
 ## Trocar contatos
 
-Em `assets/js/main.js`, no topo:
+Em `index.html`, procure por `EMAIL`:
 
 ```js
-const CONFIG = {
-  EMAIL: 'cv.korvex@gmail.com',
-  WHATSAPP: '', // ex.: '5519999999999'. Preenchido, o formulário abre o WhatsApp
-}
+const EMAIL = 'cv.korvex@gmail.com'
 ```
 
 ## Rodar no computador
 
-O 3D usa módulos JavaScript, então precisa de um servidor (abrir o arquivo direto não funciona):
+Abra o `index.html` direto no navegador, ou rode um servidor local:
 
 ```bash
 npx serve .

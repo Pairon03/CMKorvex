@@ -1,472 +1,706 @@
 <!doctype html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
+<meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<!--HEAD-START-->
 <title>Korvex · Sites e landing pages que vendem</title>
-<meta name="claude:viewport-fit-sides" content="cover">
-<meta name="description" content="A Korvex cria landing pages, sites, aplicativos e conteúdo para Instagram sob medida, com estratégia, texto e código pensados para transformar visitas em clientes.">
 <meta name="theme-color" content="#07070A">
-<meta property="og:title" content="Korvex · Sites e landing pages que vendem">
-<meta property="og:description" content="Landing pages, sites, aplicativos e Instagram para a sua empresa. Estratégia, tecnologia e resultados.">
+<link rel="icon" href="assets/img/favicon.png">
+<link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
 <meta property="og:type" content="website">
-<meta property="og:locale" content="pt_BR">
-<meta property="og:image" content="./assets/img/og-korvex.jpg">
-<link rel="icon" href="./assets/img/favicon.png" type="image/png">
-<link rel="apple-touch-icon" href="./assets/img/apple-touch-icon.png">
-<link rel="preload" href="./assets/fonts/michroma.woff" as="font" type="font/woff" crossorigin>
-<link rel="preload" href="./assets/fonts/manrope-var.woff" as="font" type="font/woff" crossorigin>
-<link rel="stylesheet" href="./assets/css/style.css">
-<script>
-  // Marca a página antes de pintar: com JS, com WebGL. Se o 3D não subir em 4 s, volta para a imagem.
-  (function () {
-    var d = document.documentElement
-    d.classList.add('js')
-    try { if (document.createElement('canvas').getContext('webgl2')) { d.classList.add('webgl'); window.__webgl = true } } catch (e) {}
-    setTimeout(function () { if (!window.__kReady) d.classList.remove('webgl') }, 4000)
-    // se o script principal não rodar, nada fica escondido esperando animação
-    setTimeout(function () { if (!window.__mainReady) d.classList.remove('js') }, 3000)
-  })()
-</script>
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "Organization",
-  "name": "Korvex",
-  "description": "Landing pages, sites, aplicativos e conteúdo para Instagram.",
-  "email": "cv.korvex@gmail.com",
-  "founder": [
-    { "@type": "Person", "name": "Cauã Victor de Moura" },
-    { "@type": "Person", "name": "Vitor Ramos Pereira" }
-  ]
+<meta property="og:title" content="Korvex · Sites e landing pages que vendem">
+<meta property="og:description" content="Landing pages, sites, aplicativos e Instagram para pequenas empresas, feitos do zero por Cauã Moura e Vitor Ramos.">
+<meta property="og:image" content="https://cvkorvex.vercel.app/assets/img/og-korvex.jpg">
+<meta property="og:url" content="https://cvkorvex.vercel.app/">
+<meta name="description" content="Korvex, estúdio de Cauã Moura e Vitor Ramos. Landing pages, sites, aplicativos e Instagram para pequenas empresas.">
+<style>
+/* Korvex · versão hologramas
+   Ideia: o site é um projetor. Cada projeto aparece como um holograma em camadas de vidro,
+   inclinando com o mouse (ou sozinho no celular). Sem WebGL: CSS 3D, leve no celular. */
+@font-face { font-family: 'Michroma'; src: url('assets/fonts/michroma.woff') format('woff'); font-weight: 400; font-display: swap; }
+@font-face { font-family: 'Manrope'; src: url('assets/fonts/manrope-var.woff') format('woff'); font-weight: 200 800; font-display: swap; }
+
+:root {
+  --bg: #07070A;
+  --surface: #0E0E13;
+  --surface-2: #15151C;
+  --line: #262631;
+  --ink: #F1F1F4;
+  --muted: #A4A7B2;
+  --n1: #FF2D4F;
+  --n2: #E23CCB;
+  --n3: #9B4DFF;
+  --brand: #FF2D4F;
+  --f-display: 'Michroma', 'Eurostile', 'Arial', sans-serif;
+  --f-text: 'Manrope', 'Segoe UI', system-ui, -apple-system, sans-serif;
+  --ease-out: cubic-bezier(.23, 1, .32, 1);
+  --ease-in-out: cubic-bezier(.77, 0, .175, 1);
+  --gl: max(20px, env(safe-area-inset-left, 0px));
+  --gr: max(20px, env(safe-area-inset-right, 0px));
+  color-scheme: dark;
 }
-</script>
-<!--HEAD-END-->
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: 76px; }
+body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--f-text); font-size: 16px; line-height: 1.55; overflow-x: clip; }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 30; background: var(--bg); }
+h1, h2, h3, p, ul, ol, figure, dl, dd { margin: 0; }
+ul, ol { padding: 0; list-style: none; }
+img { display: block; max-width: 100%; }
+a { color: inherit; }
+button, input { font: inherit; color: inherit; }
+.flip { display: inline-block; transform: scaleX(-1); }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+:focus-visible { outline: 2px solid var(--n2); outline-offset: 3px; }
+::selection { background: var(--n1); color: #fff; }
+
+.wrap { max-width: 1240px; margin: 0 auto; padding-left: var(--gl); padding-right: var(--gr); }
+.k { font: 700 12px var(--f-text); letter-spacing: .2em; text-transform: uppercase; color: var(--n2); }
+.h2 { font: 400 clamp(26px, 3.2vw, 42px)/1.2 var(--f-display); text-wrap: balance; }
+.lead { color: var(--muted); font-size: 18px; max-width: 34em; }
+.head { display: grid; gap: 12px; margin-bottom: 44px; }
+
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  min-height: 50px; padding: 0 22px; border-radius: 12px; border: 0; cursor: pointer; text-decoration: none; white-space: nowrap;
+  font: 800 15px var(--f-text); transition: transform 160ms var(--ease-out), box-shadow 200ms ease, background-color 200ms ease;
+}
+.btn:active { transform: scale(.97); }
+.btn--light { background: var(--ink); color: var(--bg); }
+.btn--ghost { background: var(--surface-2); color: var(--ink); box-shadow: inset 0 0 0 1px var(--line); }
+@media (hover: hover) and (pointer: fine) {
+  .btn--light:hover { box-shadow: 0 0 0 1px var(--n1), 0 0 30px -6px var(--n1); }
+  .btn--ghost:hover { box-shadow: inset 0 0 0 1px var(--n2); }
+}
+
+/* ---------- barra ---------- */
+.bar {
+  position: fixed; top: env(safe-area-inset-top, 0px); left: 0; right: 0; z-index: 20;
+  display: flex; align-items: center; gap: 16px; padding-block: 14px; padding-left: var(--gl); padding-right: var(--gr);
+  background: rgba(7, 7, 10, .82); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(255, 255, 255, .05);
+}
+.logo { font: 400 15px var(--f-display); letter-spacing: .16em; text-decoration: none; white-space: nowrap; }
+.bar nav { margin-left: auto; display: flex; gap: 4px; }
+.bar nav a { color: var(--muted); text-decoration: none; font: 600 14px var(--f-text); padding: 8px 12px; border-radius: 999px; transition: color 160ms ease, background-color 160ms ease; }
+@media (hover: hover) and (pointer: fine) { .bar nav a:hover { color: var(--ink); background: rgba(255,255,255,.05); } }
+.kbtn { display: inline-flex; align-items: center; gap: 8px; border: 0; cursor: pointer; padding: 7px 12px 7px 7px; border-radius: 999px; background: var(--surface-2); box-shadow: inset 0 0 0 1px var(--line); font: 600 13px var(--f-text); transition: transform 160ms var(--ease-out), box-shadow 160ms ease; }
+.kbtn:active { transform: scale(.97); }
+.kbtn kbd { display: grid; place-items: center; width: 24px; height: 24px; border-radius: 7px; background: var(--ink); color: var(--bg); font: 400 11px var(--f-display); }
+@media (hover: hover) and (pointer: fine) { .kbtn:hover { box-shadow: inset 0 0 0 1px var(--n2); } }
+@media (max-width: 860px) { .bar nav { display: none; } .kbtn { margin-left: auto; } }
+
+/* ---------- o projetor (palco do holograma) ---------- */
+.stage {
+  --brand: var(--n1);
+  position: relative; perspective: 1400px; perspective-origin: 50% 38%;
+  display: grid; place-items: center; overflow: hidden; border-radius: 24px;
+  background:
+    radial-gradient(55% 40% at 50% 96%, color-mix(in srgb, var(--brand) 26%, transparent), transparent 70%),
+    radial-gradient(80% 60% at 50% 40%, rgba(155,77,255,.07), transparent 70%),
+    var(--surface);
+  box-shadow: inset 0 0 0 1px var(--line);
+  transition: --brand 400ms ease;
+}
+.stage::before { /* chão de grade */
+  content: ""; position: absolute; left: -20%; right: -20%; bottom: -12%; height: 52%;
+  background-image: linear-gradient(color-mix(in srgb, var(--brand) 34%, transparent) 1px, transparent 1px), linear-gradient(90deg, color-mix(in srgb, var(--brand) 34%, transparent) 1px, transparent 1px);
+  background-size: 46px 46px; transform: perspective(520px) rotateX(64deg); transform-origin: bottom;
+  -webkit-mask-image: linear-gradient(to top, #000, transparent 85%); mask-image: linear-gradient(to top, #000, transparent 85%); opacity: .5;
+}
+.stage::after { /* feixe do projetor */
+  content: ""; position: absolute; left: 50%; bottom: 0; width: 70%; height: 70%; transform: translateX(-50%);
+  background: radial-gradient(50% 100% at 50% 100%, color-mix(in srgb, var(--brand) 18%, transparent), transparent 70%);
+  pointer-events: none;
+}
+.emblem { position: absolute; left: 50%; bottom: 12px; width: 40px; transform: translateX(-50%); opacity: .6; filter: drop-shadow(0 0 10px color-mix(in srgb, var(--brand) 70%, transparent)); z-index: 0; pointer-events: none; }
+.holo { position: relative; z-index: 1; transform-style: preserve-3d; transform: scale(var(--sc, 1)) rotateX(var(--rx, 8deg)) rotateY(var(--ry, -14deg)); will-change: transform; }
+.L { position: absolute; transform-style: preserve-3d; }
+.glass {
+  background: linear-gradient(160deg, rgba(255,255,255,.08), rgba(255,255,255,.02));
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--brand) 55%, rgba(255,255,255,.2)), 0 0 40px -10px var(--brand);
+  border-radius: 14px; overflow: hidden;
+}
+.glass::after { content: ""; position: absolute; inset: 0; pointer-events: none; background: repeating-linear-gradient(0deg, rgba(255,255,255,.035) 0 1px, transparent 1px 4px); }
+.scan { position: absolute; left: -10%; right: -10%; top: 0; height: 3px; z-index: 3; background: linear-gradient(90deg, transparent, var(--brand), transparent); box-shadow: 0 0 24px 6px color-mix(in srgb, var(--brand) 60%, transparent); opacity: 0; pointer-events: none; }
+.h-txt { font-family: var(--f-text); color: var(--ink); }
+.h-ln { height: 8px; border-radius: 4px; background: rgba(255,255,255,.14); }
+.h-btn { display: inline-block; padding: 9px 14px; border-radius: 8px; background: var(--brand); color: #fff; font: 800 12px var(--f-text); box-shadow: 0 0 22px -2px var(--brand); white-space: nowrap; }
+.tag { position: absolute; font: 700 10px var(--f-text); letter-spacing: .14em; text-transform: uppercase; color: var(--ink); padding: 5px 9px; border-radius: 999px; background: rgba(7,7,10,.8); box-shadow: inset 0 0 0 1px var(--brand); white-space: nowrap; }
+.shot { border-radius: 12px; overflow: hidden; box-shadow: 0 0 0 1px color-mix(in srgb, var(--brand) 50%, rgba(255,255,255,.15)), 0 0 50px -12px var(--brand); }
+.shot img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 0; }
+
+/* ---------- 1 · topo ---------- */
+.hero { padding-top: calc(env(safe-area-inset-top, 0px) + 112px); padding-bottom: 72px; }
+.hero__grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.08fr); gap: 48px; align-items: center; }
+.hero h1 { font: 400 clamp(32px, 4.3vw, 58px)/1.14 var(--f-display); text-wrap: balance; }
+.hero .lead { margin-top: 18px; }
+.hero__cta { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 30px; }
+.hero__stage { height: 560px; }
+.reel { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 14px; }
+.reel__label { font: 600 14px var(--f-text); color: var(--muted); }
+.reel__label b { color: var(--ink); }
+.dots { display: flex; gap: 6px; }
+.dot { width: 34px; height: 30px; border: 0; padding: 0; background: none; cursor: pointer; display: grid; place-items: center; }
+.dot i { display: block; width: 22px; height: 3px; border-radius: 2px; background: var(--line); transition: background-color 200ms ease, width 300ms var(--ease-out); }
+.dot[aria-current="true"] i { width: 30px; background: var(--brand-dot, var(--n1)); }
+@media (max-width: 900px) {
+  .hero { padding-top: calc(env(safe-area-inset-top, 0px) + 92px); padding-bottom: 48px; }
+  .hero__grid { grid-template-columns: 1fr; gap: 28px; }
+  .hero__stage { height: 440px; }
+  .hero__cta .btn { flex: 1 1 auto; }
+}
+
+/* ---------- 2 · serviços ---------- */
+.section { padding-block: 112px; }
+.svc { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+.svc button {
+  text-align: left; border: 0; cursor: pointer; padding: 24px 22px 22px; border-radius: 18px; background: var(--surface); box-shadow: inset 0 0 0 1px var(--line);
+  display: grid; gap: 10px; align-content: start; min-height: 210px;
+  transition: box-shadow 200ms ease, transform 160ms var(--ease-out), background-color 200ms ease;
+}
+.svc button:active { transform: scale(.98); }
+.svc b { font: 400 19px var(--f-display); }
+.svc span { color: var(--muted); }
+.svc em { margin-top: auto; font-style: normal; font: 700 14px var(--f-text); color: var(--n2); }
+@media (hover: hover) and (pointer: fine) { .svc button:hover { box-shadow: inset 0 0 0 1px var(--n2), 0 0 40px -18px var(--n2); background: var(--surface-2); } }
+@media (max-width: 900px) { .svc { grid-template-columns: 1fr 1fr; } .svc button { min-height: 0; } }
+@media (max-width: 520px) { .svc { grid-template-columns: 1fr; } }
+
+/* ---------- 3 · monte o seu ---------- */
+.builder { display: grid; grid-template-columns: minmax(0, 420px) minmax(0, 1fr); gap: 48px; align-items: start; }
+.controls { display: grid; gap: 26px; min-width: 0; }
+.field { display: grid; gap: 10px; margin: 0; padding: 0; border: 0; min-width: 0; }
+.field legend, .field .lbl { padding: 0; margin-bottom: 10px; font: 700 12px var(--f-text); letter-spacing: .16em; text-transform: uppercase; color: var(--muted); }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip { border: 0; cursor: pointer; padding: 10px 16px; border-radius: 999px; background: var(--surface); color: var(--muted); font: 600 15px var(--f-text); box-shadow: inset 0 0 0 1px var(--line); transition: color 160ms ease, box-shadow 160ms ease, background-color 160ms ease, transform 160ms var(--ease-out); }
+.chip:active { transform: scale(.97); }
+.chip[aria-pressed="true"] { color: var(--ink); background: var(--surface-2); box-shadow: inset 0 0 0 1px var(--brand), 0 0 22px -6px var(--brand); }
+@media (hover: hover) and (pointer: fine) { .chip:hover { color: var(--ink); } }
+.input { width: 100%; padding: 14px 16px; border-radius: 12px; border: 0; background: var(--surface); color: var(--ink); font: 600 17px var(--f-text); box-shadow: inset 0 0 0 1px var(--line); transition: box-shadow 160ms ease; }
+.input::placeholder { color: #6d7080; }
+.input:focus { outline: none; box-shadow: inset 0 0 0 1px var(--brand), 0 0 24px -8px var(--brand); }
+.swatches { display: flex; gap: 12px; }
+.sw { width: 40px; height: 40px; border-radius: 50%; border: 0; cursor: pointer; background: var(--c); box-shadow: 0 0 0 3px var(--bg), 0 0 0 4px var(--line); transition: transform 160ms var(--ease-out), box-shadow 160ms ease; }
+.sw:active { transform: scale(.94); }
+.sw[aria-pressed="true"] { box-shadow: 0 0 0 3px var(--bg), 0 0 0 5px var(--c), 0 0 24px var(--c); }
+.out { display: grid; gap: 22px; min-width: 0; }
+.build__stage { height: 560px; }
+.summary { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 22px; align-items: start; }
+.incl { display: grid; gap: 10px; }
+.incl li { display: flex; gap: 10px; align-items: baseline; }
+.incl li::before { content: ""; flex: none; width: 8px; height: 8px; border-radius: 2px; background: var(--brand); box-shadow: 0 0 10px var(--brand); transform: rotate(45deg) translateY(-1px); }
+.small { font-size: 14px; color: var(--muted); }
+.send { display: grid; gap: 12px; justify-items: start; }
+.msg { width: 100%; margin: 0; padding: 16px 18px; border-radius: 12px; background: var(--surface); box-shadow: inset 0 0 0 1px var(--line); white-space: pre-wrap; font-size: 15px; }
+.row { display: flex; flex-wrap: wrap; gap: 8px; }
+#sent { display: grid; gap: 10px; width: 100%; }
+#sent[hidden] { display: none; }
+@media (max-width: 900px) { .builder { grid-template-columns: 1fr; gap: 32px; } .build__stage { height: 440px; } }
+
+/* ---------- 4 · projeto ---------- */
+.case { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, .75fr); gap: 48px; align-items: center; }
+.case__stage { height: 540px; --brand: var(--n1); }
+.case__text { display: grid; gap: 16px; justify-items: start; }
+.case__text h2 { font: 400 clamp(28px, 3.4vw, 46px)/1.15 var(--f-display); }
+.facts { display: grid; gap: 8px; margin-top: 6px; }
+.facts div { display: grid; grid-template-columns: 110px 1fr; gap: 12px; }
+.facts dt { color: var(--muted); }
+@media (max-width: 900px) { .case { grid-template-columns: 1fr; gap: 28px; } .case__stage { height: 380px; order: -1; } }
+
+/* ---------- 5 · como trabalhamos ---------- */
+.steps { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; counter-reset: s; }
+.steps li { position: relative; padding: 26px 22px; border-radius: 18px; background: var(--surface); box-shadow: inset 0 0 0 1px var(--line); display: grid; gap: 8px; align-content: start; }
+.steps li::before { content: ""; width: 34px; height: 3px; border-radius: 2px; background: var(--c); box-shadow: 0 0 12px var(--c); margin-bottom: 10px; }
+.steps b { font: 400 18px var(--f-display); }
+.steps p { color: var(--muted); }
+@media (max-width: 900px) { .steps { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 520px) { .steps { grid-template-columns: 1fr; } }
+
+/* ---------- 6 · quem somos ---------- */
+.duo { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.person { display: grid; grid-template-columns: 64px 1fr; gap: 18px; padding: 26px; border-radius: 18px; background: var(--surface); box-shadow: inset 0 0 0 1px var(--line); align-items: start; }
+.mono { width: 64px; height: 64px; display: grid; place-items: center; border-radius: 16px; background: var(--surface-2); font: 400 17px var(--f-display); box-shadow: inset 0 0 0 1px var(--line); position: relative; }
+.mono::after { content: ""; position: absolute; left: 18px; right: 18px; bottom: 12px; height: 2px; background: linear-gradient(90deg, var(--n1), var(--n2), var(--n3)); }
+.person h3 { font: 700 19px var(--f-text); }
+.person .role { color: var(--n2); font-weight: 700; font-size: 14px; margin-bottom: 6px; }
+.person p { color: var(--muted); }
+@media (max-width: 760px) { .duo { grid-template-columns: 1fr; } }
+
+/* ---------- 7 · contato ---------- */
+.contact { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 48px; align-items: center; padding: 48px; border-radius: 28px; background: var(--surface); box-shadow: inset 0 0 0 1px var(--line); position: relative; overflow: hidden; }
+.contact::before { content: ""; position: absolute; inset: auto -20% -60% -20%; height: 100%; background: radial-gradient(50% 50% at 50% 50%, rgba(226,60,203,.16), transparent 70%); pointer-events: none; }
+.contact h2 { font: 400 clamp(28px, 3.6vw, 48px)/1.15 var(--f-display); }
+.contact .lead { margin-top: 12px; }
+.mailbox { position: relative; display: grid; gap: 14px; }
+.mail { font: 800 clamp(22px, 2.6vw, 34px) var(--f-text); text-decoration: none; overflow-wrap: anywhere; }
+@media (hover: hover) and (pointer: fine) { .mail:hover { color: var(--n1); } }
+@media (max-width: 900px) { .contact { grid-template-columns: 1fr; padding: 28px 22px; gap: 24px; } }
+
+footer { padding-block: 56px 40px; color: var(--muted); font-size: 14px; }
+.foot { display: flex; flex-wrap: wrap; gap: 16px 32px; justify-content: space-between; align-items: center; }
+.foot .logo { color: var(--ink); }
+.foot nav { display: flex; flex-wrap: wrap; gap: 6px 20px; }
+.foot nav a { text-decoration: none; }
+@media (hover: hover) and (pointer: fine) { .foot nav a:hover { color: var(--ink); } }
+
+/* ---------- comandos K ---------- */
+.pal-back { position: fixed; inset: 0; z-index: 40; background: rgba(4,4,7,.6); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); display: grid; justify-items: center; align-items: start; padding-top: max(12vh, calc(env(safe-area-inset-top, 0px) + 24px)); padding-left: var(--gl); padding-right: var(--gr); }
+.pal-back[hidden] { display: none !important; }
+.pal { width: min(600px, 100%); border-radius: 18px; overflow: hidden; background: rgba(14,14,19,.97); box-shadow: inset 0 0 0 1px var(--line), 0 40px 120px rgba(0,0,0,.6), 0 0 80px -30px var(--n2); transform-origin: 50% 0; animation: palIn 200ms var(--ease-out); }
+@keyframes palIn { from { opacity: 0; transform: scale(.97) translateY(-6px); } }
+.pal-top { display: flex; align-items: center; gap: 12px; padding: 16px 18px; border-bottom: 1px solid var(--line); }
+.pal-top kbd { display: grid; place-items: center; width: 30px; height: 30px; flex: none; border-radius: 8px; background: var(--ink); color: var(--bg); font: 400 13px var(--f-display); }
+.pal-top input { flex: 1; min-width: 0; border: 0; background: transparent; font: 600 18px var(--f-text); outline: none; }
+.pal ul { padding: 8px; max-height: min(52vh, 420px); overflow: auto; }
+.pal li { display: flex; align-items: center; gap: 12px; padding: 12px; border-radius: 10px; cursor: pointer; color: var(--muted); }
+.pal li b { display: block; color: var(--ink); }
+.pal li small { font-size: 13px; }
+.pal li[aria-selected="true"] { background: rgba(226,60,203,.12); box-shadow: inset 0 0 0 1px rgba(226,60,203,.4); }
+.pal .empty { padding: 18px; }
+
+/* ---------- entradas ---------- */
+html.js [data-in] > * { opacity: 0; transform: translate3d(0, 20px, 0); transition: opacity 600ms var(--ease-out), transform 700ms var(--ease-out); transition-delay: calc(var(--i, 0) * 70ms); }
+html.js [data-in].in > * { opacity: 1; transform: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  html.js [data-in] > * { transform: none; transition: opacity 250ms ease; }
+  .pal { animation: none; }
+}
+</style>
+<script>document.documentElement.classList.add('js')</script>
 </head>
 <body>
-<!--CONTENT-START-->
-<a class="skip" href="#conteudo">Pular para o conteúdo</a>
 
-<header class="site-header" data-header>
-  <div class="bar">
-    <a class="brand" href="#topo" aria-label="Korvex, início">
-      <img class="brand__k" src="./assets/img/k-mark-160.webp" alt="" width="42" height="31">
-      <span class="brand__name" aria-hidden="true">KORV<span class="flip">E</span>X</span>
-    </a>
-    <nav class="nav" id="menu" aria-label="Seções">
-      <a href="#servicos">Serviços</a>
-      <a href="#projetos">Projetos</a>
-      <a href="#processo">Processo</a>
-      <a href="#quem-somos">Quem somos</a>
-      <a class="nav__cta" href="#contato">Pedir orçamento</a>
-    </nav>
-    <a class="btn btn--light btn--sm header__cta" href="#contato">Pedir orçamento</a>
-    <button class="menu-toggle" type="button" aria-controls="menu" aria-expanded="false" data-menu-toggle>
-      <span class="sr-only" data-menu-label>Abrir menu</span><i></i><i></i>
-    </button>
-  </div>
+<header class="bar">
+  <a class="logo" href="#topo" aria-label="Korvex, início">KORV<span class="flip">E</span>X</a>
+  <nav aria-label="Seções">
+    <a href="#servicos">Serviços</a>
+    <a href="#monte">Monte o seu</a>
+    <a href="#projeto">Projeto</a>
+    <a href="#contato">Contato</a>
+  </nav>
+  <button class="kbtn" id="openPal" type="button" aria-haspopup="dialog"><kbd>K</kbd>Comandos</button>
 </header>
 
-<main id="conteudo">
-
-  <!-- TOPO: o K da marca, aceso como um objeto numa sala escura -->
-  <section class="hero" id="topo" aria-labelledby="hero-title">
-    <div class="hero__stage" data-k-stage>
-      <img class="hero__poster" src="./assets/img/k-render.webp" alt="" width="1600" height="900" fetchpriority="high" decoding="async">
-      <canvas class="hero__canvas" data-k-canvas aria-hidden="true"></canvas>
-    </div>
-    <p class="wordmark" aria-hidden="true"><span>K</span><span>O</span><span>R</span><span>V</span><span class="flip">E</span><span>X</span></p>
-    <h1 id="hero-title" class="hero__title"><span class="sr-only">Korvex: </span>Sites e landing pages que vendem</h1>
-    <div class="hero__row">
-      <p>Feito sob medida</p>
-      <a class="btn btn--light" href="#contato">Pedir orçamento</a>
-      <p>Direto com os sócios</p>
+<main id="topo">
+  <!-- 1 · topo: o projetor mostra exemplos sozinho -->
+  <section class="hero">
+    <div class="wrap hero__grid">
+      <div data-in>
+        <p class="k">Korvex · estúdio digital</p>
+        <h1>Sites e landing pages que vendem.</h1>
+        <p class="lead">Landing pages, sites, aplicativos e Instagram para pequenas empresas, feitos do zero por Cauã Moura e Vitor Ramos.</p>
+        <div class="hero__cta">
+          <a class="btn btn--light" href="#monte">Monte o seu projeto</a>
+          <a class="btn btn--ghost" href="#contato">Falar com a Korvex</a>
+        </div>
+      </div>
+      <div>
+        <div class="stage hero__stage" id="heroStage" aria-label="Exemplos de projeto em holograma" role="img">
+          <div class="holo"></div><span class="scan"></span><img class="emblem" src="assets/img/k-mark-160.webp" alt="" width="160" height="118">
+        </div>
+        <div class="reel">
+          <p class="reel__label" id="reelLabel" aria-live="polite"><b>Landing page</b> · transporte</p>
+          <div class="dots" id="dots" role="group" aria-label="Escolher exemplo"></div>
+        </div>
+      </div>
     </div>
   </section>
 
-  <!-- SERVIÇOS -->
-  <section class="section services" id="servicos" aria-labelledby="servicos-title">
-    <div class="shell">
-      <div class="section-head" data-reveal>
-        <h2 id="servicos-title" class="h2">Quatro formas de vender mais</h2>
-        <p class="lead">Você escolhe por onde começar. Tudo é feito do zero, com texto, design e código pensados para quem compra de você.</p>
+  <!-- 2 · serviços -->
+  <section class="section" id="servicos" aria-labelledby="svc-h" style="padding-top: 48px">
+    <div class="wrap">
+      <div class="head" data-in>
+        <p class="k">O que fazemos</p>
+        <h2 class="h2" id="svc-h">Quatro jeitos de começar</h2>
       </div>
-
-      <div class="bento">
-        <!-- Landing pages -->
-        <article class="tile tile--lp" data-glow data-reveal>
-          <span class="tile__glow" aria-hidden="true"></span>
-          <div class="tile__in">
-            <div class="tile__copy">
-              <h3 class="h3">Landing pages</h3>
-              <p>Nosso carro-chefe. Uma página com um objetivo só: fazer o visitante pedir orçamento. Texto que convence, visual forte e o botão do WhatsApp no lugar certo.</p>
-              <ul class="ticks">
-                <li>Texto pensado para conversão</li>
-                <li>Pedido direto no WhatsApp</li>
-                <li>Leve e rápida no celular</li>
-              </ul>
-            </div>
-            <div class="demo demo-lp" data-ui data-demo="lp" aria-hidden="true">
-              <div class="mb">
-                <div class="mb__bar"><i></i><i></i><i></i><span>suaempresa.com.br</span></div>
-                <div class="mb__page">
-                  <div class="mb__nav"><b>Doce Ponto</b><span>Cardápio</span><span>Encomendas</span><span>Contato</span></div>
-                  <div class="mb__hero">
-                    <div class="mb__words">
-                      <p class="mb__h">Bolos sob encomenda para o seu fim de semana</p>
-                      <p class="mb__s">Escolha o sabor, o tamanho e o dia. A gente confirma pelo WhatsApp.</p>
-                      <span class="mb__cta" data-cta>Pedir orçamento</span>
-                    </div>
-                    <svg class="mb__art" viewBox="0 0 120 100" aria-hidden="true">
-                      <ellipse cx="60" cy="88" rx="47" ry="7" fill="#2a1d24"/>
-                      <rect x="25" y="46" width="70" height="40" rx="6" fill="#f2d6c3"/>
-                      <rect x="25" y="63" width="70" height="5" fill="#e3949c"/>
-                      <path d="M25 54q0-10 10-10h50q10 0 10 10v3q-4 7-8 0q-4 7-8 0q-4 7-8 0q-4 7-8 0q-4 7-8 0q-4 7-8 0q-4 7-8 0q-4 7-8 0q-4 7-9 0z" fill="#fff3ec"/>
-                      <circle cx="60" cy="37" r="7" fill="#e2364f"/>
-                      <path d="M57 30q3-5 6 0q-3 2-6 0z" fill="#3d9a5b"/>
-                    </svg>
-                  </div>
-                  <div class="mb__cards"><span></span><span></span><span></span></div>
-                </div>
-                <svg class="cursor" data-cursor viewBox="0 0 24 24" aria-hidden="true"><path d="M5 3l14 8-6.2 1.6L10 19z" fill="#fff" stroke="#07070A" stroke-width="1.4" stroke-linejoin="round"/></svg>
-                <ol class="toasts" data-toasts></ol>
-              </div>
-            </div>
-          </div>
-        </article>
-
-        <!-- Sites -->
-        <article class="tile tile--site" data-glow data-reveal>
-          <span class="tile__glow" aria-hidden="true"></span>
-          <div class="tile__in">
-            <div class="tile__copy">
-              <h3 class="h3">Sites institucionais</h3>
-              <p>Quem vocês são, o que fazem e como falar com vocês, organizado para aparecer bem no Google.</p>
-            </div>
-            <div class="demo demo-serp" data-ui data-demo="serp" aria-hidden="true">
-              <div class="serp">
-                <div class="serp__box">
-                  <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6" fill="none" stroke="currentColor" stroke-width="2"/><path d="M15 15l5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-                  <span class="serp__q" data-query>doceria perto de mim</span><i class="caret"></i>
-                </div>
-                <div class="serp__result" data-result>
-                  <span class="serp__skel" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
-                  <p class="serp__url"><span class="serp__fav"></span>suaempresa.com.br</p>
-                  <p class="serp__title">Sua Empresa · Bolos e doces sob encomenda</p>
-                  <p class="serp__desc">Cardápio, horários, endereço e como pedir. Tudo o que o cliente procura antes de chamar.</p>
-                  <p class="serp__links"><span>Cardápio</span><span>Sobre</span><span>Contato</span></p>
-                </div>
-                <div class="serp__ghost" data-ghost><i></i><i></i><i></i></div>
-              </div>
-            </div>
-          </div>
-        </article>
-
-        <!-- Aplicativos -->
-        <article class="tile tile--app" data-glow data-reveal>
-          <span class="tile__glow" aria-hidden="true"></span>
-          <div class="tile__in">
-            <div class="tile__copy">
-              <h3 class="h3">Aplicativos</h3>
-              <p>Apps para web e celular que resolvem uma tarefa do seu negócio: agendamentos, pedidos, cardápio digital ou um painel para a equipe.</p>
-            </div>
-            <div class="demo demo-app" data-ui data-demo="app" aria-hidden="true">
-              <div class="phone">
-                <div class="phone__screen">
-                  <p class="app__title">Agendar horário</p>
-                  <div class="app__days"><span>Seg<b>12</b></span><span class="is-on">Ter<b>13</b></span><span>Qua<b>14</b></span><span>Qui<b>15</b></span></div>
-                  <div class="app__slots"><span>09:00</span><span data-slot>10:30</span><span>14:00</span><span>16:30</span></div>
-                  <span class="app__btn" data-confirm>Confirmar</span>
-                  <div class="app__done" data-done>
-                    <svg viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="20" fill="none" stroke="currentColor" stroke-width="3"/><path data-check d="M15 25l6 6 12-13" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                    <p>Horário confirmado</p>
-                    <small>Terça, 13 · 10:30</small>
-                  </div>
-                </div>
-                <span class="tap" data-tap></span>
-              </div>
-            </div>
-          </div>
-        </article>
-
-        <!-- Instagram -->
-        <article class="tile tile--ig" data-glow data-reveal>
-          <span class="tile__glow" aria-hidden="true"></span>
-          <div class="tile__in">
-            <div class="tile__copy">
-              <h3 class="h3">Instagram e conteúdo</h3>
-              <p>Perfil organizado, posts com identidade e uma linha visual igual à do site, para quem chega pelo Instagram reconhecer a sua marca.</p>
-              <div class="seg" role="radiogroup" aria-label="Exemplo de perfil" data-seg>
-                <span class="seg__thumb" aria-hidden="true"></span>
-                <button type="button" role="radio" aria-checked="false" data-ig="antes">Antes</button>
-                <button type="button" role="radio" aria-checked="true" data-ig="depois">Depois</button>
-              </div>
-            </div>
-            <div class="demo demo-ig is-after" data-ui data-demo="ig" aria-hidden="true">
-              <div class="ig">
-                <div class="ig__head">
-                  <span class="ig__avatar"><b>DP</b></span>
-                  <div class="ig__who">
-                    <p class="ig__name">doceponto</p>
-                    <p class="ig__bio"><span class="before">loja de doces. chama no direct pra saber os preços</span><span class="after">Bolos e doces sob encomenda<br>Pedidos pelo link · Entrega no bairro</span></p>
-                  </div>
-                  <div class="ig__hl"><span>Pedidos</span><span>Cardápio</span><span>Entrega</span></div>
-                </div>
-                <div class="ig__grid">
-                  <div class="post" style="--i:0"><div class="post__b b1">promoção!!!</div><div class="post__a a1"><b>Bolo de pote</b><small>Novo sabor</small></div></div>
-                  <div class="post" style="--i:1"><div class="post__b b2">Feliz sexta</div><div class="post__a a2"><span class="dot"></span></div></div>
-                  <div class="post" style="--i:2"><div class="post__b b3">SEGUE A GENTE</div><div class="post__a a3"><b>Como pedir</b><small>3 passos</small></div></div>
-                  <div class="post" style="--i:3"><div class="post__b b4">bolos</div><div class="post__a a4"><span class="slice"></span></div></div>
-                  <div class="post" style="--i:4"><div class="post__b b5">Horário: 9 às 18</div><div class="post__a a5"><b>9h às 18h</b><small>Seg a sáb</small></div></div>
-                  <div class="post" style="--i:5"><div class="post__b b6">!!!</div><div class="post__a a6"><span class="dot dot--sm"></span></div></div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </article>
+      <div class="svc" data-in>
+        <button type="button" data-go="landing"><b>Landing pages</b><span>Uma página com um objetivo só: o visitante pedir orçamento no seu WhatsApp.</span><em>Ver no holograma →</em></button>
+        <button type="button" data-go="site"><b>Sites</b><span>Quem vocês são, o que fazem e como falar com vocês, pronto para o Google.</span><em>Ver no holograma →</em></button>
+        <button type="button" data-go="app"><b>Aplicativos</b><span>Agendamentos, pedidos, cardápio digital ou um painel para a equipe.</span><em>Ver no holograma →</em></button>
+        <button type="button" data-go="ig"><b>Instagram</b><span>Perfil organizado e posts com a mesma cara do seu site.</span><em>Ver no holograma →</em></button>
       </div>
-      <p class="fineprint">As demonstrações acima são ilustrativas.</p>
     </div>
   </section>
 
-  <!-- PROJETOS -->
-  <section class="section work" id="projetos" aria-labelledby="work-title">
-    <div class="shell work__head" data-reveal>
-      <h2 id="work-title" class="h2">AB Transportes</h2>
+  <!-- 3 · monte o seu -->
+  <section class="section" id="monte" aria-labelledby="monte-h" style="padding-top: 24px">
+    <div class="wrap">
+      <div class="head" data-in>
+        <p class="k">Monte o seu</p>
+        <h2 class="h2" id="monte-h">Veja o seu projeto antes de pedir</h2>
+        <p class="lead">Escolha o que precisa e escreva o nome do seu negócio. O holograma se monta na hora.</p>
+      </div>
+      <div class="builder">
+        <div class="controls">
+          <fieldset class="field"><legend>O que você precisa</legend>
+            <div class="chips" data-group="tipo">
+              <button class="chip" type="button" data-v="landing" aria-pressed="true">Landing page</button>
+              <button class="chip" type="button" data-v="site" aria-pressed="false">Site</button>
+              <button class="chip" type="button" data-v="app" aria-pressed="false">Aplicativo</button>
+              <button class="chip" type="button" data-v="ig" aria-pressed="false">Instagram</button>
+            </div>
+          </fieldset>
+          <fieldset class="field"><legend>Seu segmento</legend>
+            <div class="chips" data-group="seg">
+              <button class="chip" type="button" data-v="loja" aria-pressed="true">Loja</button>
+              <button class="chip" type="button" data-v="restaurante" aria-pressed="false">Restaurante</button>
+              <button class="chip" type="button" data-v="transporte" aria-pressed="false">Transporte</button>
+              <button class="chip" type="button" data-v="saude" aria-pressed="false">Saúde</button>
+              <button class="chip" type="button" data-v="servicos" aria-pressed="false">Serviços</button>
+            </div>
+          </fieldset>
+          <div class="field"><label class="lbl" for="nome">Nome do seu negócio</label>
+            <input class="input" id="nome" type="text" maxlength="28" placeholder="Ex.: Doce Ponto" autocomplete="organization">
+          </div>
+          <fieldset class="field"><legend>Cor da marca</legend>
+            <div class="swatches" data-group="cor">
+              <button class="sw" type="button" style="--c:#FF2D4F" data-v="#FF2D4F" aria-pressed="true" aria-label="Vermelho"></button>
+              <button class="sw" type="button" style="--c:#E23CCB" data-v="#E23CCB" aria-pressed="false" aria-label="Magenta"></button>
+              <button class="sw" type="button" style="--c:#9B4DFF" data-v="#9B4DFF" aria-pressed="false" aria-label="Roxo"></button>
+              <button class="sw" type="button" style="--c:#2EC5FF" data-v="#2EC5FF" aria-pressed="false" aria-label="Azul"></button>
+              <button class="sw" type="button" style="--c:#2BD98C" data-v="#2BD98C" aria-pressed="false" aria-label="Verde"></button>
+            </div>
+          </fieldset>
+        </div>
+        <div class="out">
+          <div class="stage build__stage" id="buildStage" aria-label="Prévia do seu projeto em holograma" role="img">
+            <div class="holo"></div><span class="scan"></span><img class="emblem" src="assets/img/k-mark-160.webp" alt="" width="160" height="118">
+          </div>
+          <div class="summary">
+            <div><p class="small" style="margin-bottom:10px">O que vem junto</p><ul class="incl" id="incl"></ul></div>
+            <div class="send">
+              <button class="btn btn--light" id="gerar" type="button">Gerar meu pedido</button>
+              <div id="sent" hidden>
+                <p class="msg" id="msg"></p>
+                <div class="row"><a class="btn btn--light" id="sendMail" href="#">Enviar por e-mail</a><button class="btn btn--ghost" type="button" id="copyMsg">Copiar mensagem</button></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
-    <div class="shell work__grid">
-      <div class="work__copy" data-reveal>
-        <p class="lead">Landing page para uma transportadora de coleta e entrega com moto, carro e caminhão. O objetivo é um só: o visitante pedir orçamento pelo WhatsApp, com os dados da carga já preenchidos.</p>
+  </section>
 
-        <ul class="index" data-index>
-          <li><button class="index__row is-active" type="button" data-view="full" aria-pressed="true"><span>A página inteira</span><small>Computador e celular</small></button></li>
-          <li><button class="index__row" type="button" data-view="hero" aria-pressed="false"><span>O topo, com a estrada em movimento</span><small>WebGL</small></button></li>
-          <li><button class="index__row" type="button" data-view="chat" aria-pressed="false"><span>A linha do tempo da entrega</span><small>Do pedido à foto</small></button></li>
-          <li><button class="index__row" type="button" data-view="frota" aria-pressed="false"><span>A escolha do veículo</span><small>Moto, carro ou caminhão</small></button></li>
-          <li><button class="index__row" type="button" data-view="orcamento" aria-pressed="false"><span>O orçamento guiado</span><small>Pronto no WhatsApp</small></button></li>
-        </ul>
-
-        <dl class="work__facts">
+  <!-- 4 · projeto -->
+  <section class="section" id="projeto" aria-labelledby="case-h">
+    <div class="wrap case">
+      <div class="stage case__stage" id="caseStage" role="img" aria-label="Telas da landing page da AB Transportes em holograma">
+        <div class="holo"></div><span class="scan"></span><img class="emblem" src="assets/img/k-mark-160.webp" alt="" width="160" height="118">
+      </div>
+      <div class="case__text" data-in>
+        <p class="k">Projeto</p>
+        <h2 id="case-h">AB Transportes</h2>
+        <p class="lead">Landing page para uma transportadora de cargas. O visitante pede orçamento pelo WhatsApp.</p>
+        <dl class="facts">
           <div><dt>Entrega</dt><dd>Landing page</dd></div>
-          <div><dt>Segmento</dt><dd>Logística</dd></div>
-          <div><dt>Tecnologia</dt><dd>Vue 3, Vite, GSAP e WebGL</dd></div>
+          <div><dt>Ano</dt><dd>2026</dd></div>
         </dl>
-
-        <a class="link" href="https://abtransportes.vercel.app/" target="_blank" rel="noopener">Ver o site no ar <span aria-hidden="true">↗</span></a>
-      </div>
-
-      <div class="work__view" data-reveal>
-        <div class="browser" data-ui>
-          <div class="browser__bar"><i></i><i></i><i></i><span>abtransportes · landing page</span></div>
-          <div class="browser__screen" data-screen>
-            <div class="view is-on" data-panel="full">
-              <img class="scroller" src="./assets/img/work/ab-desktop-full.webp" alt="A landing page da AB Transportes inteira, do topo ao rodapé" width="1200" height="6035" loading="lazy" decoding="async">
-            </div>
-            <div class="view" data-panel="hero">
-              <img src="./assets/img/work/ab-desktop-hero.webp" alt="Topo da página: caminhão da AB na estrada e a manchete Do ponto A ao ponto B, sem perder de vista" width="1200" height="750" loading="lazy" decoding="async">
-            </div>
-            <div class="view view--crop" data-panel="chat">
-              <img src="./assets/img/work/ab-chat.webp" alt="Conversa de exemplo no WhatsApp, da linha do tempo da entrega" width="600" height="528" loading="lazy" decoding="async">
-            </div>
-            <div class="view view--crop" data-panel="frota">
-              <img src="./assets/img/work/ab-frota.webp" alt="Seletor de veículo com moto, carro e caminhão e a foto da moto" width="1020" height="456" loading="lazy" decoding="async">
-            </div>
-            <div class="view view--crop" data-panel="orcamento">
-              <img src="./assets/img/work/ab-orcamento.webp" alt="Primeira etapa do orçamento guiado, a ordem de coleta" width="628" height="540" loading="lazy" decoding="async">
-            </div>
-          </div>
-        </div>
-        <div class="phone phone--work" data-ui data-phone>
-          <div class="phone__screen">
-            <img class="scroller scroller--phone" src="./assets/img/work/ab-mobile-full.webp" alt="A mesma página no celular" width="600" height="12137" loading="lazy" decoding="async">
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="shell">
-      <div class="next" data-reveal>
-        <p class="next__text">O próximo projeto pode ser o seu.</p>
-        <a class="btn btn--light" href="#contato">Pedir orçamento</a>
+        <a class="btn btn--light" href="https://abtransportes.vercel.app/" target="_blank" rel="noopener">Ver o site no ar ↗</a>
       </div>
     </div>
   </section>
 
-  <!-- PROCESSO: o controle desta seção é o único jeito de avançar -->
-  <section class="process" id="processo" aria-labelledby="processo-title">
-    <h2 id="processo-title" class="sr-only">Como trabalhamos</h2>
-    <div class="process__split" data-process data-stage="0">
-      <div class="process__words">
-        <div class="process__inner" aria-live="polite">
-          <p class="clause" data-clause>Primeiro, a conversa</p>
-          <p class="process__text" data-text>Entendemos o seu negócio, quem compra de você e o que precisa acontecer quando alguém abre o site.</p>
-          <p class="process__out" data-out>Você recebe: proposta com escopo, prazo e valor.</p>
-        </div>
-      </div>
+  <!-- 5 · como trabalhamos -->
+  <section class="section" id="processo" aria-labelledby="proc-h" style="padding-top: 24px">
+    <div class="wrap">
+      <div class="head" data-in><p class="k">Como trabalhamos</p><h2 class="h2" id="proc-h">Da conversa ao pedido no WhatsApp</h2></div>
+      <ol class="steps" data-in>
+        <li style="--c: var(--n1)"><b>Conversa</b><p>Você fala direto com os sócios. Entendemos o negócio e o que a página precisa vender.</p></li>
+        <li style="--c: #ff3cc8"><b>Estratégia</b><p>Escrevemos o texto e desenhamos o caminho do visitante até o botão.</p></li>
+        <li style="--c: var(--n2)"><b>Tecnologia</b><p>Design e código feitos do zero, leves e rápidos no celular.</p></li>
+        <li style="--c: var(--n3)"><b>Resultados</b><p>O site vai ao ar e os pedidos chegam direto no seu WhatsApp.</p></li>
+      </ol>
+    </div>
+  </section>
 
-      <div class="process__view">
-        <div class="build" data-ui data-build aria-hidden="true">
-          <div class="build__bar"><i></i><i></i><i></i><span data-url>Briefing</span><em class="live" data-live>No ar</em></div>
-          <div class="build__screen">
-            <!-- 0: briefing -->
-            <div class="layer layer--brief" data-layer="0">
-              <p class="brief__title">Briefing · AB Transportes</p>
-              <dl class="brief">
-                <div><dt>Objetivo</dt><dd>Pedidos de orçamento pelo WhatsApp</dd></div>
-                <div><dt>Quem contrata</dt><dd>Empresas e pessoas que precisam enviar cargas</dd></div>
-                <div><dt>Diferenciais</dt><dd>Coleta e entrega no mesmo dia, foto na coleta e na entrega</dd></div>
-                <div><dt>Veículos</dt><dd>Moto, carro e caminhão</dd></div>
-              </dl>
-            </div>
-            <!-- 1: estrutura e texto -->
-            <div class="layer layer--wire" data-layer="1">
-              <div class="wire__nav"><b></b><i></i><i></i><i></i><u></u></div>
-              <div class="wire__hero">
-                <p class="wire__h">Do ponto A ao ponto B, sem perder de vista.</p>
-                <i></i><i class="short"></i>
-                <div class="wire__cta"><span class="wire__btn">Pedir orçamento</span><em class="wire__tag wire__tag--c">Ação</em></div>
-              </div>
-              <div class="wire__blocks"><span>Como funciona</span><span>Frota</span><span>Orçamento</span></div>
-              <p class="wire__tag wire__tag--a">Promessa</p>
-              <p class="wire__tag wire__tag--b">Prova</p>
-            </div>
-            <!-- 2: design e código -->
-            <div class="layer layer--design" data-layer="2">
-              <img src="./assets/img/work/ab-desktop-hero.webp" alt="" width="1200" height="750" loading="lazy" decoding="async">
-              <span class="scan" aria-hidden="true"></span>
-              <pre class="code"><code><span class="t">&lt;TheHeader /&gt;</span>
-<span class="t">&lt;HeroLive /&gt;</span>
-<span class="t">&lt;RoadBand /&gt;</span>
-<span class="t">&lt;JourneyRoute /&gt;</span>
-<span class="t">&lt;FleetConfigurator /&gt;</span>
-<span class="t">&lt;QuoteWizard /&gt;</span></code></pre>
-            </div>
-            <!-- 3: no ar -->
-            <div class="layer layer--live" data-layer="3">
-              <ol class="leads">
-                <li style="--i:0"><b>Pedido de orçamento</b><span>3 caixas · Campinas → São Paulo</span></li>
-                <li style="--i:1"><b>Nova conversa no WhatsApp</b><span>Coleta para amanhã, 9h</span></li>
-                <li style="--i:2"><b>Pedido de orçamento</b><span>Palete · Jundiaí → Campinas</span></li>
-              </ol>
-            </div>
-          </div>
-        </div>
-        <p class="process__note">Arraste o controle ou toque nas etapas. Exemplo com a página da AB; pedidos ilustrativos.</p>
-      </div>
-
-      <div class="process__control">
-        <div class="slider">
-          <label class="sr-only" for="stage">Etapa do projeto</label>
-          <input type="range" id="stage" min="0" max="3" step="1" value="0" aria-valuetext="Conversa" data-range>
-          <ol class="stages">
-            <li><button type="button" data-go="0" aria-current="step">Conversa</button></li>
-            <li><button type="button" data-go="1">Estratégia</button></li>
-            <li><button type="button" data-go="2">Tecnologia</button></li>
-            <li><button type="button" data-go="3">Resultados</button></li>
-          </ol>
-        </div>
+  <!-- 6 · quem somos -->
+  <section class="section" id="quem-somos" aria-labelledby="who-h" style="padding-top: 24px">
+    <div class="wrap">
+      <div class="head" data-in><p class="k">Quem somos</p><h2 class="h2" id="who-h">Direto com quem faz</h2></div>
+      <div class="duo" data-in>
+        <article class="person"><span class="mono" aria-hidden="true">CM</span><div><h3>Cauã Moura</h3><p class="role">Tecnologia</p><p>Formado em Análise e Desenvolvimento de Sistemas. Transforma a estratégia em código: sites, landing pages e aplicativos feitos do zero.</p></div></article>
+        <article class="person"><span class="mono" aria-hidden="true">VR</span><div><h3>Vitor Ramos</h3><p class="role">Estratégia e relacionamento</p><p>Acompanha cada cliente do primeiro contato ao lançamento, para o projeto entregar o que o negócio precisa.</p></div></article>
       </div>
     </div>
   </section>
 
-  <!-- QUEM SOMOS -->
-  <section class="section about" id="quem-somos" aria-labelledby="about-title">
-    <h2 id="about-title" class="sr-only">Quem somos</h2>
-    <div class="shell about__grid">
-      <ul class="about__facts" data-reveal>
-        <li>Korvex · Soluções digitais</li>
-        <li>Dois sócios, atendimento direto</li>
-        <li>cv.korvex@gmail.com</li>
-      </ul>
-      <div class="about__text">
-        <p class="bio" data-reveal><span class="mono" aria-hidden="true">CM</span><span class="bio__text"><strong>Cauã Moura</strong> cuida da tecnologia. Formado em Análise e Desenvolvimento de Sistemas, transforma a estratégia em código: sites, landing pages e aplicativos feitos do zero, com Vue.js, Flutter e Python.</span></p>
-        <p class="bio" data-reveal><span class="mono" aria-hidden="true">VR</span><span class="bio__text"><strong>Vitor Ramos</strong> cuida da estratégia e do relacionamento. Acompanha cada cliente do primeiro contato ao lançamento, para o projeto entregar o que o negócio precisa.</span></p>
-        <p class="about__close" data-reveal>Sem intermediários: quem responde a sua mensagem é quem faz o seu projeto.</p>
-      </div>
-    </div>
-  </section>
-
-  <!-- CONTATO -->
-  <section class="section contact" id="contato" aria-labelledby="contact-title">
-    <div class="shell">
-      <div class="contact__col">
-        <h2 id="contact-title" class="contact__prompt" data-reveal><span>Tem um projeto?</span> <span>Conte em uma frase</span></h2>
-
-        <div class="chips" role="group" aria-label="Começar com" data-reveal>
-          <button type="button" data-chip="Quero uma landing page para ">Landing page</button>
-          <button type="button" data-chip="Quero um site para ">Site</button>
-          <button type="button" data-chip="Quero um aplicativo para ">Aplicativo</button>
-          <button type="button" data-chip="Quero cuidar do Instagram da ">Instagram</button>
+  <!-- 7 · contato -->
+  <section class="section" id="contato" aria-labelledby="contact-h" style="padding-top: 24px">
+    <div class="wrap">
+      <div class="contact" data-in>
+        <div><h2 id="contact-h">Tem um projeto?</h2><p class="lead">Monte no holograma e envie o pedido, ou escreva direto. Quem responde é quem faz.</p></div>
+        <div class="mailbox">
+          <a class="mail" href="mailto:cv.korvex@gmail.com?subject=Or%C3%A7amento%20pelo%20site" id="mailLink">cv.korvex@gmail.com</a>
+          <div class="row"><button class="btn btn--light" type="button" id="copyMail">Copiar e-mail</button><a class="btn btn--ghost" href="#monte">Montar o projeto</a></div>
         </div>
-
-        <form class="ask" data-contact novalidate>
-          <div class="ask__wrap">
-            <canvas class="ask__glow" data-pulse aria-hidden="true"></canvas>
-            <div class="ask__field" data-field>
-              <label class="sr-only" for="msg">O que a sua empresa precisa?</label>
-              <input id="msg" name="msg" type="text" autocomplete="off" enterkeyhint="send" placeholder="Ex.: quero uma landing page para minha doceria">
-              <button class="ask__send" type="submit" aria-label="Enviar por e-mail">
-                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h13M12 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-              </button>
-            </div>
-          </div>
-          <p class="ask__note" data-note>Abrimos o seu e-mail com a mensagem pronta. É só enviar.</p>
-          <p class="ask__error" data-error role="alert" hidden>Escreva o que você precisa para a gente poder responder.</p>
-        </form>
-
-        <dl class="contact__rows">
-          <div>
-            <dt>E-mail</dt>
-            <dd><span class="mail" id="mail">cv.korvex@gmail.com</span><button type="button" class="copy" data-copy>Copiar</button></dd>
-          </div>
-          <div>
-            <dt>Quem responde</dt>
-            <dd>Cauã Moura e Vitor Ramos</dd>
-          </div>
-        </dl>
       </div>
     </div>
   </section>
 </main>
 
-<footer class="footer">
-  <div class="shell">
-    <svg class="footer__mark" viewBox="0 0 1200 236" role="img" aria-label="Korvex. Estratégia, tecnologia, resultados.">
-      <defs>
-        <linearGradient id="chrome" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stop-color="#ffffff"/>
-          <stop offset="0.38" stop-color="#c9ccd4"/>
-          <stop offset="0.55" stop-color="#6e717c"/>
-          <stop offset="0.78" stop-color="#e6e8ee"/>
-          <stop offset="1" stop-color="#9ea2ad"/>
-        </linearGradient>
-      </defs>
-      <g font-family="Michroma, Eurostile, Arial, sans-serif" font-size="150" fill="url(#chrome)" text-anchor="middle">
-        <text x="100" y="146">K</text>
-        <text x="300" y="146">O</text>
-        <text x="500" y="146">R</text>
-        <text x="700" y="146">V</text>
-        <text x="-900" y="146" transform="scale(-1 1)">E</text>
-        <text x="1100" y="146">X</text>
-      </g>
-      <text x="600" y="222" text-anchor="middle" font-family="Michroma, Eurostile, Arial, sans-serif" font-size="21" letter-spacing="9" fill="#a4a7b2">ESTRATÉGIA <tspan fill="#ff2d4f">/</tspan> TECNOLOGIA <tspan fill="#ff2d4f">/</tspan> RESULTADOS</text>
-    </svg>
-    <div class="footer__line">
-      <p>Korvex · Soluções digitais</p>
-      <nav aria-label="Rodapé">
-        <a href="#servicos">Serviços</a>
-        <a href="#projetos">Projetos</a>
-        <a href="#processo">Processo</a>
-        <a href="#quem-somos">Quem somos</a>
-        <a href="#contato">Contato</a>
-      </nav>
-      <p>© <span data-year>2026</span> · Cauã Moura e Vitor Ramos</p>
-    </div>
+<footer>
+  <div class="wrap foot">
+    <span class="logo">KORV<span class="flip">E</span>X</span>
+    <nav aria-label="Rodapé"><a href="#servicos">Serviços</a><a href="#monte">Monte o seu</a><a href="#projeto">Projeto</a><a href="#processo">Como trabalhamos</a><a href="#contato">Contato</a></nav>
+    <span>© 2026 Korvex · Cauã Moura e Vitor Ramos</span>
   </div>
 </footer>
 
-<script type="module" src="./assets/js/main.js"></script>
-<!--CONTENT-END-->
+<div class="pal-back" id="palBack" hidden>
+  <div class="pal" role="dialog" aria-modal="true" aria-label="Comandos">
+    <div class="pal-top"><kbd>K</kbd><input id="palInput" type="text" placeholder="O que você procura?" autocomplete="off" role="combobox" aria-expanded="true" aria-controls="palList" aria-autocomplete="list"></div>
+    <ul id="palList" role="listbox"></ul>
+  </div>
+</div>
+
+<script>
+(() => {
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches
+  const fine = matchMedia('(hover: hover) and (pointer: fine)').matches
+  const $ = (s, r = document) => r.querySelector(s)
+  const $$ = (s, r = document) => [...r.querySelectorAll(s)]
+  const clamp = (v, a, b) => Math.min(b, Math.max(a, v))
+  const esc = (s) => s.replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]))
+  const EMAIL = 'cv.korvex@gmail.com'
+
+  /* ---------- conteúdo dos hologramas (exemplos fictícios) ---------- */
+  const SEG = {
+    loja:        { nome: 'Ateliê Lume',    h: 'Peças únicas, entrega no seu bairro', cta: 'Comprar pelo WhatsApp', app: ['Pedido #128 · retirar 14h', 'Pedido #129 · entrega 16h', 'Pedido #130 · aguardando'], post: 'Coleção nova', ic: 'Pedidos', txt: 'loja' },
+    restaurante: { nome: 'Brasa & Cia',    h: 'Peça direto da mesa, sem esperar',    cta: 'Ver o cardápio',        app: ['Mesa 4 · 2 pratos', 'Mesa 7 · sobremesa', 'Delivery · 19h30'], post: 'Prato do dia', ic: 'Cardápio', txt: 'restaurante' },
+    transporte:  { nome: 'Rota Certa',     h: 'Coleta e entrega no mesmo dia',       cta: 'Pedir orçamento',       app: ['Coleta · 9h', 'Entrega · 14h', 'Coleta · 16h'], post: 'Entrega feita', ic: 'Rotas', txt: 'transporte' },
+    saude:       { nome: 'Clínica Vita',   h: 'Agende sua consulta em um minuto',    cta: 'Agendar consulta',      app: ['08:30 · Ana · retorno', '10:00 · Bruno · avaliação', '14:30 · horário livre'], post: 'Dica da semana', ic: 'Agenda', txt: 'saúde' },
+    servicos:    { nome: 'Prumo Reformas', h: 'Orçamento sem sair de casa',          cta: 'Pedir orçamento',       app: ['Visita · Rua das Flores', 'Orçamento enviado', 'Obra · etapa 2 de 4'], post: 'Antes e depois', ic: 'Serviços', txt: 'serviços' },
+  }
+  const TIPO = { landing: 'Landing page', site: 'Site', app: 'Aplicativo', ig: 'Instagram' }
+  const INCL = {
+    landing: ['Uma página com um objetivo só', 'Texto escrito para vender', 'Botão do WhatsApp com a mensagem pronta', 'Feita primeiro para o celular'],
+    site: ['Início, sobre, serviços e contato', 'Preparado para aparecer no Google', 'Formulário de contato', 'Fácil de atualizar depois'],
+    app: ['Funciona no navegador e no celular', 'Agendamentos, pedidos ou cardápio', 'Painel para a sua equipe', 'Avisos para o cliente'],
+    ig: ['Bio e destaques organizados', 'Modelos de post com a cara da marca', 'Capas e Stories', 'Link para pedido ou agenda'],
+  }
+
+  /* ---------- montar um holograma ---------- */
+  function L(css, html, z, cls = '') { return `<div class="L ${cls}" style="${css};transform:translateZ(${z}px)">${html}</div>` }
+  function build(stage, cfg, animate) {
+    const holo = $('.holo', stage)
+    const narrow = stage.clientWidth < 520
+    let html = '', W, H
+    if (cfg.kind === 'case') {
+      W = narrow ? 300 : 470; H = narrow ? 230 : 330
+      const sh = (src, css, z) => L(`${css}`, `<div class="shot" style="width:100%;height:100%"><img src="${src}" alt=""></div>`, z)
+      html += sh(cfg.imgs[1], `left:${narrow ? -40 : -70}px;top:${narrow ? -40 : -60}px;width:${W * 0.62}px;height:${H * 0.62}px`, -140)
+      html += sh(cfg.imgs[2], `left:${W * 0.5}px;top:${narrow ? -26 : -40}px;width:${W * 0.62}px;height:${H * 0.62}px`, -90)
+      html += sh(cfg.imgs[0], `left:0;top:${narrow ? 40 : 60}px;width:${W}px;height:${H}px`, 0)
+      html += `<span class="tag" style="left:${W - 120}px;top:${narrow ? 30 : 46}px;transform:translateZ(90px)">No ar</span>`
+      html += `<span class="tag" style="left:${narrow ? 10 : 18}px;top:${(narrow ? 40 : 60) + H - 14}px;transform:translateZ(70px)">Landing page</span>`
+      H += narrow ? 40 : 60
+    } else {
+      const s = SEG[cfg.seg], name = esc((cfg.nome || '').trim() || s.nome)
+      if (cfg.tipo === 'landing' || cfg.tipo === 'site') {
+        W = narrow ? 290 : 460; H = narrow ? 290 : 340
+        const isSite = cfg.tipo === 'site'
+        if (isSite) {
+          html += L(`left:36px;top:-30px;width:${W}px;height:${H}px`, '', -150, 'glass')
+          html += L(`left:18px;top:-15px;width:${W}px;height:${H}px`, '', -75, 'glass')
+        }
+        html += L(`left:0;top:0;width:${W}px;height:${H}px`, '', 0, 'glass')
+        const nav = isSite ? ['Início', 'Sobre', 'Serviços', 'Contato'] : []
+        html += L(`left:18px;top:16px;width:${W - 36}px;display:flex;align-items:center;gap:12px`,
+          `<span class="h-txt" style="font:400 ${narrow ? 10 : 12}px var(--f-display);letter-spacing:.06em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:52%">${name}</span>` +
+          (isSite ? `<span style="margin-left:auto;display:flex;gap:${narrow ? 6 : 10}px;font:600 ${narrow ? 9 : 11}px var(--f-text);color:var(--muted)">${nav.map((n, i) => `<span style="${i === 0 ? 'color:var(--ink)' : ''}">${n}</span>`).join('')}</span>` : `<span class="h-btn" style="margin-left:auto;padding:6px 10px;font-size:10px">${esc(s.ic)}</span>`), 30)
+        html += L(`left:18px;top:${narrow ? 64 : 84}px;width:${narrow ? 170 : 260}px`, `<div class="h-txt" style="font:800 ${narrow ? 18 : 25}px/1.15 var(--f-text);text-wrap:balance">${esc(s.h)}</div>`, 60)
+        html += L(`left:18px;top:${narrow ? 146 : 172}px;width:${narrow ? 150 : 210}px;display:grid;gap:7px`, `<div class="h-ln"></div><div class="h-ln" style="width:70%"></div>`, 40)
+        html += L(`left:18px;top:${narrow ? 180 : 212}px`, `<span class="h-btn">${esc(s.cta)}</span>`, 95)
+        html += L(`right:18px;top:${narrow ? 64 : 84}px;width:${narrow ? 78 : 140}px;height:${narrow ? 96 : 140}px;border-radius:12px;background:linear-gradient(140deg, color-mix(in srgb, var(--brand) 55%, transparent), rgba(155,77,255,.2));box-shadow:0 0 30px -6px var(--brand)`, '', 70)
+        const cw = (W - 36 - 20) / 3
+        for (let i = 0; i < 3; i++) html += L(`left:${18 + i * (cw + 10)}px;bottom:16px;width:${cw}px;height:${narrow ? 44 : 58}px;border-radius:10px;box-shadow:inset 0 0 0 1px rgba(255,255,255,.18);background:rgba(255,255,255,.04)`, '', 25 + i * 8)
+        html += `<span class="tag" style="left:${narrow ? 120 : 165}px;top:${narrow ? 176 : 206}px;transform:translateZ(130px)">Ação</span>`
+        html += `<span class="tag" style="left:${W - (narrow ? 96 : 150)}px;top:${narrow ? 150 : 214}px;transform:translateZ(110px)">Prova</span>`
+        if (isSite) html += `<span class="tag" style="left:${W - 40}px;top:-48px;transform:translateZ(-150px)">+3 páginas</span>`
+      } else if (cfg.tipo === 'app') {
+        W = narrow ? 196 : 230; H = narrow ? 370 : 440
+        html += L(`left:0;top:0;width:${W}px;height:${H}px;border-radius:34px`, '', 0, 'glass')
+        html += L(`left:16px;top:22px;width:${W - 32}px;display:flex;justify-content:space-between;align-items:center`, `<span class="h-txt" style="font:400 10px var(--f-display);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:70%">${name}</span><span style="width:24px;height:24px;border-radius:50%;background:var(--brand);box-shadow:0 0 14px var(--brand)"></span>`, 30)
+        html += L(`left:16px;top:62px;width:${W - 32}px`, `<div class="h-txt" style="font:800 18px var(--f-text)">${esc(s.ic)}</div><div style="font-size:11px;color:var(--muted)">Hoje</div>`, 45)
+        s.app.forEach((item, i) => {
+          html += L(`left:14px;top:${112 + i * 62}px;width:${W - 28}px;padding:12px;border-radius:14px;background:rgba(255,255,255,.06);box-shadow:inset 0 0 0 1px rgba(255,255,255,.12);display:flex;gap:10px;align-items:center`,
+            `<span style="width:8px;height:8px;border-radius:50%;flex:none;background:${i === 0 ? 'var(--brand)' : 'rgba(255,255,255,.3)'};box-shadow:${i === 0 ? '0 0 10px var(--brand)' : 'none'}"></span><span class="h-txt" style="font:600 12px var(--f-text)">${esc(item)}</span>`, 40 + i * 14)
+        })
+        html += L(`left:14px;bottom:16px;width:${W - 28}px;display:flex;justify-content:space-around`, [0, 1, 2, 3].map((i) => `<span style="width:20px;height:20px;border-radius:6px;background:${i === 0 ? 'var(--brand)' : 'rgba(255,255,255,.18)'}"></span>`).join(''), 30)
+        html += L(`left:${W - 70}px;top:${narrow ? 292 : 340}px;width:${narrow ? 160 : 200}px;padding:12px 14px;border-radius:14px;background:rgba(14,14,19,.94);box-shadow:inset 0 0 0 1px var(--brand),0 0 30px -6px var(--brand)`,
+          `<div style="font:700 10px var(--f-text);letter-spacing:.12em;text-transform:uppercase;color:var(--brand)">Agora</div><div class="h-txt" style="font:700 13px var(--f-text)">Novo ${s.ic === 'Agenda' ? 'agendamento' : 'pedido'}</div>`, 140)
+      } else {
+        W = narrow ? 206 : 240; H = narrow ? 384 : 450
+        html += L(`left:0;top:0;width:${W}px;height:${H}px;border-radius:34px`, '', 0, 'glass')
+        html += L(`left:16px;top:26px;display:flex;gap:12px;align-items:center;width:${W - 32}px`, `<span style="width:46px;height:46px;flex:none;border-radius:50%;background:conic-gradient(var(--brand), #9B4DFF, var(--brand));box-shadow:0 0 18px -2px var(--brand)"></span><span class="h-txt" style="font:800 13px var(--f-text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${name}</span>`, 45)
+        html += L(`left:16px;top:84px;width:${W - 32}px;display:grid;gap:6px`, `<div class="h-txt" style="font:600 11px/1.4 var(--f-text)">${esc(s.h)}</div><div style="font:700 11px var(--f-text);color:var(--brand)">${esc(s.cta)}</div>`, 35)
+        html += L(`left:16px;top:140px;display:flex;gap:10px`, [0, 1, 2].map(() => `<span style="width:34px;height:34px;border-radius:50%;box-shadow:inset 0 0 0 2px var(--brand)"></span>`).join(''), 30)
+        const g = (W - 32 - 8) / 3
+        for (let i = 0; i < 9; i++) {
+          const c = i % 3, r = Math.floor(i / 3)
+          html += L(`left:${16 + c * (g + 4)}px;top:${190 + r * (g + 4)}px;width:${g}px;height:${g}px;border-radius:4px;background:linear-gradient(${120 + i * 25}deg, color-mix(in srgb, var(--brand) ${30 + (i % 4) * 15}%, transparent), rgba(155,77,255,.18))`, '', 20 + i * 4)
+        }
+        html += L(`left:${W - 70}px;top:60px;width:${narrow ? 146 : 180}px;padding:10px;border-radius:14px;background:rgba(14,14,19,.94);box-shadow:inset 0 0 0 1px var(--brand),0 0 30px -6px var(--brand)`,
+          `<div style="height:${narrow ? 78 : 100}px;border-radius:8px;background:linear-gradient(140deg, var(--brand), #9B4DFF)"></div><div class="h-txt" style="font:700 12px var(--f-text);margin-top:8px">${esc(s.post)}</div>`, 150)
+      }
+    }
+    holo.style.width = W + 'px'; holo.style.height = H + 'px'
+    holo.style.setProperty('--sc', Math.min(1, (stage.clientHeight - 90) / H, (stage.clientWidth - 40) / W).toFixed(3))
+    holo.innerHTML = html
+    if (animate && !reduce) {
+      $$('.L, .tag', holo).forEach((el, i) => {
+        const base = el.style.transform
+        el.animate([{ opacity: 0, transform: `${base} translateZ(-120px)`, filter: 'blur(6px)' }, { opacity: 1, transform: base, filter: 'blur(0px)' }], { duration: 520, delay: 40 + i * 32, easing: 'cubic-bezier(.23,1,.32,1)', fill: 'backwards' })
+      })
+      $('.scan', stage).animate([{ opacity: 0, transform: 'translateY(0)' }, { opacity: 1, offset: .1 }, { opacity: 1, offset: .85 }, { opacity: 0, transform: `translateY(${stage.clientHeight}px)` }], { duration: 900, easing: 'cubic-bezier(.77,0,.175,1)' })
+    }
+  }
+
+  /* ---------- inclinação: segue o ponteiro; no celular balança sozinha ---------- */
+  const tilts = []
+  function addTilt(stage) {
+    const t = { stage, holo: $('.holo', stage), rx: 8, ry: -14, trx: 8, try_: -14, on: true }
+    stage.addEventListener('pointermove', (e) => {
+      if (e.pointerType !== 'mouse') return
+      const r = stage.getBoundingClientRect()
+      t.try_ = ((e.clientX - r.left) / r.width - .5) * 34; t.trx = 8 - ((e.clientY - r.top) / r.height - .5) * 22
+    })
+    stage.addEventListener('pointerleave', () => { t.trx = 8; t.try_ = -14 })
+    new IntersectionObserver(([en]) => { t.on = en.isIntersecting }).observe(stage)
+    tilts.push(t)
+  }
+  ;(function loop(now) {
+    requestAnimationFrame(loop)
+    for (const t of tilts) {
+      if (!t.on) continue
+      if (reduce) { t.holo.style.setProperty('--rx', '8deg'); t.holo.style.setProperty('--ry', '-14deg'); continue }
+      t.rx += (t.trx - t.rx) * .08; t.ry += (t.try_ - t.ry) * .08
+      const idle = Math.sin(now / 2400) * (fine ? 2 : 7)
+      t.holo.style.setProperty('--rx', (t.rx + idle * .3).toFixed(2) + 'deg')
+      t.holo.style.setProperty('--ry', (t.ry + idle).toFixed(2) + 'deg')
+    }
+  })(0)
+
+  /* ---------- 1 · topo: o projetor troca de exemplo sozinho ---------- */
+  const REEL = [
+    { tipo: 'landing', seg: 'transporte', cor: '#FF2D4F' },
+    { tipo: 'app', seg: 'saude', cor: '#9B4DFF' },
+    { tipo: 'site', seg: 'restaurante', cor: '#E23CCB' },
+    { tipo: 'ig', seg: 'loja', cor: '#2EC5FF' },
+  ]
+  const heroStage = $('#heroStage'), dots = $('#dots'), reelLabel = $('#reelLabel')
+  let reelI = 0, reelTimer = 0, heroHover = false, heroVisible = true
+  REEL.forEach((r, i) => {
+    const b = document.createElement('button'); b.className = 'dot'; b.type = 'button'
+    b.setAttribute('aria-label', `${TIPO[r.tipo]} · ${SEG[r.seg].txt}`); b.innerHTML = '<i></i>'
+    b.addEventListener('click', () => { showReel(i); restartReel() })
+    dots.append(b)
+  })
+  function showReel(i) {
+    reelI = i; const r = REEL[i]
+    heroStage.style.setProperty('--brand', r.cor); dots.style.setProperty('--brand-dot', r.cor)
+    build(heroStage, r, true)
+    reelLabel.innerHTML = `<b>${TIPO[r.tipo]}</b> · ${SEG[r.seg].txt}`
+    $$('.dot', dots).forEach((d, k) => d.setAttribute('aria-current', String(k === i)))
+  }
+  function restartReel() { clearInterval(reelTimer); if (!reduce) reelTimer = setInterval(() => { if (!heroHover && heroVisible && !document.hidden) showReel((reelI + 1) % REEL.length) }, 3600) }
+  heroStage.addEventListener('pointerenter', (e) => { if (e.pointerType === 'mouse') heroHover = true })
+  heroStage.addEventListener('pointerleave', () => { heroHover = false })
+  new IntersectionObserver(([en]) => { heroVisible = en.isIntersecting }).observe(heroStage)
+  addTilt(heroStage); showReel(0); restartReel()
+
+  /* ---------- 3 · monte o seu ---------- */
+  const state = { tipo: 'landing', seg: 'loja', cor: '#FF2D4F', nome: '' }
+  const buildStage = $('#buildStage')
+  function renderBuild(anim) { buildStage.style.setProperty('--brand', state.cor); build(buildStage, state, anim); $('#incl').innerHTML = INCL[state.tipo].map((t) => `<li>${t}</li>`).join('') }
+  $$('[data-group]').forEach((grp) => grp.addEventListener('click', (e) => {
+    const b = e.target.closest('button'); if (!b) return
+    const key = grp.dataset.group; state[key] = b.dataset.v
+    $$('button', grp).forEach((x) => x.setAttribute('aria-pressed', String(x === b)))
+    if (key === 'cor') document.documentElement.style.setProperty('--brand', state.cor)
+    renderBuild(key !== 'cor')
+  }))
+  $('#nome').addEventListener('input', (e) => { state.nome = e.target.value; renderBuild(false) })
+  function setTipo(v) { const b = $(`[data-group="tipo"] [data-v="${v}"]`); if (b) b.click() }
+  $$('[data-go]').forEach((b) => b.addEventListener('click', () => { setTipo(b.dataset.go); $('#monte').scrollIntoView({ behavior: reduce ? 'auto' : 'smooth' }) }))
+  addTilt(buildStage); renderBuild(false)
+  let lastW = 0
+  new ResizeObserver(() => { const w = innerWidth; if (Math.abs(w - lastW) < 40) return; lastW = w; renderBuild(false); showReel(reelI); buildCase() }).observe(document.body)
+
+  // pedido
+  function message() {
+    const s = SEG[state.seg], nome = state.nome.trim() || 'o meu negócio'
+    const o = { landing: 'uma landing page', site: 'um site', app: 'um aplicativo', ig: 'organizar o Instagram' }[state.tipo]
+    return `Olá, Korvex! Quero ${o} para ${nome}, do segmento de ${s.txt}.\nObjetivo: ${s.cta.toLowerCase()}.\n\nPodemos conversar?`
+  }
+  $('#gerar').addEventListener('click', () => {
+    const m = message()
+    $('#msg').textContent = m
+    $('#sendMail').href = `mailto:${EMAIL}?subject=${encodeURIComponent('Orçamento: ' + TIPO[state.tipo])}&body=${encodeURIComponent(m)}`
+    $('#sent').hidden = false
+    if (!reduce) $('#sent').animate([{ opacity: 0, transform: 'translateY(8px)' }, { opacity: 1, transform: 'none' }], { duration: 300, easing: 'cubic-bezier(.23,1,.32,1)' })
+  })
+  async function copy(text, btn, label) {
+    try { await navigator.clipboard.writeText(text); btn.textContent = 'Copiado' } catch (e) { btn.textContent = 'Não deu para copiar' }
+    setTimeout(() => { btn.textContent = label }, 1600)
+  }
+  $('#copyMsg').addEventListener('click', (e) => copy($('#msg').textContent, e.currentTarget, 'Copiar mensagem'))
+  $('#copyMail').addEventListener('click', (e) => copy(EMAIL, e.currentTarget, 'Copiar e-mail'))
+
+  /* ---------- 4 · projeto: as telas reais da AB em camadas ---------- */
+  const caseStage = $('#caseStage')
+  const CASE = { kind: 'case', imgs: ['assets/img/work/ab-holo-topo.webp', 'assets/img/work/ab-holo-frota.webp', 'assets/img/work/ab-holo-orcamento.webp'] }
+  function buildCase(anim) { build(caseStage, CASE, anim) }
+  addTilt(caseStage); buildCase(false)
+  new IntersectionObserver(([en], o) => { if (en.isIntersecting) { buildCase(true); o.disconnect() } }, { threshold: .35 }).observe(caseStage)
+
+  /* ---------- entradas ---------- */
+  $$('[data-in]').forEach((g) => [...g.children].forEach((c, i) => c.style.setProperty('--i', i)))
+  const io = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target) } }), { rootMargin: '0px 0px -8% 0px' })
+  $$('[data-in]').forEach((g) => io.observe(g))
+
+  /* ---------- comandos K ---------- */
+  const go = (sel) => $(sel).scrollIntoView({ behavior: reduce ? 'auto' : 'smooth' })
+  const CMDS = [
+    { t: 'Montar uma landing page', d: 'Abre o holograma com uma landing page', k: 'landing pagina vender orcamento', run: () => { setTipo('landing'); go('#monte') } },
+    { t: 'Montar um site', d: 'Várias páginas, pronto para o Google', k: 'site institucional google', run: () => { setTipo('site'); go('#monte') } },
+    { t: 'Montar um aplicativo', d: 'Agenda, pedidos ou cardápio', k: 'app aplicativo agenda pedidos cardapio', run: () => { setTipo('app'); go('#monte') } },
+    { t: 'Organizar meu Instagram', d: 'Bio, destaques e posts', k: 'instagram insta posts', run: () => { setTipo('ig'); go('#monte') } },
+    { t: 'Ver o projeto da AB Transportes', d: 'O case em holograma', k: 'ab transportes projeto case portfolio', run: () => go('#projeto') },
+    { t: 'Falar com a Korvex', d: EMAIL, k: 'contato email falar orcamento', run: () => go('#contato') },
+  ]
+  const norm = (s) => s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '')
+  const back = $('#palBack'), input = $('#palInput'), list = $('#palList')
+  let shown = CMDS, sel = 0, lastFocus = null
+  function draw() {
+    const q = norm(input.value.trim())
+    shown = !q ? CMDS : CMDS.filter((c) => q.split(/\s+/).every((w) => norm(c.t + ' ' + c.d + ' ' + c.k).includes(w)))
+    sel = clamp(sel, 0, Math.max(0, shown.length - 1))
+    list.innerHTML = shown.length ? shown.map((c, i) => `<li role="option" id="opt${i}" aria-selected="${i === sel}" data-i="${i}"><span><b>${c.t}</b><small>${c.d}</small></span></li>`).join('') : '<li class="empty">Nada encontrado. Tente "landing", "app" ou "contato".</li>'
+    input.setAttribute('aria-activedescendant', shown.length ? 'opt' + sel : '')
+  }
+  function openPal() { lastFocus = document.activeElement; back.hidden = false; input.value = ''; sel = 0; draw(); input.focus() }
+  function closePal() { back.hidden = true; lastFocus && lastFocus.focus && lastFocus.focus() }
+  function run(i) { const c = shown[i]; if (!c) return; closePal(); c.run() }
+  $('#openPal').addEventListener('click', openPal)
+  back.addEventListener('click', (e) => { if (e.target === back) closePal() })
+  list.addEventListener('click', (e) => { const li = e.target.closest('li[data-i]'); if (li) run(+li.dataset.i) })
+  input.addEventListener('input', () => { sel = 0; draw() })
+  input.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowDown') { e.preventDefault(); sel = (sel + 1) % Math.max(1, shown.length); draw() }
+    else if (e.key === 'ArrowUp') { e.preventDefault(); sel = (sel - 1 + shown.length) % Math.max(1, shown.length); draw() }
+    else if (e.key === 'Enter') { e.preventDefault(); run(sel) }
+    else if (e.key === 'Tab') { e.preventDefault() }
+  })
+  addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && !back.hidden) { closePal(); return }
+    const typing = /INPUT|TEXTAREA/.test(document.activeElement?.tagName || '')
+    if ((e.key === 'k' || e.key === 'K') && (e.metaKey || e.ctrlKey)) { e.preventDefault(); back.hidden ? openPal() : closePal(); return }
+    if (!typing && back.hidden && (e.key === 'k' || e.key === 'K') && !e.altKey && !e.metaKey && !e.ctrlKey) { e.preventDefault(); openPal() }
+  })
+})()
+</script>
 </body>
 </html>
