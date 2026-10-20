@@ -127,6 +127,9 @@ button, input { font: inherit; color: inherit; }
   background: radial-gradient(50% 100% at 50% 100%, color-mix(in srgb, var(--brand) 18%, transparent), transparent 70%);
   pointer-events: none;
 }
+.stage { touch-action: pan-y; -webkit-user-select: none; user-select: none; }
+.drag-hint { position: absolute; left: 14px; top: 14px; z-index: 4; padding: 7px 12px; border-radius: 999px; background: rgba(7,7,10,.72); box-shadow: inset 0 0 0 1px var(--line); color: var(--muted); font: 600 12px var(--f-text); pointer-events: none; transition: opacity 300ms ease; }
+.stage.is-dragged .drag-hint { opacity: 0; }
 .emblem { position: absolute; left: 50%; bottom: 12px; width: 40px; transform: translateX(-50%); opacity: .6; filter: drop-shadow(0 0 10px color-mix(in srgb, var(--brand) 70%, transparent)); z-index: 0; pointer-events: none; }
 .holo { position: relative; z-index: 1; transform-style: preserve-3d; transform: scale(var(--sc, 1)) rotateX(var(--rx, 8deg)) rotateY(var(--ry, -14deg)); will-change: transform; }
 .L { position: absolute; transform-style: preserve-3d; }
@@ -650,14 +653,34 @@ html.js [data-in].in > * { opacity: 1; transform: none; }
 
   /* ---------- inclinação: segue o ponteiro; no celular balança sozinha ---------- */
   const tilts = []
-  function addTilt(stage) {
-    const t = { stage, holo: $('.holo', stage), rx: 8, ry: -14, trx: 8, try_: -14, on: true }
+  function addTilt(stage, hint, onTap) {
+    const t = { stage, holo: $('.holo', stage), rx: 8, ry: -14, trx: 8, try_: -14, on: true, drag: false }
     stage.addEventListener('pointermove', (e) => {
       if (e.pointerType !== 'mouse') return
       const r = stage.getBoundingClientRect()
       t.try_ = ((e.clientX - r.left) / r.width - .5) * 34; t.trx = 8 - ((e.clientY - r.top) / r.height - .5) * 22
     })
-    stage.addEventListener('pointerleave', () => { t.trx = 8; t.try_ = -14 })
+    stage.addEventListener('pointerleave', (e) => { if (e.pointerType === 'mouse') { t.trx = 8; t.try_ = -14 } })
+    // no celular: arrastar o dedo gira o holograma; um toque sem arrastar faz a ação do palco
+    let d = null, back = 0
+    stage.addEventListener('pointerdown', (e) => {
+      if (e.pointerType === 'mouse') return
+      clearTimeout(back); d = { x: e.clientX, y: e.clientY, ry: t.ry, rx: t.rx, moved: false, id: e.pointerId }
+    })
+    stage.addEventListener('pointermove', (e) => {
+      if (e.pointerType === 'mouse' || !d) return
+      const dx = e.clientX - d.x, dy = e.clientY - d.y
+      if (!d.moved) { if (Math.abs(dx) < 8) return; d.moved = true; t.drag = true; stage.classList.add('is-dragged'); try { stage.setPointerCapture(d.id) } catch (_) {} }
+      t.try_ = clamp(d.ry + dx * .4, -50, 50); t.trx = clamp(d.rx - dy * .15, -12, 26)
+    })
+    const end = (e) => {
+      if (!d) return
+      const tap = !d.moved && e.type === 'pointerup'; d = null; t.drag = false
+      back = setTimeout(() => { t.trx = 8; t.try_ = -14 }, 1400)
+      if (tap && onTap) onTap()
+    }
+    stage.addEventListener('pointerup', end); stage.addEventListener('pointercancel', end)
+    if (hint && !fine) stage.insertAdjacentHTML('beforeend', `<span class="drag-hint" aria-hidden="true">${hint}</span>`)
     new IntersectionObserver(([en]) => { t.on = en.isIntersecting }).observe(stage)
     tilts.push(t)
   }
@@ -666,8 +689,9 @@ html.js [data-in].in > * { opacity: 1; transform: none; }
     for (const t of tilts) {
       if (!t.on) continue
       if (reduce) { t.holo.style.setProperty('--rx', '8deg'); t.holo.style.setProperty('--ry', '-14deg'); continue }
-      t.rx += (t.trx - t.rx) * .08; t.ry += (t.try_ - t.ry) * .08
-      const idle = Math.sin(now / 2400) * (fine ? 2 : 7)
+      const k = t.drag ? .3 : .08
+      t.rx += (t.trx - t.rx) * k; t.ry += (t.try_ - t.ry) * k
+      const idle = t.drag ? 0 : Math.sin(now / 2400) * (fine ? 2 : 7)
       t.holo.style.setProperty('--rx', (t.rx + idle * .3).toFixed(2) + 'deg')
       t.holo.style.setProperty('--ry', (t.ry + idle).toFixed(2) + 'deg')
     }
@@ -699,7 +723,7 @@ html.js [data-in].in > * { opacity: 1; transform: none; }
   heroStage.addEventListener('pointerenter', (e) => { if (e.pointerType === 'mouse') heroHover = true })
   heroStage.addEventListener('pointerleave', () => { heroHover = false })
   new IntersectionObserver(([en]) => { heroVisible = en.isIntersecting }).observe(heroStage)
-  addTilt(heroStage); showReel(0); restartReel()
+  addTilt(heroStage, 'Arraste para girar · toque para trocar', () => { showReel((reelI + 1) % REEL.length); restartReel() }); showReel(0); restartReel()
 
   /* ---------- 3 · monte o seu ---------- */
   const state = { tipo: 'landing', seg: 'loja', cor: '#FF2D4F', fundo: '#0E0E13', pal: [], nome: '', segTxt: '' }
@@ -800,7 +824,7 @@ html.js [data-in].in > * { opacity: 1; transform: none; }
   $('#nome').addEventListener('input', (e) => { state.nome = e.target.value; renderBuild(false) })
   function setTipo(v) { const b = $(`[data-group="tipo"] [data-v="${v}"]`); if (b) b.click() }
   $$('[data-go]').forEach((b) => b.addEventListener('click', () => { setTipo(b.dataset.go); $('#monte').scrollIntoView({ behavior: reduce ? 'auto' : 'smooth' }) }))
-  addTilt(buildStage); renderBuild(false)
+  addTilt(buildStage, 'Arraste para girar'); renderBuild(false)
   let lastW = 0
   new ResizeObserver(() => { const w = innerWidth; if (Math.abs(w - lastW) < 40) return; lastW = w; renderBuild(false); showReel(reelI); buildCase() }).observe(document.body)
 
@@ -833,7 +857,7 @@ html.js [data-in].in > * { opacity: 1; transform: none; }
   const caseStage = $('#caseStage')
   const CASE = { kind: 'case', imgs: ['assets/img/work/ab-holo-topo.webp', 'assets/img/work/ab-holo-frota.webp', 'assets/img/work/ab-holo-orcamento.webp'] }
   function buildCase(anim) { build(caseStage, CASE, anim) }
-  addTilt(caseStage); buildCase(false)
+  addTilt(caseStage, 'Arraste para girar'); buildCase(false)
   new IntersectionObserver(([en], o) => { if (en.isIntersecting) { buildCase(true); o.disconnect() } }, { threshold: .35 }).observe(caseStage)
 
   /* ---------- entradas ---------- */
