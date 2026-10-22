@@ -1,0 +1,10 @@
+{
+  "redirects": [
+    {
+      "source": "/:path*",
+      "has": [{ "type": "host", "value": "cvkorvex.vercel.app" }],
+      "destination": "https://vmkorvex.vercel.app/:path*",
+      "permanent": true
+    }
+  ]
+}
