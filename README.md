@@ -30,7 +30,7 @@ assets/img/         favicon, imagem de compartilhamento, K e telas da AB
 Em `index.html`, procure por `EMAIL`:
 
 ```js
-const EMAIL = 'cv.korvex@gmail.com'
+const EMAIL = 'vm.korvex@gmail.com'
 ```
 
 ## Rodar no computador

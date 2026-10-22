@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://cvkorvex.vercel.app/sitemap.xml
+Sitemap: https://vmkorvex.vercel.app/sitemap.xml

@@ -11,5 +11,5 @@
 - AB Transportes: landing page para uma transportadora de cargas, com pedido de orçamento pelo WhatsApp. https://abtransportes.vercel.app/
 
 ## Contato
-- E-mail: cv.korvex@gmail.com
-- Site: https://cvkorvex.vercel.app/
+- E-mail: vm.korvex@gmail.com
+- Site: https://vmkorvex.vercel.app/
