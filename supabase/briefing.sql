@@ -31,17 +31,8 @@ create policy "formulario envia briefing" on public.briefings
   for insert to anon
   with check (status = 'novo');
 
--- Painel (depois): só usuários logados leem e mudam o status.
--- Deixe o cadastro de novos usuários desligado em Authentication → Sign In / Providers.
-grant select, update on public.briefings to authenticated;
-
-drop policy if exists "equipe le briefings" on public.briefings;
-create policy "equipe le briefings" on public.briefings
-  for select to authenticated using (true);
-
-drop policy if exists "equipe atualiza briefings" on public.briefings;
-create policy "equipe atualiza briefings" on public.briefings
-  for update to authenticated using (true) with check (true);
+-- O acesso da equipe (painel) fica em supabase/painel.sql. Se rodar este arquivo
+-- de novo, rode o painel.sql logo depois.
 
 -- Fotos ---------------------------------------------------------------------
 -- Bucket privado: só imagens, até 10 MB cada.
@@ -56,8 +47,3 @@ drop policy if exists "formulario envia fotos" on storage.objects;
 create policy "formulario envia fotos" on storage.objects
   for insert to anon
   with check (bucket_id = 'briefings');
-
-drop policy if exists "equipe ve fotos" on storage.objects;
-create policy "equipe ve fotos" on storage.objects
-  for select to authenticated
-  using (bucket_id = 'briefings');
