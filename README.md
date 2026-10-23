@@ -21,9 +21,14 @@ Os negócios de exemplo nos hologramas são fictícios. Tudo respeita "reduzir m
 
 ```
 index.html          página, estilos e código (tudo num arquivo)
+briefing.html       formulário de briefing para clientes (Vue via CDN, envio pelo FormSubmit)
 assets/fonts/       Michroma e Manrope (licença OFL)
 assets/img/         favicon, imagem de compartilhamento, K e telas da AB
 ```
+
+## Briefing de clientes
+
+O formulário fica em `https://vmkorvex.vercel.app/briefing.html` (fora do Google, com `noindex`). Ele envia tudo para o e-mail da constante `DESTINO` pelo FormSubmit, com as fotos anexadas. O primeiro envio dispara um e-mail de ativação na caixa da Korvex; depois de ativar, dá para trocar o e-mail pelo código aleatório do FormSubmit em `DESTINO`.
 
 ## Trocar contatos
 

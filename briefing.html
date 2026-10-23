@@ -1,0 +1,708 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Briefing Korvex</title>
+<meta name="description" content="Conte para a Korvex como você imagina o seu site ou landing page.">
+<meta name="theme-color" content="#07070A">
+<meta name="robots" content="noindex">
+<link rel="icon" href="assets/img/favicon.png">
+<link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700&family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: coluna única centrada, etapas numeradas (é um processo real), painel com brilho sutil no fundo escuro da marca */
+:root{
+  --bg:#07070A;
+  --panel:#0F0F15;
+  --panel-2:#16161F;
+  --line:#25253A;
+  --fg:#ECECF4;
+  --muted:#9494AE;
+  --accent:#7B8CFF;
+  --accent-2:#9FE3FF;
+  --danger:#FF7A8A;
+  --ok:#5EE6A8;
+  --f-display:"Unbounded","Arial Black",system-ui,sans-serif;
+  --f-body:"Manrope",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
+  --r:14px;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{
+  background:var(--bg);color:var(--fg);font-family:var(--f-body);font-size:16px;line-height:1.55;
+  min-height:100vh;
+  background-image:radial-gradient(60rem 30rem at 50% -10rem, rgba(123,140,255,.16), transparent 70%);
+  background-repeat:no-repeat;
+}
+.wrap{max-width:760px;margin:0 auto;padding-block:32px 80px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+header.top{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:36px}
+.brand{font-family:var(--f-display);font-weight:700;letter-spacing:.18em;font-size:15px}
+.brand span{color:var(--accent)}
+.tag{font-family:var(--f-mono);font-size:12px;color:var(--muted);letter-spacing:.06em;text-transform:uppercase}
+h1{font-family:var(--f-display);font-weight:700;font-size:clamp(28px,6vw,44px);line-height:1.08;margin:0 0 14px;text-wrap:balance}
+h1 em{font-style:normal;background:linear-gradient(90deg,var(--accent),var(--accent-2));-webkit-background-clip:text;background-clip:text;color:transparent}
+.lead{color:var(--muted);max-width:58ch;margin:0 0 28px}
+/* progresso */
+.steps{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;margin:0 0 8px}
+.steps button{all:unset;cursor:pointer;height:4px;border-radius:4px;background:var(--line);transition:background .25s}
+.steps button.done{background:var(--accent)}
+.steps button.cur{background:linear-gradient(90deg,var(--accent),var(--accent-2))}
+.steps button:focus-visible{outline:2px solid var(--accent-2);outline-offset:4px}
+.steplabel{font-family:var(--f-mono);font-size:12px;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;margin-bottom:18px}
+.steplabel b{color:var(--fg);font-weight:500}
+/* painel */
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:20px;padding:28px clamp(18px,4vw,32px);box-shadow:0 0 0 1px rgba(123,140,255,.04),0 30px 80px -40px rgba(123,140,255,.35)}
+.panel h2{font-family:var(--f-display);font-weight:500;font-size:20px;margin:0 0 6px;text-wrap:balance}
+.panel .sub{color:var(--muted);margin:0 0 24px;font-size:15px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.full{grid-column:1/-1}
+@media (max-width:560px){.grid{grid-template-columns:1fr}}
+.field{display:flex;flex-direction:column;gap:7px;min-width:0}
+label,.lbl{font-weight:600;font-size:14px}
+.req{color:var(--accent)}
+.hint{color:var(--muted);font-size:13px;font-weight:400}
+input[type=text],input[type=email],input[type=tel],input[type=url],textarea,select{
+  width:100%;font:inherit;font-size:15px;color:var(--fg);background:var(--panel-2);border:1px solid var(--line);
+  border-radius:10px;padding:12px 14px;transition:border-color .2s,box-shadow .2s
+}
+textarea{min-height:96px;resize:vertical}
+input:focus,textarea:focus,select:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(123,140,255,.22)}
+input.bad,textarea.bad{border-color:var(--danger)}
+.err{color:var(--danger);font-size:13px}
+.section-title{font-family:var(--f-mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--accent-2);margin:6px 0 -4px}
+/* chips */
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{font:inherit;font-size:14px;color:var(--fg);background:transparent;border:1px solid var(--line);border-radius:999px;padding:8px 14px;cursor:pointer;transition:all .18s}
+.chip:hover{border-color:var(--muted)}
+.chip[aria-pressed=true]{background:rgba(123,140,255,.16);border-color:var(--accent);color:#fff}
+.chip:focus-visible,.btn:focus-visible,.swatch input:focus-visible{outline:2px solid var(--accent-2);outline-offset:2px}
+/* cards de opção */
+.opts{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+.opt{font:inherit;text-align:left;color:var(--fg);background:var(--panel-2);border:1px solid var(--line);border-radius:12px;padding:14px;cursor:pointer;display:flex;flex-direction:column;gap:4px;transition:all .18s}
+.opt strong{font-size:15px}
+.opt span{color:var(--muted);font-size:13px;line-height:1.4}
+.opt[aria-pressed=true]{border-color:var(--accent);background:rgba(123,140,255,.12)}
+.opt:focus-visible{outline:2px solid var(--accent-2);outline-offset:2px}
+/* paleta */
+.palette{display:flex;flex-wrap:wrap;gap:12px}
+.swatch{display:flex;align-items:center;gap:8px;background:var(--panel-2);border:1px solid var(--line);border-radius:12px;padding:8px 10px 8px 8px}
+.swatch input[type=color]{appearance:none;-webkit-appearance:none;width:40px;height:40px;border:none;border-radius:9px;padding:0;background:none;cursor:pointer}
+.swatch input[type=color]::-webkit-color-swatch-wrapper{padding:0}
+.swatch input[type=color]::-webkit-color-swatch{border:1px solid rgba(255,255,255,.15);border-radius:9px}
+.swatch input[type=color]::-moz-color-swatch{border:1px solid rgba(255,255,255,.15);border-radius:9px}
+.swatch input[type=text]{width:96px;padding:8px 10px;font-family:var(--f-mono);font-size:13px;text-transform:uppercase}
+.swatch .x{all:unset;cursor:pointer;color:var(--muted);padding:4px 6px;font-size:18px;line-height:1}
+.preview-bar{display:flex;height:44px;border-radius:12px;overflow:hidden;border:1px solid var(--line)}
+.preview-bar div{flex:1}
+/* checks */
+.checks{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:8px}
+.check{display:flex;gap:10px;align-items:flex-start;background:var(--panel-2);border:1px solid var(--line);border-radius:10px;padding:11px 12px;cursor:pointer;font-weight:500;font-size:14px}
+.check input{accent-color:var(--accent);width:17px;height:17px;margin:2px 0 0;flex:none}
+.check:has(input:checked){border-color:var(--accent)}
+/* produtos */
+.prod{display:grid;grid-template-columns:1.4fr .7fr auto;gap:8px;align-items:start}
+.prod textarea{grid-column:1/3;min-height:60px}
+.prod .x{grid-row:1;grid-column:3}
+@media (max-width:560px){.prod{grid-template-columns:1fr auto}.prod .preco{grid-column:1}.prod .x{grid-column:2}.prod textarea{grid-column:1/-1}}
+.list{display:flex;flex-direction:column;gap:14px}
+.prod-item{border-top:1px dashed var(--line);padding-top:14px}
+.prod-item:first-child{border-top:none;padding-top:0}
+/* upload */
+.drop{border:1.5px dashed var(--line);border-radius:14px;padding:22px;text-align:center;color:var(--muted);cursor:pointer;transition:all .2s;background:var(--panel-2)}
+.drop.over,.drop:hover{border-color:var(--accent);color:var(--fg)}
+.drop strong{color:var(--fg);display:block;margin-bottom:4px}
+.thumbs{display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:10px;margin-top:12px}
+.thumb{position:relative;aspect-ratio:1;border-radius:10px;overflow:hidden;border:1px solid var(--line);max-width:100%;background:var(--panel-2)}
+.thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.thumb button{position:absolute;top:4px;right:4px;width:26px;height:26px;border-radius:50%;border:none;background:rgba(7,7,10,.8);color:#fff;cursor:pointer;font-size:15px;line-height:1}
+.meter{font-family:var(--f-mono);font-size:12px;color:var(--muted);display:flex;justify-content:space-between;gap:12px;margin-top:10px;font-variant-numeric:tabular-nums}
+.meter .bar{flex:1;height:6px;border-radius:6px;background:var(--line);overflow:hidden;align-self:center}
+.meter .bar i{display:block;height:100%;background:var(--accent)}
+.meter.full-warn .bar i{background:var(--danger)}
+/* botões */
+.nav{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:28px;flex-wrap:wrap}
+.btn{font:inherit;font-weight:700;font-size:15px;border-radius:12px;padding:13px 22px;cursor:pointer;border:1px solid var(--line);background:transparent;color:var(--fg);transition:all .2s}
+.btn:hover{border-color:var(--muted)}
+.btn.primary{border:none;color:#07070A;background:linear-gradient(90deg,var(--accent),var(--accent-2));box-shadow:0 10px 30px -10px rgba(123,140,255,.6)}
+.btn.primary:hover{filter:brightness(1.07)}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.btn.small{padding:8px 14px;font-size:14px;font-weight:600}
+.saved{font-family:var(--f-mono);font-size:12px;color:var(--muted)}
+/* revisão */
+.review{display:flex;flex-direction:column;gap:18px}
+.review section h3{font-family:var(--f-mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--accent-2);margin:0 0 8px;display:flex;justify-content:space-between;gap:8px}
+.review section h3 button{all:unset;cursor:pointer;color:var(--muted);text-transform:none;letter-spacing:0}
+.review dl{margin:0;display:grid;grid-template-columns:minmax(120px,200px) 1fr;gap:6px 14px;font-size:14px}
+.review dt{color:var(--muted)}
+.review dd{margin:0;min-width:0;overflow-wrap:anywhere;white-space:pre-wrap}
+@media (max-width:560px){.review dl{grid-template-columns:1fr}.review dd{margin-bottom:6px}}
+.dots{display:inline-flex;gap:4px;vertical-align:middle}
+.dots i{width:16px;height:16px;border-radius:4px;border:1px solid rgba(255,255,255,.2)}
+.notice{background:rgba(123,140,255,.08);border:1px solid rgba(123,140,255,.3);border-radius:12px;padding:12px 14px;font-size:14px;color:var(--fg)}
+.notice.err-box{background:rgba(255,122,138,.08);border-color:rgba(255,122,138,.4)}
+/* sucesso */
+.done-box{text-align:center;padding:48px 20px}
+.done-box .ring{width:72px;height:72px;margin:0 auto 22px;border-radius:50%;display:grid;place-items:center;background:rgba(94,230,168,.12);border:1px solid var(--ok);color:var(--ok);font-size:32px}
+footer{margin-top:28px;text-align:center;color:var(--muted);font-size:13px}
+footer a{color:var(--muted)}
+[v-cloak]{display:none}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+.fade-enter-active{transition:opacity .25s,transform .25s}
+.fade-enter-from{opacity:0;transform:translateY(8px)}
+</style>
+</head>
+<body>
+<div class="wrap" id="app" v-cloak>
+  <header class="top">
+    <div class="brand">KORV<span>E</span>X</div>
+    <div class="tag">Briefing de projeto</div>
+  </header>
+
+  <!-- Sucesso -->
+  <div v-if="enviado" class="panel done-box">
+    <div class="ring" aria-hidden="true">✓</div>
+    <h1>Recebemos seu <em>briefing</em></h1>
+    <p class="lead" style="margin:0 auto 10px">Obrigado! A equipe Korvex vai analisar suas respostas e as fotos, e em breve entra em contato pelo WhatsApp com um primeiro esboço do seu projeto.</p>
+  </div>
+
+  <template v-else>
+    <h1>Vamos desenhar o seu <em>site</em></h1>
+    <p class="lead">Leva uns 10 minutos. Quanto mais detalhes você der, mais perto do que você imagina chega o primeiro esboço. Suas respostas ficam salvas neste aparelho até você enviar.</p>
+
+    <div class="steps" role="tablist" aria-label="Etapas">
+      <button v-for="(s,i) in etapas" :key="i" type="button"
+        :class="{done:i<step,cur:i===step}" :aria-label="(i+1)+'. '+s" :aria-current="i===step?'step':null"
+        @click="irPara(i)"></button>
+    </div>
+    <div class="steplabel">Etapa {{step+1}} de {{etapas.length}} · <b>{{etapas[step]}}</b></div>
+
+    <transition name="fade" mode="out-in">
+    <div class="panel" :key="step">
+
+      <!-- 1. Contato -->
+      <div v-if="step===0">
+        <h2>Sobre você e o negócio</h2>
+        <p class="sub">Para sabermos com quem falar e o que a empresa faz.</p>
+        <div class="grid">
+          <div class="field">
+            <label for="nome">Seu nome <span class="req">*</span></label>
+            <input id="nome" type="text" v-model.trim="f.nome" :class="{bad:erros.nome}" autocomplete="name">
+            <span class="err" v-if="erros.nome">Informe seu nome.</span>
+          </div>
+          <div class="field">
+            <label for="empresa">Nome da empresa ou marca <span class="req">*</span></label>
+            <input id="empresa" type="text" v-model.trim="f.empresa" :class="{bad:erros.empresa}" autocomplete="organization">
+            <span class="err" v-if="erros.empresa">Informe o nome da empresa.</span>
+          </div>
+          <div class="field">
+            <label for="whatsapp">WhatsApp <span class="req">*</span></label>
+            <input id="whatsapp" type="tel" v-model.trim="f.whatsapp" :class="{bad:erros.whatsapp}" placeholder="(19) 99999-9999" autocomplete="tel" @input="mascaraTel">
+            <span class="err" v-if="erros.whatsapp">Informe um WhatsApp com DDD.</span>
+          </div>
+          <div class="field">
+            <label for="email">E-mail</label>
+            <input id="email" type="email" v-model.trim="f.email" :class="{bad:erros.email}" autocomplete="email">
+            <span class="err" v-if="erros.email">Esse e-mail parece incompleto.</span>
+          </div>
+          <div class="field">
+            <label for="cidade">Cidade / estado</label>
+            <input id="cidade" type="text" v-model.trim="f.cidade" placeholder="Campinas / SP">
+          </div>
+          <div class="field">
+            <label for="instagram">Instagram</label>
+            <input id="instagram" type="text" v-model.trim="f.instagram" placeholder="@suaempresa">
+          </div>
+          <div class="field full">
+            <label for="segmento">O que a empresa faz? <span class="req">*</span></label>
+            <textarea id="segmento" v-model.trim="f.segmento" :class="{bad:erros.segmento}" placeholder="Ex.: loja de roupas femininas com entrega em Campinas e região"></textarea>
+            <span class="err" v-if="erros.segmento">Conte em uma frase o que a empresa faz.</span>
+          </div>
+          <div class="field full">
+            <label for="siteAtual">Já tem site? Cole o link <span class="hint">(opcional)</span></label>
+            <input id="siteAtual" type="url" v-model.trim="f.siteAtual" placeholder="https://">
+          </div>
+        </div>
+      </div>
+
+      <!-- 2. Projeto -->
+      <div v-if="step===1">
+        <h2>O projeto</h2>
+        <p class="sub">O que o site precisa fazer pelo seu negócio.</p>
+        <div class="grid">
+          <div class="field full">
+            <span class="lbl">Que tipo de projeto você quer? <span class="req">*</span></span>
+            <div class="opts" role="group">
+              <button v-for="t in tipos" :key="t.v" type="button" class="opt" :aria-pressed="f.tipo===t.v" @click="f.tipo=t.v">
+                <strong>{{t.v}}</strong><span>{{t.d}}</span>
+              </button>
+            </div>
+            <span class="err" v-if="erros.tipo">Escolha uma opção (pode ser "Ainda não sei").</span>
+          </div>
+          <div class="field full">
+            <span class="lbl">Qual o principal objetivo? <span class="hint">pode marcar mais de um</span></span>
+            <div class="chips">
+              <button v-for="o in objetivosOp" :key="o" type="button" class="chip" :aria-pressed="f.objetivos.includes(o)" @click="toggle(f.objetivos,o)">{{o}}</button>
+            </div>
+          </div>
+          <div class="field full">
+            <label for="cta">O que o visitante deve fazer ao entrar no site?</label>
+            <input id="cta" type="text" v-model.trim="f.cta" placeholder="Ex.: chamar no WhatsApp para fazer um pedido">
+          </div>
+          <div class="field full">
+            <label for="publico">Quem é o seu cliente?</label>
+            <textarea id="publico" v-model.trim="f.publico" placeholder="Idade, região, o que procura, como costuma te encontrar"></textarea>
+          </div>
+          <div class="field full">
+            <label for="diferencial">Por que o cliente deveria escolher você?</label>
+            <textarea id="diferencial" v-model.trim="f.diferencial" placeholder="Seus diferenciais: preço, qualidade, atendimento, tempo de mercado..."></textarea>
+          </div>
+          <div class="field">
+            <label for="prazo">Para quando você precisa?</label>
+            <select id="prazo" v-model="f.prazo">
+              <option value="">Selecione</option>
+              <option>O quanto antes</option><option>Em até 15 dias</option><option>Em até 1 mês</option><option>Sem pressa</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="dominio">Já tem domínio (www.)?</label>
+            <select id="dominio" v-model="f.dominio">
+              <option value="">Selecione</option>
+              <option>Sim, já tenho</option><option>Não, preciso de ajuda</option><option>Não sei o que é</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3. Identidade visual -->
+      <div v-if="step===2">
+        <h2>Identidade visual</h2>
+        <p class="sub">Cores, estilo e referências que têm a cara da sua marca.</p>
+        <div class="grid">
+          <div class="field full">
+            <span class="lbl">Você já tem logo?</span>
+            <div class="chips">
+              <button v-for="o in ['Sim, tenho','Tenho, mas quero renovar','Não tenho']" :key="o" type="button" class="chip" :aria-pressed="f.logo===o" @click="f.logo=o">{{o}}</button>
+            </div>
+          </div>
+
+          <div class="field full">
+            <span class="lbl">Paleta de cores da marca <span class="hint">toque no quadrado para escolher ou digite o código</span></span>
+            <div class="palette" v-if="!f.semCores">
+              <div class="swatch" v-for="(c,i) in f.cores" :key="i">
+                <input type="color" :id="'cor'+i" :value="c" @input="f.cores[i]=$event.target.value.toUpperCase()" :aria-label="'Cor '+(i+1)">
+                <input type="text" :id="'hex'+i" :value="c" maxlength="7" @change="setHex(i,$event.target.value)" :aria-label="'Código da cor '+(i+1)">
+                <button type="button" class="x" v-if="f.cores.length>1" @click="f.cores.splice(i,1)" :aria-label="'Remover cor '+(i+1)">×</button>
+              </div>
+              <button type="button" class="btn small" v-if="f.cores.length<5" @click="f.cores.push('#FFFFFF')">+ Adicionar cor</button>
+            </div>
+            <div class="preview-bar" v-if="!f.semCores && f.cores.length" aria-hidden="true">
+              <div v-for="(c,i) in f.cores" :key="i" :style="{background:c}"></div>
+            </div>
+            <label class="check" style="margin-top:4px">
+              <input type="checkbox" id="semCores" v-model="f.semCores">
+              <span>Não tenho cores definidas, quero que a Korvex sugira</span>
+            </label>
+          </div>
+
+          <div class="field full">
+            <span class="lbl">Qual estilo combina com a marca? <span class="hint">até 3</span></span>
+            <div class="chips">
+              <button v-for="e in estilosOp" :key="e" type="button" class="chip" :aria-pressed="f.estilos.includes(e)" @click="toggle(f.estilos,e,3)">{{e}}</button>
+            </div>
+          </div>
+
+          <div class="field full">
+            <span class="lbl">Fundo do site</span>
+            <div class="chips">
+              <button v-for="o in ['Claro','Escuro','Tanto faz']" :key="o" type="button" class="chip" :aria-pressed="f.tema===o" @click="f.tema=o">{{o}}</button>
+            </div>
+          </div>
+
+          <div class="field full">
+            <label for="referencias">Sites ou perfis que você gosta <span class="hint">cole os links e diga o que gosta em cada um</span></label>
+            <textarea id="referencias" v-model.trim="f.referencias" placeholder="https://... gosto das fotos grandes&#10;@perfil... gosto das cores"></textarea>
+          </div>
+          <div class="field full">
+            <label for="evitar">Algo que você NÃO quer no site?</label>
+            <input id="evitar" type="text" v-model.trim="f.evitar" placeholder="Ex.: nada de cor rosa, nada muito poluído">
+          </div>
+        </div>
+      </div>
+
+      <!-- 4. Estrutura -->
+      <div v-if="step===3">
+        <h2>Estrutura do site</h2>
+        <p class="sub">Marque as seções e recursos que você imagina. A gente ajusta junto depois.</p>
+        <div class="grid">
+          <div class="field full">
+            <span class="section-title">Seções</span>
+            <div class="checks">
+              <label class="check" v-for="(s,i) in secoesOp" :key="s.v">
+                <input type="checkbox" :id="'sec'+i" :value="s.v" v-model="f.secoes">
+                <span>{{s.v}}<br><span class="hint">{{s.d}}</span></span>
+              </label>
+            </div>
+          </div>
+          <div class="field full">
+            <span class="section-title">Recursos</span>
+            <div class="checks">
+              <label class="check" v-for="(r,i) in recursosOp" :key="r">
+                <input type="checkbox" :id="'rec'+i" :value="r" v-model="f.recursos">
+                <span>{{r}}</span>
+              </label>
+            </div>
+          </div>
+          <div class="field full">
+            <span class="lbl">Os textos do site</span>
+            <div class="chips">
+              <button v-for="o in ['Já tenho os textos','Tenho uma ideia, preciso de ajuda','Quero que a Korvex escreva']" :key="o" type="button" class="chip" :aria-pressed="f.textos===o" @click="f.textos=o">{{o}}</button>
+            </div>
+          </div>
+          <div class="field full">
+            <label for="ideiaEstrutura">Descreva como você imagina o site <span class="hint">(opcional)</span></label>
+            <textarea id="ideiaEstrutura" v-model.trim="f.ideiaEstrutura" placeholder="Ex.: logo no topo, uma foto grande da loja, depois os produtos mais vendidos e um botão de WhatsApp"></textarea>
+          </div>
+        </div>
+      </div>
+
+      <!-- 5. Produtos e fotos -->
+      <div v-if="step===4">
+        <h2>Produtos e fotos</h2>
+        <p class="sub">Com as fotos reais a gente já monta o esboço com a cara do seu negócio.</p>
+        <div class="grid">
+          <div class="field full">
+            <span class="lbl">Você vende produtos ou serviços pelo site?</span>
+            <div class="chips">
+              <button v-for="o in ['Produtos','Serviços','Os dois','Nenhum, é só apresentação']" :key="o" type="button" class="chip" :aria-pressed="f.vende===o" @click="f.vende=o">{{o}}</button>
+            </div>
+          </div>
+
+          <div class="field full" v-if="mostraProdutos">
+            <span class="lbl">Principais {{f.vende==='Serviços'?'serviços':'produtos'}} <span class="hint">os que devem aparecer primeiro</span></span>
+            <div class="list">
+              <div class="prod-item" v-for="(p,i) in f.produtos" :key="i">
+                <div class="prod">
+                  <input type="text" :id="'pn'+i" v-model.trim="p.nome" placeholder="Nome" :aria-label="'Nome do item '+(i+1)">
+                  <input class="preco" type="text" :id="'pp'+i" v-model.trim="p.preco" placeholder="Preço" :aria-label="'Preço do item '+(i+1)">
+                  <button type="button" class="btn small x" v-if="f.produtos.length>1" @click="f.produtos.splice(i,1)" :aria-label="'Remover item '+(i+1)">×</button>
+                  <textarea :id="'pd'+i" v-model.trim="p.desc" placeholder="Descrição curta (tamanhos, sabores, o que inclui...)" :aria-label="'Descrição do item '+(i+1)"></textarea>
+                </div>
+              </div>
+            </div>
+            <div><button type="button" class="btn small" @click="f.produtos.push({nome:'',preco:'',desc:''})">+ Adicionar item</button></div>
+          </div>
+
+          <div class="field full">
+            <span class="lbl">Logo <span class="hint">PNG ou JPG</span></span>
+            <div class="drop" @click="$refs.logoIn.click()" @dragover.prevent="dragLogo=true" @dragleave="dragLogo=false" @drop.prevent="dragLogo=false;addLogo($event.dataTransfer.files)" :class="{over:dragLogo}" role="button" tabindex="0" @keydown.enter="$refs.logoIn.click()">
+              <strong>{{logo ? 'Trocar logo' : 'Enviar logo'}}</strong>Toque aqui ou arraste o arquivo
+            </div>
+            <input ref="logoIn" id="logoIn" type="file" accept="image/*" hidden @change="addLogo($event.target.files);$event.target.value=''">
+            <div class="thumbs" v-if="logo">
+              <div class="thumb"><img :src="logo.url" alt="Logo enviado" style="object-fit:contain;padding:8px"><button type="button" @click="removerLogo" aria-label="Remover logo">×</button></div>
+            </div>
+          </div>
+
+          <div class="field full">
+            <span class="lbl">Fotos dos produtos, do espaço ou da equipe <span class="hint">até {{MAX_FOTOS}} fotos</span></span>
+            <div class="drop" @click="$refs.fotosIn.click()" @dragover.prevent="dragFotos=true" @dragleave="dragFotos=false" @drop.prevent="dragFotos=false;addFotos($event.dataTransfer.files)" :class="{over:dragFotos}" role="button" tabindex="0" @keydown.enter="$refs.fotosIn.click()">
+              <strong>Enviar fotos</strong>Toque aqui para escolher da galeria. As fotos são otimizadas automaticamente.
+            </div>
+            <input ref="fotosIn" id="fotosIn" type="file" accept="image/*" multiple hidden @change="addFotos($event.target.files);$event.target.value=''">
+            <div class="notice" v-if="processando">Otimizando fotos...</div>
+            <div class="notice err-box" v-if="avisoFotos">{{avisoFotos}}</div>
+            <div class="thumbs" v-if="fotos.length">
+              <div class="thumb" v-for="(ft,i) in fotos" :key="ft.url">
+                <img :src="ft.url" :alt="'Foto '+(i+1)"><button type="button" @click="removerFoto(i)" :aria-label="'Remover foto '+(i+1)">×</button>
+              </div>
+            </div>
+            <div class="meter" v-if="fotos.length||logo" :class="{'full-warn':pctUso>90}">
+              <span>{{fotos.length}} foto{{fotos.length===1?'':'s'}}</span>
+              <span class="bar"><i :style="{width:Math.min(100,pctUso)+'%'}"></i></span>
+              <span>{{mb(totalBytes)}} de {{mb(LIMITE)}}</span>
+            </div>
+          </div>
+
+          <div class="field full">
+            <label for="linkArquivos">Tem mais fotos ou vídeos? Cole um link <span class="hint">Google Drive, WeTransfer, Dropbox</span></label>
+            <input id="linkArquivos" type="url" v-model.trim="f.linkArquivos" placeholder="https://">
+          </div>
+          <div class="field full">
+            <label for="obs">Mais alguma coisa que devemos saber?</label>
+            <textarea id="obs" v-model.trim="f.obs"></textarea>
+          </div>
+        </div>
+      </div>
+
+      <!-- 6. Revisão -->
+      <div v-if="step===5">
+        <h2>Revise e envie</h2>
+        <p class="sub">Confira as respostas. Toque em "editar" para voltar a qualquer etapa.</p>
+        <div class="review">
+          <section v-for="(bloco,bi) in resumo" :key="bi">
+            <h3>{{bloco.titulo}} <button type="button" @click="irPara(bloco.etapa)">editar</button></h3>
+            <dl>
+              <template v-for="(item,ii) in bloco.itens" :key="ii">
+                <dt>{{item[0]}}</dt>
+                <dd v-if="item[0]==='Paleta' && !f.semCores"><span class="dots"><i v-for="c in f.cores" :key="c" :style="{background:c}"></i></span> {{item[1]}}</dd>
+                <dd v-else>{{item[1]}}</dd>
+              </template>
+            </dl>
+          </section>
+          <div class="notice err-box" v-if="erroEnvio">{{erroEnvio}}</div>
+        </div>
+      </div>
+
+      <div class="nav">
+        <button type="button" class="btn" v-if="step>0" @click="voltar">Voltar</button>
+        <span v-else class="saved">{{salvoMsg}}</span>
+        <button type="button" class="btn primary" v-if="step<etapas.length-1" @click="avancar" :disabled="processando">Continuar</button>
+        <button type="button" class="btn primary" v-else @click="enviar" :disabled="enviando||processando">{{enviando?'Enviando...':'Enviar briefing'}}</button>
+      </div>
+    </div>
+    </transition>
+  </template>
+
+  <footer>Korvex · Sites e landing pages que vendem · <a href="https://vmkorvex.vercel.app/" target="_blank" rel="noopener">vmkorvex.vercel.app</a></footer>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/vue/3.4.38/vue.global.prod.min.js"></script>
+<script>
+/* ===== Configuração ===== */
+// Depois de ativar o FormSubmit, você pode trocar o e-mail pelo código aleatório que ele envia (esconde o e-mail do código-fonte).
+const DESTINO = 'vm.korvex@gmail.com';
+const ENDPOINT = 'https://formsubmit.co/' + DESTINO;
+const LIMITE = 9.5 * 1024 * 1024;   // FormSubmit aceita ~10 MB por envio
+const MAX_FOTOS = 15;
+const MAX_LADO = 1600;              // px do maior lado depois da otimização
+const STORAGE_KEY = 'korvex-briefing-v1';
+
+const { createApp, reactive, ref, computed, watch } = Vue;
+
+function vazio(){
+  return {
+    nome:'',empresa:'',whatsapp:'',email:'',cidade:'',instagram:'',segmento:'',siteAtual:'',
+    tipo:'',objetivos:[],cta:'',publico:'',diferencial:'',prazo:'',dominio:'',
+    logo:'',cores:['#1B2A6B','#F2B544'],semCores:false,estilos:[],tema:'',referencias:'',evitar:'',
+    secoes:['Início (topo com destaque)','Sobre','Contato / WhatsApp'],recursos:['Botão flutuante de WhatsApp'],textos:'',ideiaEstrutura:'',
+    vende:'',produtos:[{nome:'',preco:'',desc:''}],linkArquivos:'',obs:''
+  };
+}
+
+function carregar(){
+  try{ const s = localStorage.getItem(STORAGE_KEY); if(s) return Object.assign(vazio(), JSON.parse(s)); }catch(e){}
+  return vazio();
+}
+
+function carregarImagem(file){
+  return new Promise((res,rej)=>{
+    const url = URL.createObjectURL(file);
+    const img = new Image();
+    img.onload = ()=>res({img,url});
+    img.onerror = ()=>{URL.revokeObjectURL(url);rej(new Error('img'));};
+    img.src = url;
+  });
+}
+
+async function otimizar(file, maxLado, png){
+  const {img,url} = await carregarImagem(file);
+  URL.revokeObjectURL(url);
+  const esc = Math.min(1, maxLado / Math.max(img.naturalWidth, img.naturalHeight));
+  const w = Math.round(img.naturalWidth*esc), h = Math.round(img.naturalHeight*esc);
+  const c = document.createElement('canvas'); c.width=w; c.height=h;
+  const ctx = c.getContext('2d');
+  if(!png){ ctx.fillStyle='#fff'; ctx.fillRect(0,0,w,h); }
+  ctx.drawImage(img,0,0,w,h);
+  const tipo = png ? 'image/png' : 'image/jpeg';
+  const blob = await new Promise(r=>c.toBlob(r, tipo, 0.82));
+  const base = (file.name||'foto').replace(/\.[^.]+$/,'').replace(/[^\w\-]+/g,'_').slice(0,40) || 'foto';
+  return new File([blob], base + (png?'.png':'.jpg'), {type:tipo});
+}
+
+createApp({
+  setup(){
+    const enviado = ref(new URLSearchParams(location.search).has('enviado'));
+    const f = reactive(carregar());
+    const step = ref(0);
+    const erros = reactive({});
+    const fotos = ref([]);
+    const logo = ref(null);
+    const processando = ref(false);
+    const enviando = ref(false);
+    const avisoFotos = ref('');
+    const erroEnvio = ref('');
+    const salvoMsg = ref('');
+    const dragLogo = ref(false), dragFotos = ref(false);
+
+    if(enviado.value){ try{ localStorage.removeItem(STORAGE_KEY); }catch(e){} }
+
+    const etapas = ['Contato','Projeto','Identidade visual','Estrutura','Produtos e fotos','Revisão'];
+    const tipos = [
+      {v:'Landing page',d:'Uma página focada em vender ou captar contatos'},
+      {v:'Site institucional',d:'Várias páginas apresentando a empresa'},
+      {v:'Catálogo / loja',d:'Mostrar produtos e receber pedidos'},
+      {v:'Portfólio',d:'Mostrar trabalhos, shows ou projetos'},
+      {v:'Ainda não sei',d:'A Korvex ajuda a decidir'}
+    ];
+    const objetivosOp = ['Vender produtos','Receber pedidos no WhatsApp','Captar orçamentos','Agendamentos','Apresentar a empresa','Passar mais credibilidade','Divulgar um lançamento'];
+    const estilosOp = ['Moderno','Minimalista','Sofisticado','Divertido','Acolhedor','Tecnológico','Ousado','Rústico','Clássico','Natural'];
+    const secoesOp = [
+      {v:'Início (topo com destaque)',d:'Primeira coisa que o visitante vê'},
+      {v:'Sobre',d:'História e valores da empresa'},
+      {v:'Serviços',d:'O que você oferece'},
+      {v:'Produtos / catálogo',d:'Vitrine com fotos e preços'},
+      {v:'Galeria de fotos',d:'Espaço, trabalhos, eventos'},
+      {v:'Depoimentos',d:'O que os clientes dizem'},
+      {v:'Planos e preços',d:'Tabela de valores'},
+      {v:'Perguntas frequentes',d:'Dúvidas comuns'},
+      {v:'Contato / WhatsApp',d:'Formas de falar com você'},
+      {v:'Mapa / endereço',d:'Como chegar'},
+      {v:'Equipe',d:'Quem faz acontecer'},
+      {v:'Blog / novidades',d:'Conteúdo atualizado'}
+    ];
+    const recursosOp = ['Botão flutuante de WhatsApp','Pedido de produtos pelo WhatsApp','Formulário de contato','Agendamento online','Vídeos','Feed do Instagram','Versão em inglês','Pagamento online'];
+
+    const mostraProdutos = computed(()=>['Produtos','Serviços','Os dois'].includes(f.vende));
+    const totalBytes = computed(()=>fotos.value.reduce((a,b)=>a+b.file.size,0) + (logo.value?logo.value.file.size:0));
+    const pctUso = computed(()=>totalBytes.value/LIMITE*100);
+    const mb = b => (b/1024/1024).toFixed(1).replace('.',',')+' MB';
+
+    // rascunho
+    let t;
+    watch(f, ()=>{
+      clearTimeout(t);
+      t = setTimeout(()=>{ try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(f)); salvoMsg.value='Rascunho salvo neste aparelho'; }catch(e){} }, 400);
+    }, {deep:true});
+
+    function toggle(arr, v, max){
+      const i = arr.indexOf(v);
+      if(i>=0) arr.splice(i,1);
+      else if(!max || arr.length<max) arr.push(v);
+    }
+    function setHex(i, v){
+      v = v.trim().toUpperCase(); if(!v.startsWith('#')) v = '#'+v;
+      if(/^#[0-9A-F]{6}$/.test(v)) f.cores[i]=v;
+      else if(/^#[0-9A-F]{3}$/.test(v)) f.cores[i]='#'+v.slice(1).split('').map(c=>c+c).join('');
+    }
+    function mascaraTel(){
+      const d = f.whatsapp.replace(/\D/g,'').slice(0,13);
+      if(d.length<=2) f.whatsapp = d ? '('+d : '';
+      else if(d.length<=7) f.whatsapp = '('+d.slice(0,2)+') '+d.slice(2);
+      else if(d.length<=11) f.whatsapp = '('+d.slice(0,2)+') '+d.slice(2,d.length-4)+'-'+d.slice(-4);
+      else f.whatsapp = '+'+d;
+    }
+
+    function validar(i){
+      Object.keys(erros).forEach(k=>delete erros[k]);
+      if(i===0){
+        if(!f.nome) erros.nome=1;
+        if(!f.empresa) erros.empresa=1;
+        if(f.whatsapp.replace(/\D/g,'').length<10) erros.whatsapp=1;
+        if(f.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(f.email)) erros.email=1;
+        if(!f.segmento) erros.segmento=1;
+      }
+      if(i===1 && !f.tipo) erros.tipo=1;
+      return Object.keys(erros).length===0;
+    }
+    const topo = ()=>window.scrollTo({top:0,behavior:'smooth'});
+    function avancar(){ if(validar(step.value)){ step.value++; topo(); } }
+    function voltar(){ step.value--; topo(); }
+    function irPara(i){
+      if(i<=step.value){ step.value=i; topo(); return; }
+      for(let k=step.value;k<i;k++){ if(!validar(k)){ step.value=k; topo(); return; } }
+      step.value=i; topo();
+    }
+
+    async function addFotos(lista){
+      avisoFotos.value='';
+      const arr = [...lista].filter(x=>x.type.startsWith('image/'));
+      if(!arr.length) return;
+      processando.value=true;
+      let recusadas = 0;
+      for(const file of arr){
+        if(fotos.value.length>=MAX_FOTOS){ avisoFotos.value=`O limite é de ${MAX_FOTOS} fotos. Para mandar mais, use o campo de link abaixo.`; break; }
+        try{
+          const otim = await otimizar(file, MAX_LADO, false);
+          if(totalBytes.value + otim.size > LIMITE){ avisoFotos.value='As fotos chegaram ao limite de tamanho do envio. As demais você pode mandar por um link do Google Drive.'; break; }
+          fotos.value.push({file:otim, url:URL.createObjectURL(otim)});
+        }catch(e){ recusadas++; }
+      }
+      if(recusadas) avisoFotos.value = `${recusadas} arquivo(s) não puderam ser lidos. Tente exportar como JPG.`;
+      processando.value=false;
+    }
+    async function addLogo(lista){
+      const file = [...lista].find(x=>x.type.startsWith('image/'));
+      if(!file) return;
+      processando.value=true;
+      try{
+        const png = file.type==='image/png' || file.type==='image/svg+xml' || file.type==='image/webp';
+        const otim = await otimizar(file, 1200, png);
+        if(logo.value) URL.revokeObjectURL(logo.value.url);
+        logo.value = {file:otim, url:URL.createObjectURL(otim)};
+      }catch(e){ avisoFotos.value='Não conseguimos ler o logo. Tente um arquivo PNG ou JPG.'; }
+      processando.value=false;
+    }
+    function removerFoto(i){ URL.revokeObjectURL(fotos.value[i].url); fotos.value.splice(i,1); avisoFotos.value=''; }
+    function removerLogo(){ URL.revokeObjectURL(logo.value.url); logo.value=null; }
+
+    const lista = a => a.length ? a.join(', ') : '—';
+    const v = x => x || '—';
+    const resumo = computed(()=>{
+      const prods = mostraProdutos.value
+        ? f.produtos.filter(p=>p.nome).map(p=>`• ${p.nome}${p.preco?' — '+p.preco:''}${p.desc?'\n  '+p.desc:''}`).join('\n') || '—'
+        : '—';
+      return [
+        {titulo:'Contato',etapa:0,itens:[['Nome',v(f.nome)],['Empresa',v(f.empresa)],['WhatsApp',v(f.whatsapp)],['E-mail',v(f.email)],['Cidade',v(f.cidade)],['Instagram',v(f.instagram)],['O que faz',v(f.segmento)],['Site atual',v(f.siteAtual)]]},
+        {titulo:'Projeto',etapa:1,itens:[['Tipo',v(f.tipo)],['Objetivos',lista(f.objetivos)],['Ação do visitante',v(f.cta)],['Público',v(f.publico)],['Diferenciais',v(f.diferencial)],['Prazo',v(f.prazo)],['Domínio',v(f.dominio)]]},
+        {titulo:'Identidade visual',etapa:2,itens:[['Logo',v(f.logo)],['Paleta',f.semCores?'Quer sugestão da Korvex':f.cores.join(', ')],['Estilo',lista(f.estilos)],['Fundo',v(f.tema)],['Referências',v(f.referencias)],['Evitar',v(f.evitar)]]},
+        {titulo:'Estrutura',etapa:3,itens:[['Seções',lista(f.secoes)],['Recursos',lista(f.recursos)],['Textos',v(f.textos)],['Como imagina',v(f.ideiaEstrutura)]]},
+        {titulo:'Produtos e fotos',etapa:4,itens:[['Vende',v(f.vende)],['Itens',prods],['Logo enviado',logo.value?'Sim':'Não'],['Fotos enviadas',String(fotos.value.length)],['Link de arquivos',v(f.linkArquivos)],['Observações',v(f.obs)]]}
+      ];
+    });
+
+    function enviar(){
+      erroEnvio.value='';
+      for(let k=0;k<5;k++){ if(!validar(k)){ step.value=k; topo(); return; } }
+      if(totalBytes.value > LIMITE){ erroEnvio.value='Os arquivos passaram do limite. Remova algumas fotos e mande as demais por link.'; return; }
+      enviando.value=true;
+      try{
+        const form = document.createElement('form');
+        form.method='POST'; form.action=ENDPOINT; form.enctype='multipart/form-data'; form.hidden=true;
+        const add = (name,value)=>{ const i=document.createElement('input'); i.type='hidden'; i.name=name; i.value=value; form.appendChild(i); };
+        const volta = location.origin + location.pathname + '?enviado=1';
+        add('_subject', `Novo briefing: ${f.empresa} (${f.nome})`);
+        add('_template','table');
+        add('_captcha','false');
+        add('_next', volta);
+        if(f.email) add('_replyto', f.email);
+        resumo.value.forEach(b=>b.itens.forEach(([k,val])=>add(`${b.titulo} · ${k}`, val)));
+
+        const arquivos = [];
+        if(logo.value) arquivos.push(['logo', logo.value.file]);
+        fotos.value.forEach((ft,i)=>arquivos.push([`foto_${String(i+1).padStart(2,'0')}`, ft.file]));
+        for(const [name,file] of arquivos){
+          const inp=document.createElement('input'); inp.type='file'; inp.name=name;
+          const dt=new DataTransfer(); dt.items.add(file); inp.files=dt.files;
+          form.appendChild(inp);
+        }
+        document.body.appendChild(form);
+        form.submit();
+      }catch(e){
+        enviando.value=false;
+        erroEnvio.value='Não foi possível enviar por este navegador. Tente pelo Chrome ou fale com a Korvex no WhatsApp.';
+      }
+    }
+
+    return {enviado,f,step,erros,fotos,logo,processando,enviando,avisoFotos,erroEnvio,salvoMsg,dragLogo,dragFotos,
+      etapas,tipos,objetivosOp,estilosOp,secoesOp,recursosOp,mostraProdutos,totalBytes,pctUso,mb,LIMITE,MAX_FOTOS,
+      toggle,setHex,mascaraTel,avancar,voltar,irPara,addFotos,addLogo,removerFoto,removerLogo,resumo,enviar};
+  }
+}).mount('#app');
+</script>
+</body>
+</html>
