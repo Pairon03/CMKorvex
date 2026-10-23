@@ -569,10 +569,13 @@ footer a{color:var(--muted)}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/3.4.38/vue.global.prod.min.js"></script>
 <script>
 /* ===== Configuração ===== */
-// Depois de ativar o FormSubmit, você pode trocar o e-mail pelo código aleatório que ele envia (esconde o e-mail do código-fonte).
-const DESTINO = 'vm.korvex@gmail.com';
-const ENDPOINT = 'https://formsubmit.co/' + DESTINO;
-const LIMITE = 9.5 * 1024 * 1024;   // FormSubmit aceita ~10 MB por envio
+// Supabase: Project Settings → API. A chave "anon public" pode ficar no site;
+// a tabela e o bucket só aceitam inserir (ver supabase/briefing.sql).
+// Nunca coloque aqui a chave service_role.
+const SUPABASE_URL = 'https://ddtexmuanfqtuhehqjan.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRkdGV4bXVhbmZxdHVoZWhxamFuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTI3NTY5NjgsImV4cCI6MjEwODMzMjk2OH0.4wGwI8ccMIWXzADXVQCgnzb9DfZgeFwnPmt582XqrKE';
+const BUCKET = 'briefings';
+const LIMITE = 40 * 1024 * 1024;    // soma do logo e das fotos já otimizados
 const MAX_FOTOS = 15;
 const MAX_LADO = 1600;              // px do maior lado depois da otimização
 const STORAGE_KEY = 'korvex-briefing-v2';
@@ -807,36 +810,46 @@ createApp({
       ];
     });
 
-    function enviar(){
+    async function supa(caminho, corpo, tipo, extra){
+      const r = await fetch(SUPABASE_URL + caminho, {
+        method:'POST', body:corpo,
+        headers:Object.assign({apikey:SUPABASE_ANON_KEY, Authorization:'Bearer '+SUPABASE_ANON_KEY, 'Content-Type':tipo}, extra||{})
+      });
+      if(!r.ok) throw new Error(caminho+' '+r.status+' '+(await r.text()).slice(0,200));
+    }
+
+    async function enviar(){
       erroEnvio.value='';
       for(let k=0;k<etapas.value.length-1;k++){ if(!validar(k)){ step.value=k; topo(); return; } }
       if(totalBytes.value > LIMITE){ erroEnvio.value='Os arquivos passaram do limite. Remova algumas fotos e mande as demais por link.'; return; }
+      if(!SUPABASE_URL || !SUPABASE_ANON_KEY){ erroEnvio.value='O envio ainda não está configurado. Fale com a Korvex no WhatsApp.'; return; }
       enviando.value=true;
       try{
-        const form = document.createElement('form');
-        form.method='POST'; form.action=ENDPOINT; form.enctype='multipart/form-data'; form.hidden=true;
-        const add = (name,value)=>{ const i=document.createElement('input'); i.type='hidden'; i.name=name; i.value=value; form.appendChild(i); };
-        const volta = location.origin + location.pathname + '?enviado=1';
-        add('_subject', `Novo briefing: ${f.empresa} (${f.nome}) · ${f.servicos.join(', ')}`);
-        add('_template','table');
-        add('_captcha','false');
-        add('_next', volta);
-        if(f.email) add('_replyto', f.email);
-        resumo.value.forEach(b=>b.itens.forEach(([k,val])=>add(`${b.titulo} · ${k}`, val)));
+        const id = crypto.randomUUID();
+        // fotos primeiro: o briefing só aparece na tabela com tudo já salvo
+        const sobe = async (nome, file)=>{
+          const caminho = `${id}/${nome}${file.type==='image/png'?'.png':'.jpg'}`;
+          await supa(`/storage/v1/object/${BUCKET}/${caminho}`, file, file.type);
+          return caminho;
+        };
+        const caminhoLogo = logo.value ? await sobe('logo', logo.value.file) : null;
+        const caminhosFotos = [];
+        for(let i=0;i<fotos.value.length;i++) caminhosFotos.push(await sobe(`foto_${String(i+1).padStart(2,'0')}`, fotos.value[i].file));
 
-        const arquivos = [];
-        if(logo.value) arquivos.push(['logo', logo.value.file]);
-        fotos.value.forEach((ft,i)=>arquivos.push([`foto_${String(i+1).padStart(2,'0')}`, ft.file]));
-        for(const [name,file] of arquivos){
-          const inp=document.createElement('input'); inp.type='file'; inp.name=name;
-          const dt=new DataTransfer(); dt.items.add(file); inp.files=dt.files;
-          form.appendChild(inp);
-        }
-        document.body.appendChild(form);
-        form.submit();
+        await supa('/rest/v1/briefings', JSON.stringify({
+          id, nome:f.nome, empresa:f.empresa, whatsapp:f.whatsapp, email:f.email||null, servicos:f.servicos,
+          resumo:resumo.value.map(b=>({titulo:b.titulo, itens:b.itens})),
+          respostas:f, logo:caminhoLogo, fotos:caminhosFotos
+        }), 'application/json', {Prefer:'return=minimal'});
+
+        try{ localStorage.removeItem(STORAGE_KEY); }catch(e){}
+        history.replaceState(null,'',location.pathname+'?enviado=1');
+        enviado.value=true; topo();
       }catch(e){
+        console.error(e);
+        erroEnvio.value='Não conseguimos enviar agora. Confira a internet e tente de novo; se continuar, fale com a Korvex no WhatsApp.';
+      }finally{
         enviando.value=false;
-        erroEnvio.value='Não foi possível enviar por este navegador. Tente pelo Chrome ou fale com a Korvex no WhatsApp.';
       }
     }
 

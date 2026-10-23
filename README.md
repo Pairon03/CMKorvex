@@ -28,7 +28,13 @@ assets/img/         favicon, imagem de compartilhamento, K e telas da AB
 
 ## Briefing de clientes
 
-O formulário fica em `https://vmkorvex.vercel.app/briefing.html` (fora do Google, com `noindex`). Ele envia tudo para o e-mail da constante `DESTINO` pelo FormSubmit, com as fotos anexadas. O primeiro envio dispara um e-mail de ativação na caixa da Korvex; depois de ativar, dá para trocar o e-mail pelo código aleatório do FormSubmit em `DESTINO`.
+O formulário fica em `https://vmkorvex.vercel.app/briefing.html` (fora do Google, com `noindex`). Cada envio vira uma linha na tabela `briefings` do Supabase, e o logo e as fotos vão para o bucket privado `briefings`, numa pasta com o id do briefing.
+
+Para configurar (uma vez):
+
+1. No Supabase, abra **SQL Editor**, cole `supabase/briefing.sql` e rode. Ele cria a tabela, o bucket e as permissões: visitantes só conseguem enviar, ninguém de fora lê nada.
+2. Em **Project Settings → API**, copie a Project URL e a chave `anon public` para `SUPABASE_URL` e `SUPABASE_ANON_KEY` em `briefing.html`. Nunca use a chave `service_role` no site.
+3. Para ver os briefings: **Table Editor → briefings** (fotos em **Storage → briefings**).
 
 ## Trocar contatos
 
