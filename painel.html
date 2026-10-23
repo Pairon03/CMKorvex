@@ -1,0 +1,958 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Painel Korvex</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#07070A">
+<link rel="icon" href="assets/img/favicon.png">
+<link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
+<link rel="preload" href="assets/fonts/manrope-var.woff" as="font" type="font/woff" crossorigin>
+<link rel="preload" href="assets/fonts/michroma.woff" as="font" type="font/woff" crossorigin>
+<style>
+/* Painel interno da Korvex: pedidos que chegam pelo briefing, status, tarefas e fotos.
+   Só Cauã e Vitor entram (tabela equipe no Supabase, ver supabase/painel.sql). */
+@font-face { font-family: 'Michroma'; src: url('assets/fonts/michroma.woff') format('woff'); font-weight: 400; font-display: swap; }
+@font-face { font-family: 'Manrope'; src: url('assets/fonts/manrope-var.woff') format('woff'); font-weight: 200 800; font-display: swap; }
+
+:root {
+  --bg: #07070A;
+  --surface: #0E0E13;
+  --surface-2: #15151C;
+  --surface-3: #1C1C25;
+  --line: #262631;
+  --ink: #F1F1F4;
+  --muted: #A4A7B2;
+  --n1: #FF2D4F;
+  --n2: #E23CCB;
+  --n3: #9B4DFF;
+  --ok: #5EE6A8;
+  --warn: #FFB547;
+  --f-display: 'Michroma', 'Eurostile', 'Arial', sans-serif;
+  --f-text: 'Manrope', 'Segoe UI', system-ui, -apple-system, sans-serif;
+  --ease-out: cubic-bezier(.23, 1, .32, 1);
+  --gl: max(16px, env(safe-area-inset-left, 0px));
+  --gr: max(16px, env(safe-area-inset-right, 0px));
+  --r: 14px;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--f-text); font-size: 15px; line-height: 1.5; overflow-x: clip; }
+h1, h2, h3, p, ul, ol, figure, dl, dd { margin: 0; }
+ul, ol { padding: 0; list-style: none; }
+img { display: block; max-width: 100%; }
+a { color: inherit; }
+button, input, textarea, select { font: inherit; color: inherit; }
+button { cursor: pointer; }
+:focus-visible { outline: 2px solid var(--n2); outline-offset: 2px; }
+::selection { background: var(--n1); color: #fff; }
+[v-cloak] { display: none; }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.muted { color: var(--muted); }
+.k { font: 700 11px var(--f-text); letter-spacing: .18em; text-transform: uppercase; color: var(--muted); }
+
+/* botões e campos */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  min-height: 44px; padding: 0 18px; border-radius: 12px; border: 0; white-space: nowrap; text-decoration: none;
+  font: 800 14px var(--f-text); background: var(--surface-2); color: var(--ink); box-shadow: inset 0 0 0 1px var(--line);
+  transition: transform 160ms var(--ease-out), box-shadow 200ms ease, background-color 200ms ease, opacity 200ms ease;
+}
+.btn:active { transform: scale(.97); }
+.btn:disabled { opacity: .5; cursor: default; }
+.btn--main { background: linear-gradient(100deg, var(--n1), var(--n2)); color: #fff; box-shadow: none; }
+.btn--sm { min-height: 36px; padding: 0 12px; font-size: 13px; border-radius: 10px; }
+.btn--danger { color: var(--n1); }
+.btn--icon { width: 44px; padding: 0; }
+@media (hover: hover) {
+  .btn:not(:disabled):hover { box-shadow: inset 0 0 0 1px var(--n2); }
+  .btn--main:not(:disabled):hover { box-shadow: 0 0 28px -6px var(--n1); }
+}
+.campo { display: grid; gap: 6px; }
+.campo > span { font-size: 13px; font-weight: 700; color: var(--muted); }
+.in {
+  width: 100%; min-height: 44px; padding: 10px 12px; border-radius: 10px; border: 0;
+  background: var(--surface-2); box-shadow: inset 0 0 0 1px var(--line); outline: 0;
+  transition: box-shadow 160ms ease;
+}
+.in:focus { box-shadow: inset 0 0 0 1px var(--n2), 0 0 0 3px color-mix(in srgb, var(--n2) 20%, transparent); }
+textarea.in { resize: vertical; min-height: 96px; line-height: 1.5; }
+.erro { color: var(--n1); font-size: 14px; font-weight: 600; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip { display: inline-flex; align-items: center; min-height: 26px; padding: 0 10px; border-radius: 99px; background: var(--surface-3); font-size: 12px; font-weight: 700; color: var(--muted); }
+button.chip { border: 0; min-height: 36px; padding: 0 14px; font-size: 13px; box-shadow: inset 0 0 0 1px var(--line); }
+button.chip[aria-pressed="true"] { color: var(--ink); background: color-mix(in srgb, var(--n2) 18%, var(--surface-2)); box-shadow: inset 0 0 0 1px var(--n2); }
+
+/* status */
+.st-novo { --c: var(--n2); }
+.st-esboco { --c: var(--n3); }
+.st-producao { --c: var(--warn); }
+.st-entregue { --c: var(--ok); }
+.dot { width: 8px; height: 8px; border-radius: 50%; background: var(--c); box-shadow: 0 0 10px var(--c); flex: none; }
+
+/* entrar */
+.entrar { min-height: 100%; display: grid; place-items: center; padding: 32px var(--gr) 32px var(--gl);
+  background: radial-gradient(60% 50% at 50% 100%, color-mix(in srgb, var(--n1) 16%, transparent), transparent 70%), var(--bg); }
+.entrar__box { width: min(400px, 100%); display: grid; gap: 18px; padding: 28px; border-radius: 20px; background: var(--surface); box-shadow: inset 0 0 0 1px var(--line); }
+.marca { display: flex; align-items: center; gap: 12px; }
+.marca img { width: 36px; height: 36px; }
+.marca b { font: 400 16px var(--f-display); letter-spacing: .08em; }
+.marca small { display: block; font-size: 12px; color: var(--muted); letter-spacing: .1em; text-transform: uppercase; }
+.linkbtn { background: none; border: 0; padding: 0; color: var(--muted); font-size: 13px; text-decoration: underline; text-underline-offset: 3px; justify-self: start; }
+.ok { color: var(--ok); font-size: 14px; font-weight: 600; }
+
+/* topo */
+.topo { position: sticky; top: 0; z-index: 20; background: color-mix(in srgb, var(--bg) 88%, transparent); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-bottom: 1px solid var(--line); padding-top: env(safe-area-inset-top, 0px); }
+.topo__in { display: flex; align-items: center; gap: 12px; padding: 12px var(--gr) 12px var(--gl); max-width: 1480px; margin: 0 auto; }
+.topo .marca { margin-right: auto; }
+.topo .busca { flex: 1; max-width: 360px; }
+.topo .busca .in { min-height: 40px; }
+.quem { position: relative; }
+.menu { position: absolute; right: 0; top: calc(100% + 8px); min-width: 230px; padding: 8px; border-radius: 14px; background: var(--surface-2); box-shadow: inset 0 0 0 1px var(--line), 0 20px 50px -10px #000; display: grid; gap: 2px; z-index: 30; }
+.menu button { text-align: left; background: none; border: 0; padding: 10px 12px; border-radius: 8px; font-size: 14px; font-weight: 600; }
+.menu button:hover { background: var(--surface-3); }
+.menu p { padding: 8px 12px; font-size: 13px; color: var(--muted); }
+.avatar { width: 40px; height: 40px; border-radius: 50%; border: 0; display: grid; place-items: center; font: 800 14px var(--f-text); background: linear-gradient(140deg, var(--n1), var(--n3)); color: #fff; }
+
+main { max-width: 1480px; margin: 0 auto; padding: 20px var(--gr) 60px var(--gl); }
+
+/* aviso de briefing novo */
+.aviso { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; padding: 14px 16px; border-radius: var(--r); margin-bottom: 18px;
+  background: linear-gradient(100deg, color-mix(in srgb, var(--n1) 16%, var(--surface)), color-mix(in srgb, var(--n2) 10%, var(--surface)));
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--n1) 45%, transparent); }
+.aviso p { flex: 1 1 260px; }
+.aviso b { font-weight: 800; }
+
+/* resumo do topo */
+.resumo { display: flex; align-items: end; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-bottom: 16px; }
+.resumo h1 { font: 400 clamp(20px, 2.4vw, 28px)/1.2 var(--f-display); }
+
+/* abas do celular */
+.abas { display: none; gap: 6px; overflow-x: auto; margin: 0 calc(-1 * var(--gr)) 14px calc(-1 * var(--gl)); padding: 2px var(--gr) 4px var(--gl); scrollbar-width: none; }
+.abas::-webkit-scrollbar { display: none; }
+.aba { display: inline-flex; align-items: center; gap: 8px; min-height: 40px; padding: 0 14px; border-radius: 99px; border: 0; background: var(--surface-2); box-shadow: inset 0 0 0 1px var(--line); font-weight: 700; font-size: 13px; white-space: nowrap; color: var(--muted); }
+.aba[aria-selected="true"] { color: var(--ink); box-shadow: inset 0 0 0 1px var(--c); background: color-mix(in srgb, var(--c) 12%, var(--surface-2)); }
+.aba i { font-style: normal; font-size: 12px; opacity: .8; }
+
+/* quadro */
+.quadro { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; align-items: start; }
+.col { border-radius: 18px; background: var(--surface); box-shadow: inset 0 0 0 1px var(--line); padding: 12px; min-height: 140px; transition: box-shadow 160ms ease; }
+.col.alvo { box-shadow: inset 0 0 0 2px var(--c); }
+.col__h { display: flex; align-items: center; gap: 10px; padding: 4px 4px 12px; }
+.col__h h2 { font: 800 13px var(--f-text); letter-spacing: .12em; text-transform: uppercase; }
+.col__h span { margin-left: auto; font-size: 13px; color: var(--muted); font-weight: 700; }
+.cards { display: grid; gap: 10px; }
+.vazio { padding: 18px 8px; text-align: center; color: var(--muted); font-size: 13px; }
+.card { position: relative; display: grid; gap: 8px; width: 100%; text-align: left; border: 0; padding: 14px; border-radius: 14px; background: var(--surface-2); box-shadow: inset 0 0 0 1px var(--line);
+  transition: transform 160ms var(--ease-out), box-shadow 200ms ease; }
+.card:active { transform: scale(.98); }
+@media (hover: hover) { .card:hover { box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--c) 70%, transparent), 0 10px 30px -14px var(--c); } }
+.card h3 { font-size: 16px; font-weight: 800; line-height: 1.3; padding-right: 18px; overflow-wrap: anywhere; }
+.card .quem2 { font-size: 13px; color: var(--muted); }
+.card__pe { display: flex; align-items: center; gap: 10px; font-size: 12px; color: var(--muted); font-weight: 600; }
+.card__pe .barra { flex: 1; height: 4px; border-radius: 4px; background: var(--surface-3); overflow: hidden; }
+.card__pe .barra i { display: block; height: 100%; background: var(--c); }
+.card .pisca { position: absolute; top: 14px; right: 14px; }
+.card .atrasado { color: var(--n1); }
+.pisca { width: 10px; height: 10px; border-radius: 50%; background: var(--n1); box-shadow: 0 0 0 0 var(--n1); animation: pisca 1.8s infinite; }
+@keyframes pisca { 0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--n1) 70%, transparent); } 100% { box-shadow: 0 0 0 10px transparent; } }
+.cores { display: flex; gap: 4px; }
+.cores i { width: 14px; height: 14px; border-radius: 4px; box-shadow: inset 0 0 0 1px rgba(255,255,255,.15); }
+
+@media (max-width: 900px) {
+  .abas { display: flex; }
+  .quadro { grid-template-columns: 1fr; }
+  .col { display: none; background: none; box-shadow: none; padding: 0; }
+  .col.ativa { display: block; }
+  .col__h { display: none; }
+  .topo .busca { display: none; }
+  .busca-cel { display: block !important; margin-bottom: 12px; }
+}
+.busca-cel { display: none; }
+
+/* projeto (gaveta) */
+.fundo { position: fixed; inset: 0; z-index: 40; background: rgba(0,0,0,.6); backdrop-filter: blur(2px); }
+.gaveta { position: fixed; z-index: 41; top: 0; right: 0; bottom: 0; width: min(760px, 100%); background: var(--bg); box-shadow: -1px 0 0 var(--line), -30px 0 80px -20px #000;
+  overflow-y: auto; overscroll-behavior: contain; padding-bottom: calc(40px + env(safe-area-inset-bottom, 0px)); }
+.gaveta__topo { position: sticky; top: 0; z-index: 2; display: flex; align-items: center; gap: 10px; padding: calc(12px + env(safe-area-inset-top, 0px)) var(--gr) 12px var(--gl); background: color-mix(in srgb, var(--bg) 90%, transparent); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-bottom: 1px solid var(--line); }
+.gaveta__topo .k { flex: 1; }
+.gaveta__in { padding: 20px var(--gr) 0 var(--gl); display: grid; gap: 26px; }
+.gaveta h1 { font: 400 clamp(20px, 3vw, 26px)/1.25 var(--f-display); overflow-wrap: anywhere; }
+.contato { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+.bloco { display: grid; gap: 12px; }
+.bloco > h2 { font: 800 12px var(--f-text); letter-spacing: .16em; text-transform: uppercase; color: var(--muted); display: flex; align-items: center; gap: 10px; }
+.bloco > h2 small { margin-left: auto; font-size: 12px; letter-spacing: 0; text-transform: none; font-weight: 600; }
+.painel { padding: 16px; border-radius: var(--r); background: var(--surface); box-shadow: inset 0 0 0 1px var(--line); }
+.status-sel { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
+.status-sel button { display: flex; align-items: center; justify-content: center; gap: 8px; min-height: 48px; padding: 6px; border-radius: 12px; border: 0; background: var(--surface-2); box-shadow: inset 0 0 0 1px var(--line); font-size: 13px; font-weight: 700; color: var(--muted); text-align: center; line-height: 1.2; }
+.status-sel button[aria-pressed="true"] { color: var(--ink); background: color-mix(in srgb, var(--c) 16%, var(--surface-2)); box-shadow: inset 0 0 0 1px var(--c); }
+@media (max-width: 520px) { .status-sel { grid-template-columns: 1fr 1fr; } }
+.linha2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+@media (max-width: 520px) { .linha2 { grid-template-columns: 1fr; } }
+
+.tarefas { display: grid; gap: 2px; }
+.tarefa { display: flex; align-items: center; gap: 12px; padding: 6px 4px 6px 8px; border-radius: 10px; }
+.tarefa:hover { background: var(--surface-2); }
+.tarefa label { flex: 1; display: flex; align-items: center; gap: 12px; min-height: 36px; cursor: pointer; }
+.tarefa input[type=checkbox] { appearance: none; width: 22px; height: 22px; flex: none; margin: 0; border-radius: 7px; box-shadow: inset 0 0 0 2px var(--line); background: var(--surface-2); display: grid; place-items: center; cursor: pointer; transition: background-color 160ms ease, box-shadow 160ms ease; }
+.tarefa input[type=checkbox]:checked { background: var(--ok); box-shadow: none; }
+.tarefa input[type=checkbox]:checked::after { content: ""; width: 10px; height: 6px; border: solid #07070A; border-width: 0 0 2.5px 2.5px; transform: translateY(-1px) rotate(-45deg); }
+.tarefa.feita span { color: var(--muted); text-decoration: line-through; }
+.tarefa .x { width: 32px; height: 32px; border: 0; border-radius: 8px; background: none; color: var(--muted); font-size: 18px; line-height: 1; opacity: .6; }
+.tarefa .x:hover { opacity: 1; background: var(--surface-3); color: var(--n1); }
+.nova-tarefa { display: flex; gap: 8px; margin-top: 8px; }
+.nova-tarefa .in { flex: 1; }
+
+.paleta { display: flex; flex-wrap: wrap; gap: 10px; }
+.cor { display: grid; gap: 6px; width: 96px; border: 0; padding: 0; background: none; text-align: left; }
+.cor i { display: block; height: 64px; border-radius: 12px; box-shadow: inset 0 0 0 1px rgba(255,255,255,.12); }
+.cor span { font: 700 13px ui-monospace, Menlo, Consolas, monospace; }
+.cor small { font-size: 11px; color: var(--muted); margin-top: -4px; }
+
+.galeria { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 8px; }
+.foto { position: relative; aspect-ratio: 1; border-radius: 12px; overflow: hidden; border: 0; padding: 0; background: var(--surface-2); box-shadow: inset 0 0 0 1px var(--line); }
+.foto img { width: 100%; height: 100%; object-fit: cover; }
+.foto--logo { background: repeating-conic-gradient(#1a1a22 0 25%, #22222c 0 50%) 0 0 / 16px 16px; }
+.foto--logo img { object-fit: contain; padding: 10px; }
+.foto em { position: absolute; left: 6px; bottom: 6px; font-style: normal; font-size: 11px; font-weight: 800; padding: 2px 8px; border-radius: 99px; background: rgba(0,0,0,.7); }
+
+.briefing { display: grid; gap: 12px; }
+.briefing section { padding: 14px 16px; border-radius: var(--r); background: var(--surface); box-shadow: inset 0 0 0 1px var(--line); }
+.briefing h3 { font: 800 14px var(--f-text); margin-bottom: 8px; }
+.briefing dl { display: grid; grid-template-columns: minmax(110px, 34%) 1fr; gap: 6px 14px; font-size: 14px; }
+.briefing dt { color: var(--muted); }
+.briefing dd { white-space: pre-wrap; overflow-wrap: anywhere; }
+@media (max-width: 520px) { .briefing dl { grid-template-columns: 1fr; gap: 0; } .briefing dd { margin-bottom: 8px; } }
+
+/* janelas */
+.janela { position: fixed; z-index: 50; left: 50%; top: 50%; transform: translate(-50%, -50%); width: min(520px, calc(100% - 24px)); max-height: calc(100% - 24px); overflow-y: auto; padding: 22px; border-radius: 20px; background: var(--surface); box-shadow: inset 0 0 0 1px var(--line), 0 30px 80px -20px #000; display: grid; gap: 14px; }
+.janela h2 { font: 400 18px var(--f-display); }
+.acoes { display: flex; gap: 8px; justify-content: flex-end; flex-wrap: wrap; }
+.luz { position: fixed; inset: 0; z-index: 60; background: rgba(4,4,6,.94); display: grid; grid-template-rows: auto 1fr; }
+.luz__topo { display: flex; align-items: center; gap: 8px; padding: calc(10px + env(safe-area-inset-top, 0px)) var(--gr) 10px var(--gl); }
+.luz__topo span { flex: 1; font-size: 13px; color: var(--muted); }
+.luz__img { display: grid; place-items: center; padding: 0 var(--gr) 20px var(--gl); min-height: 0; position: relative; }
+.luz__img img { max-width: 100%; max-height: 100%; object-fit: contain; border-radius: 8px; }
+.luz__nav { position: absolute; top: 50%; transform: translateY(-50%); }
+.luz__nav--a { left: var(--gl); } .luz__nav--b { right: var(--gr); }
+
+.toast { position: fixed; z-index: 70; left: 50%; bottom: calc(20px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); max-width: calc(100% - 32px); padding: 12px 18px; border-radius: 12px; background: var(--surface-3); box-shadow: inset 0 0 0 1px var(--line), 0 20px 40px -10px #000; font-weight: 700; font-size: 14px; }
+.toast.ruim { box-shadow: inset 0 0 0 1px var(--n1); }
+.carregando { min-height: 60vh; display: grid; place-items: center; color: var(--muted); }
+
+.sobe-enter-active, .sobe-leave-active { transition: opacity 200ms ease, transform 260ms var(--ease-out); }
+.sobe-enter-from, .sobe-leave-to { opacity: 0; transform: translateX(-50%) translateY(10px); }
+.gav-enter-active, .gav-leave-active { transition: transform 320ms var(--ease-out); }
+.gav-enter-from, .gav-leave-to { transform: translateX(100%); }
+.esm-enter-active, .esm-leave-active { transition: opacity 200ms ease; }
+.esm-enter-from, .esm-leave-to { opacity: 0; }
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition-duration: 1ms !important; }
+}
+</style>
+</head>
+<body>
+<div id="app" v-cloak>
+
+  <div v-if="fase==='carregando'" class="carregando">Carregando…</div>
+
+  <!-- Entrar / nova senha -->
+  <div v-else-if="fase==='entrar' || fase==='novasenha' || fase==='semacesso'" class="entrar">
+    <form class="entrar__box" @submit.prevent="fase==='novasenha' ? salvarSenha() : entrar()">
+      <div class="marca">
+        <img src="assets/img/k-mark-160.webp" alt="">
+        <div><b>KORVEX</b><small>Painel de pedidos</small></div>
+      </div>
+
+      <template v-if="fase==='semacesso'">
+        <p>Este login ainda não faz parte da equipe do painel.</p>
+        <p class="muted">Se é o login do Cauã ou do Vitor, rode o arquivo <b>supabase/painel.sql</b> de novo no Supabase: ele libera todo usuário criado em Authentication → Users.</p>
+        <button class="btn" type="button" @click="sair">Usar outro login</button>
+      </template>
+
+      <template v-else-if="fase==='novasenha'">
+        <p class="muted">Escolha a nova senha.</p>
+        <label class="campo"><span>Nova senha</span>
+          <input class="in" type="password" v-model="login.senha" autocomplete="new-password" minlength="6" required>
+        </label>
+        <p v-if="login.erro" class="erro">{{ login.erro }}</p>
+        <button class="btn btn--main" :disabled="login.ocupado">{{ login.ocupado ? 'Salvando…' : 'Salvar e entrar' }}</button>
+      </template>
+
+      <template v-else>
+        <label class="campo"><span>E-mail</span>
+          <input class="in" type="email" v-model.trim="login.email" autocomplete="username" required>
+        </label>
+        <label class="campo"><span>Senha</span>
+          <input class="in" type="password" v-model="login.senha" autocomplete="current-password" required>
+        </label>
+        <p v-if="login.erro" class="erro">{{ login.erro }}</p>
+        <p v-if="login.ok" class="ok">{{ login.ok }}</p>
+        <button class="btn btn--main" :disabled="login.ocupado">{{ login.ocupado ? 'Entrando…' : 'Entrar' }}</button>
+        <button class="linkbtn" type="button" @click="esqueci">Esqueci a senha</button>
+      </template>
+    </form>
+  </div>
+
+  <!-- Painel -->
+  <template v-else>
+    <header class="topo">
+      <div class="topo__in">
+        <div class="marca">
+          <img src="assets/img/k-mark-160.webp" alt="">
+          <div><b>KORVEX</b><small>Painel</small></div>
+        </div>
+        <label class="busca"><span class="sr">Buscar</span>
+          <input class="in" type="search" v-model="busca" placeholder="Buscar cliente, empresa ou serviço">
+        </label>
+        <button class="btn btn--main" @click="abrirNovo"><span aria-hidden="true">+</span> Projeto</button>
+        <div class="quem">
+          <button class="avatar" @click.stop="menu=!menu" :aria-expanded="menu" :title="eu.nome">{{ iniciais(eu.nome) }}</button>
+          <div class="menu" v-if="menu" @click.stop>
+            <p>{{ eu.nome }} · {{ sessao.user.email }}</p>
+            <button v-if="podeNotificar && permissao!=='granted'" @click="pedirAvisos">Ativar avisos neste aparelho</button>
+            <p v-else-if="permissao==='granted'">Avisos ligados neste aparelho</p>
+            <button @click="mudarNome">Mudar meu nome</button>
+            <button @click="recarregar(); menu=false">Atualizar lista</button>
+            <button @click="sair">Sair</button>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <div class="aviso" v-if="novos.length">
+        <span class="pisca" aria-hidden="true"></span>
+        <p><b>{{ novos.length===1 ? '1 briefing novo' : novos.length+' briefings novos' }}</b> desde sua última visita:
+          {{ novos.map(b=>b.empresa).join(', ') }}.</p>
+        <button class="btn btn--sm" @click="marcarVisto">Ok, vi</button>
+      </div>
+
+      <div class="resumo">
+        <div>
+          <p class="k">Pedidos</p>
+          <h1>{{ ativos }} em andamento</h1>
+        </div>
+        <p class="muted" v-if="atualizadoEm">Atualizado às {{ hora(atualizadoEm) }}</p>
+      </div>
+
+      <label class="busca-cel"><span class="sr">Buscar</span>
+        <input class="in" type="search" v-model="busca" placeholder="Buscar cliente, empresa ou serviço">
+      </label>
+
+      <div class="abas" role="tablist">
+        <button v-for="s in STATUS" :key="s.v" class="aba" :class="'st-'+s.v" role="tab" :aria-selected="aba===s.v" @click="aba=s.v">
+          <span class="dot"></span>{{ s.t }} <i>{{ porStatus[s.v].length }}</i>
+        </button>
+      </div>
+
+      <div class="quadro">
+        <section v-for="s in STATUS" :key="s.v" class="col" :class="['st-'+s.v, {ativa: aba===s.v, alvo: arrastoSobre===s.v}]"
+          @dragover.prevent="arrastoSobre=s.v" @dragleave="arrastoSobre=null" @drop.prevent="soltar(s.v)">
+          <div class="col__h"><span class="dot"></span><h2>{{ s.t }}</h2><span>{{ porStatus[s.v].length }}</span></div>
+          <div class="cards">
+            <button v-for="b in porStatus[s.v]" :key="b.id" class="card" :class="'st-'+b.status" draggable="true"
+              @dragstart="arrastando=b.id" @dragend="arrastando=null; arrastoSobre=null" @click="abrir(b.id)">
+              <span v-if="ehNovo(b)" class="pisca" title="Chegou desde sua última visita"></span>
+              <h3>{{ b.empresa }}</h3>
+              <p class="quem2">{{ b.nome }} · {{ b.origem==='manual' ? 'cadastrado à mão' : 'briefing de '+dataCurta(b.created_at) }}</p>
+              <div class="chips" v-if="b.servicos.length"><span class="chip" v-for="x in b.servicos" :key="x">{{ x }}</span></div>
+              <div class="cores" v-if="coresDe(b).length"><i v-for="c in coresDe(b)" :key="c" :style="{background:c}"></i></div>
+              <div class="card__pe">
+                <template v-if="contagem(b.id).total">
+                  <span>{{ contagem(b.id).feitas }}/{{ contagem(b.id).total }} tarefas</span>
+                  <span class="barra"><i :style="{width: (contagem(b.id).feitas/contagem(b.id).total*100)+'%'}"></i></span>
+                </template>
+                <span v-else>Sem tarefas</span>
+                <span v-if="b.prazo" :class="{atrasado: atrasado(b)}">até {{ dataCurta(b.prazo) }}</span>
+              </div>
+            </button>
+            <p v-if="!porStatus[s.v].length" class="vazio">{{ busca ? 'Nada encontrado' : 'Nenhum projeto aqui' }}</p>
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <!-- Projeto -->
+    <transition name="esm"><div v-if="atual" class="fundo" @click="fechar"></div></transition>
+    <transition name="gav">
+      <aside v-if="atual" class="gaveta" role="dialog" aria-modal="true" :aria-label="atual.empresa">
+        <div class="gaveta__topo">
+          <button class="btn btn--icon btn--sm" @click="fechar" aria-label="Fechar">✕</button>
+          <span class="k">{{ atual.origem==='manual' ? 'Cadastrado à mão' : 'Briefing de '+dataLonga(atual.created_at) }}</span>
+        </div>
+        <div class="gaveta__in">
+          <div>
+            <h1>{{ atual.empresa }}</h1>
+            <p class="muted">{{ atual.nome }}<template v-if="atual.respostas && atual.respostas.segmento"> · {{ atual.respostas.segmento }}</template></p>
+            <div class="contato">
+              <a v-if="atual.whatsapp" class="btn btn--sm" :href="linkZap(atual.whatsapp)" target="_blank" rel="noopener">WhatsApp {{ atual.whatsapp }}</a>
+              <a v-if="atual.email" class="btn btn--sm" :href="'mailto:'+atual.email">{{ atual.email }}</a>
+              <a v-if="atual.respostas && atual.respostas.instagram" class="btn btn--sm" :href="linkInsta(atual.respostas.instagram)" target="_blank" rel="noopener">Instagram</a>
+            </div>
+            <div class="chips" style="margin-top:12px" v-if="atual.servicos.length"><span class="chip" v-for="x in atual.servicos" :key="x">{{ x }}</span></div>
+          </div>
+
+          <section class="bloco">
+            <h2>Status</h2>
+            <div class="status-sel">
+              <button v-for="s in STATUS" :key="s.v" :class="'st-'+s.v" :aria-pressed="atual.status===s.v" @click="mudarStatus(atual, s.v)">
+                <span class="dot"></span>{{ s.t }}
+              </button>
+            </div>
+          </section>
+
+          <section class="bloco">
+            <h2>Tarefas <small v-if="tarefasAtual.length">{{ tarefasAtual.filter(t=>t.feita).length }} de {{ tarefasAtual.length }} feitas</small></h2>
+            <div class="painel">
+              <ul class="tarefas" v-if="tarefasAtual.length">
+                <li v-for="t in tarefasAtual" :key="t.id" class="tarefa" :class="{feita: t.feita}">
+                  <label><input type="checkbox" :checked="t.feita" @change="marcar(t)"><span>{{ t.titulo }}</span></label>
+                  <button class="x" @click="apagarTarefa(t)" :aria-label="'Apagar tarefa '+t.titulo">×</button>
+                </li>
+              </ul>
+              <p v-else class="muted" style="margin-bottom:10px">Nenhuma tarefa ainda.
+                <button class="linkbtn" @click="tarefasPadrao(atual)">Criar a lista padrão para {{ atual.servicos.length ? atual.servicos.join(' + ') : 'este projeto' }}</button>
+              </p>
+              <form class="nova-tarefa" @submit.prevent="addTarefa">
+                <input class="in" v-model="novaTarefa" placeholder="O que falta fazer?" aria-label="Nova tarefa">
+                <button class="btn" :disabled="!novaTarefa.trim()">Adicionar</button>
+              </form>
+            </div>
+          </section>
+
+          <section class="bloco">
+            <h2>Anotações <small>{{ notaMsg }}</small></h2>
+            <div class="linha2">
+              <label class="campo"><span>Prazo de entrega</span>
+                <input class="in" type="date" :value="atual.prazo || ''" @change="salvarCampo(atual, 'prazo', $event.target.value || null)">
+              </label>
+              <label class="campo"><span>Prazo que o cliente pediu</span>
+                <input class="in" :value="(atual.respostas && atual.respostas.prazo) || '—'" readonly>
+              </label>
+            </div>
+            <textarea class="in" v-model="notaRascunho" @blur="salvarNota" placeholder="Valor combinado, ideias, o que o cliente falou na ligação…" aria-label="Anotações"></textarea>
+          </section>
+
+          <section class="bloco" v-if="paleta.length || (atual.respostas && atual.respostas.semCores)">
+            <h2>Paleta de cores <small>toque para copiar</small></h2>
+            <p v-if="atual.respostas.semCores" class="muted">O cliente quer uma sugestão de cores da Korvex.</p>
+            <div class="paleta" v-else>
+              <button v-for="c in paleta" :key="c" class="cor" @click="copiar(c)">
+                <i :style="{background:c}"></i><span>{{ c }}</span><small>{{ rgb(c) }}</small>
+              </button>
+            </div>
+          </section>
+
+          <section class="bloco" v-if="arquivos.length">
+            <h2>Logo e fotos <small>{{ arquivos.length }} arquivo{{ arquivos.length>1?'s':'' }}</small></h2>
+            <div class="galeria">
+              <button v-for="(a,i) in arquivos" :key="a.caminho" class="foto" :class="{'foto--logo': a.logo}" @click="luz=i">
+                <img v-if="a.url" :src="a.url" :alt="a.nome" loading="lazy">
+                <em v-if="a.logo">Logo</em>
+              </button>
+            </div>
+            <p v-if="erroFotos" class="erro">{{ erroFotos }}</p>
+            <p v-if="atual.respostas && atual.respostas.linkArquivos" class="muted">Link de arquivos do cliente:
+              <a :href="atual.respostas.linkArquivos" target="_blank" rel="noopener">{{ atual.respostas.linkArquivos }}</a></p>
+          </section>
+
+          <section class="bloco" v-if="atual.resumo && atual.resumo.length">
+            <h2>Briefing completo</h2>
+            <div class="briefing">
+              <section v-for="bl in atual.resumo" :key="bl.titulo">
+                <h3>{{ bl.titulo }}</h3>
+                <dl><template v-for="([rot, val], j) in bl.itens" :key="j"><dt>{{ rot }}</dt><dd>{{ val }}</dd></template></dl>
+              </section>
+            </div>
+          </section>
+
+          <section class="bloco">
+            <h2>Projeto</h2>
+            <div class="acoes" style="justify-content:flex-start">
+              <button class="btn btn--sm" @click="abrirEditar(atual)">Editar dados do cliente</button>
+              <button class="btn btn--sm btn--danger" @click="apagarProjeto(atual)">Excluir projeto</button>
+            </div>
+          </section>
+        </div>
+      </aside>
+    </transition>
+
+    <!-- Novo / editar projeto -->
+    <transition name="esm"><div v-if="form" class="fundo" style="z-index:49" @click="form=null"></div></transition>
+    <transition name="esm">
+      <form v-if="form" class="janela" @submit.prevent="salvarForm">
+        <h2>{{ form.id ? 'Editar cliente' : 'Novo projeto' }}</h2>
+        <p v-if="!form.id" class="muted">Para clientes que não vieram pelo formulário de briefing.</p>
+        <label class="campo"><span>Empresa ou projeto</span><input class="in" v-model.trim="form.empresa" required></label>
+        <label class="campo"><span>Nome do contato</span><input class="in" v-model.trim="form.nome" required></label>
+        <div class="linha2">
+          <label class="campo"><span>WhatsApp</span><input class="in" v-model.trim="form.whatsapp" inputmode="tel"></label>
+          <label class="campo"><span>E-mail</span><input class="in" type="email" v-model.trim="form.email"></label>
+        </div>
+        <div class="campo"><span>Serviços</span>
+          <div class="chips">
+            <button v-for="x in SERVICOS" :key="x" type="button" class="chip" :aria-pressed="form.servicos.includes(x)" @click="alternar(form.servicos, x)">{{ x }}</button>
+          </div>
+        </div>
+        <label v-if="!form.id" class="campo"><span>Começa em</span>
+          <select class="in" v-model="form.status"><option v-for="s in STATUS" :key="s.v" :value="s.v">{{ s.t }}</option></select>
+        </label>
+        <p v-if="form.erro" class="erro">{{ form.erro }}</p>
+        <div class="acoes">
+          <button class="btn" type="button" @click="form=null">Cancelar</button>
+          <button class="btn btn--main" :disabled="form.ocupado">{{ form.ocupado ? 'Salvando…' : 'Salvar' }}</button>
+        </div>
+      </form>
+    </transition>
+
+    <!-- Foto em tela cheia -->
+    <div v-if="luz!==null && arquivos[luz]" class="luz" @click.self="luz=null" @keydown.esc="luz=null">
+      <div class="luz__topo">
+        <span>{{ arquivos[luz].nome }} · {{ luz+1 }} de {{ arquivos.length }}</span>
+        <a class="btn btn--sm" :href="arquivos[luz].baixar" download>Baixar</a>
+        <button class="btn btn--sm" v-if="arquivos.length>1" @click="baixarTodos">Baixar todos</button>
+        <button class="btn btn--sm btn--icon" @click="luz=null" aria-label="Fechar">✕</button>
+      </div>
+      <div class="luz__img" @click.self="luz=null">
+        <img :src="arquivos[luz].url" :alt="arquivos[luz].nome">
+        <button v-if="arquivos.length>1" class="btn btn--icon luz__nav luz__nav--a" @click="luz=(luz+arquivos.length-1)%arquivos.length" aria-label="Anterior">‹</button>
+        <button v-if="arquivos.length>1" class="btn btn--icon luz__nav luz__nav--b" @click="luz=(luz+1)%arquivos.length" aria-label="Próxima">›</button>
+      </div>
+    </div>
+  </template>
+
+  <transition name="sobe"><div v-if="toast" class="toast" :class="{ruim: toast.ruim}" role="status">{{ toast.texto }}</div></transition>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/vue/3.4.38/vue.global.prod.min.js"></script>
+<script>
+/* ===== Configuração ===== */
+// Mesmo projeto do briefing.html. A chave anon pode ficar no site: sem login da
+// equipe ela só consegue enviar briefings (ver supabase/briefing.sql e painel.sql).
+// Nunca coloque aqui a chave service_role.
+const SUPABASE_URL = 'https://ddtexmuanfqtuhehqjan.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRkdGV4bXVhbmZxdHVoZWhxamFuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTI3NTY5NjgsImV4cCI6MjEwODMzMjk2OH0.4wGwI8ccMIWXzADXVQCgnzb9DfZgeFwnPmt582XqrKE';
+const BUCKET = 'briefings';
+const SESSAO_KEY = 'korvex-painel-sessao';
+const INTERVALO = 60 * 1000;        // de quanto em quanto tempo procura briefing novo
+
+const STATUS = [
+  {v:'novo', t:'Novo briefing'},
+  {v:'esboco', t:'Esboço'},
+  {v:'producao', t:'Em produção'},
+  {v:'entregue', t:'Entregue'}
+];
+const SERVICOS = ['Landing page','Site','Instagram','Marca e logo','Ainda não sei'];
+
+// Lista de tarefas que o botão "lista padrão" cria, conforme os serviços do projeto
+function modeloTarefas(servicos){
+  const s = servicos || [];
+  const t = ['Ligar para o cliente e tirar dúvidas do briefing', 'Enviar proposta com valor e prazo'];
+  if(s.includes('Marca e logo')) t.push('Criar opções de logo', 'Definir paleta e tipografia', 'Entregar arquivos da marca');
+  if(s.includes('Landing page') || s.includes('Site')) t.push('Montar o esboço', 'Aprovar o esboço com o cliente', 'Desenvolver', 'Revisão com o cliente', 'Publicar e configurar o domínio');
+  if(s.includes('Instagram')) t.push('Arrumar bio e destaques', 'Montar o calendário de posts', 'Criar os primeiros posts');
+  t.push('Receber o pagamento');
+  return t;
+}
+
+/* ===== Supabase (fetch direto, sem biblioteca) ===== */
+const api = {
+  sessao: null,
+  carregar(){ try{ this.sessao = JSON.parse(localStorage.getItem(SESSAO_KEY)); }catch(e){ this.sessao = null; } return this.sessao; },
+  guardar(s){
+    if(s && !s.expires_at) s.expires_at = Math.floor(Date.now()/1000) + (s.expires_in || 3600);
+    this.sessao = s;
+    try{ s ? localStorage.setItem(SESSAO_KEY, JSON.stringify(s)) : localStorage.removeItem(SESSAO_KEY); }catch(e){}
+  },
+  async auth(caminho, corpo, metodo, token){
+    const r = await fetch(SUPABASE_URL + '/auth/v1/' + caminho, {
+      method: metodo || 'POST',
+      headers: Object.assign({apikey: SUPABASE_ANON_KEY, 'Content-Type': 'application/json'}, token ? {Authorization: 'Bearer ' + token} : {}),
+      body: corpo ? JSON.stringify(corpo) : undefined
+    });
+    const dados = await r.json().catch(()=>({}));
+    if(!r.ok){ const e = new Error(dados.error_description || dados.msg || dados.message || r.status); e.status = r.status; e.codigo = dados.error_code || dados.error; throw e; }
+    return dados;
+  },
+  async entrar(email, senha){ this.guardar(await this.auth('token?grant_type=password', {email, password: senha})); },
+  async renovar(){
+    if(!this.sessao) throw new Error('sem sessão');
+    try{ this.guardar(await this.auth('token?grant_type=refresh_token', {refresh_token: this.sessao.refresh_token})); }
+    catch(e){ this.guardar(null); throw e; }
+  },
+  async token(){
+    if(!this.sessao) throw new Error('sem sessão');
+    if(this.sessao.expires_at - 60 < Date.now()/1000) await this.renovar();
+    return this.sessao.access_token;
+  },
+  async req(caminho, {metodo='GET', corpo, headers={}}={}, tentou){
+    const r = await fetch(SUPABASE_URL + caminho, {
+      method: metodo,
+      headers: Object.assign({apikey: SUPABASE_ANON_KEY, Authorization: 'Bearer ' + await this.token()}, corpo!==undefined ? {'Content-Type':'application/json'} : {}, headers),
+      body: corpo!==undefined ? JSON.stringify(corpo) : undefined
+    });
+    if(r.status===401 && !tentou){ await this.renovar(); return this.req(caminho, {metodo, corpo, headers}, true); }
+    const txt = await r.text();
+    if(!r.ok){ const e = new Error(caminho + ' ' + r.status + ' ' + txt.slice(0,200)); e.status = r.status; throw e; }
+    return txt ? JSON.parse(txt) : null;
+  },
+  get(tabela, q){ return this.req(`/rest/v1/${tabela}?${q}`); },
+  inserir(tabela, linha){ return this.req(`/rest/v1/${tabela}`, {metodo:'POST', corpo: linha, headers:{Prefer:'return=representation'}}); },
+  mudar(tabela, id, campos, chave='id'){ return this.req(`/rest/v1/${tabela}?${chave}=eq.${id}`, {metodo:'PATCH', corpo: campos, headers:{Prefer:'return=representation'}}); },
+  apagar(tabela, filtro){ return this.req(`/rest/v1/${tabela}?${filtro}`, {metodo:'DELETE'}); },
+  assinar(caminhos){ return this.req(`/storage/v1/object/sign/${BUCKET}`, {metodo:'POST', corpo:{expiresIn: 3600, paths: caminhos}}); },
+  apagarArquivos(caminhos){ return this.req(`/storage/v1/object/${BUCKET}`, {metodo:'DELETE', corpo:{prefixes: caminhos}}); }
+};
+
+const CAMPOS = 'id,created_at,status,nome,empresa,whatsapp,email,servicos,resumo,respostas,logo,fotos,origem,notas,prazo,atualizado_em';
+
+const { createApp, reactive, ref, computed, watch, onMounted } = Vue;
+
+createApp({
+  setup(){
+    const fase = ref('carregando');
+    const login = reactive({email:'', senha:'', erro:'', ok:'', ocupado:false});
+    const sessao = ref(null);
+    const eu = ref({nome:'', visto_em:null});
+    const briefings = ref([]);
+    const tarefas = ref([]);
+    const busca = ref('');
+    const aba = ref('novo');
+    const menu = ref(false);
+    const toast = ref(null);
+    const atualizadoEm = ref(null);
+    const abertoId = ref(null);
+    const form = ref(null);
+    const luz = ref(null);
+    const assinadas = reactive({});     // caminho -> url assinada
+    const erroFotos = ref('');
+    const novaTarefa = ref('');
+    const notaRascunho = ref('');
+    const notaMsg = ref('');
+    const arrastando = ref(null), arrastoSobre = ref(null);
+    const podeNotificar = 'Notification' in window;
+    const permissao = ref(podeNotificar ? Notification.permission : 'denied');
+    let conhecidos = new Set();
+
+    /* --- utilidades --- */
+    let tt;
+    function avisar(texto, ruim){ clearTimeout(tt); toast.value = {texto, ruim}; tt = setTimeout(()=>toast.value=null, ruim ? 5000 : 2600); }
+    const falha = e => { console.error(e); avisar(e && e.status===403 ? 'Sem permissão. Confira se o painel.sql foi rodado.' : 'Não deu certo. Confira a internet e tente de novo.', true); };
+    const iniciais = n => (n||'?').split(/\s+/).filter(Boolean).slice(0,2).map(p=>p[0].toUpperCase()).join('');
+    const dt = s => s && s.length===10 ? new Date(s+'T12:00:00') : new Date(s);
+    const dataCurta = s => dt(s).toLocaleDateString('pt-BR', {day:'2-digit', month:'short'}).replace('.', '');
+    const dataLonga = s => dt(s).toLocaleDateString('pt-BR', {day:'numeric', month:'long', year:'numeric'}) + ' às ' + hora(s);
+    const hora = s => new Date(s).toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'});
+    const hoje = () => new Date().toISOString().slice(0,10);
+    const atrasado = b => b.prazo && b.status!=='entregue' && b.prazo < hoje();
+    function linkZap(tel){ let d = tel.replace(/\D/g,''); if(d.length<=11) d = '55'+d; return 'https://wa.me/'+d; }
+    function linkInsta(i){ return /^https?:/.test(i) ? i : 'https://instagram.com/'+i.replace(/^@/,'').replace(/^.*instagram\.com\//,''); }
+    function rgb(hex){ const n = parseInt(hex.slice(1),16); return `RGB ${n>>16} ${(n>>8)&255} ${n&255}`; }
+    const novoId = () => crypto.randomUUID ? crypto.randomUUID() : '10000000-1000-4000-8000-100000000000'.replace(/[018]/g, c=>(c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c/4).toString(16));
+    function alternar(arr, v){ const i = arr.indexOf(v); i>=0 ? arr.splice(i,1) : arr.push(v); }
+    const coresDe = b => (b.respostas && !b.respostas.semCores && Array.isArray(b.respostas.cores)) ? b.respostas.cores : [];
+    async function copiar(t){ try{ await navigator.clipboard.writeText(t); avisar(t+' copiado'); }catch(e){ avisar(t); } }
+
+    /* --- entrar e sair --- */
+    async function iniciar(){
+      // volta do e-mail de "esqueci a senha": #access_token=...&type=recovery
+      const h = new URLSearchParams(location.hash.slice(1));
+      if(h.get('access_token')){
+        api.guardar({access_token:h.get('access_token'), refresh_token:h.get('refresh_token'), expires_in:+h.get('expires_in')||3600});
+        history.replaceState(null, '', location.pathname);
+        if(h.get('type')==='recovery'){ fase.value = 'novasenha'; return; }
+      }
+      if(!api.carregar()){ fase.value = 'entrar'; return; }
+      try{ await abrirPainel(); }
+      catch(e){ console.error(e); api.guardar(null); fase.value = 'entrar'; }
+    }
+
+    async function abrirPainel(){
+      const s = api.sessao;
+      if(!s.user) s.user = await api.auth('user', null, 'GET', await api.token());
+      sessao.value = s;
+      const linha = await api.get('equipe', `select=nome,visto_em&user_id=eq.${s.user.id}`);
+      if(!linha.length){ fase.value = 'semacesso'; return; }
+      eu.value = linha[0];
+      await recarregar();
+      conhecidos = new Set(briefings.value.map(b=>b.id));
+      fase.value = 'painel';
+      const hid = location.hash.match(/^#\/p\/([\w-]+)/);
+      if(hid && briefings.value.some(b=>b.id===hid[1])) abrir(hid[1], true);
+      else if(!porStatus.value.novo.length) aba.value = STATUS.find(x=>porStatus.value[x.v].length)?.v || 'novo';
+      iniciarRonda();
+    }
+
+    async function entrar(){
+      login.erro = ''; login.ok = ''; login.ocupado = true;
+      try{ await api.entrar(login.email, login.senha); login.senha = ''; await abrirPainel(); }
+      catch(e){
+        console.error(e);
+        login.erro = e.status===400 ? 'E-mail ou senha incorretos.' : 'Não conseguimos entrar agora. Confira a internet e tente de novo.';
+      }finally{ login.ocupado = false; }
+    }
+
+    async function esqueci(){
+      login.erro = ''; login.ok = '';
+      if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(login.email)){ login.erro = 'Escreva seu e-mail acima e toque de novo em "Esqueci a senha".'; return; }
+      try{
+        await api.auth('recover?redirect_to=' + encodeURIComponent(location.origin + location.pathname), {email: login.email});
+        login.ok = 'Se este e-mail for da equipe, chega um link para criar uma senha nova.';
+      }catch(e){ console.error(e); login.erro = 'Não conseguimos mandar o e-mail agora. Tente de novo em alguns minutos.'; }
+    }
+
+    async function salvarSenha(){
+      login.erro = ''; login.ocupado = true;
+      try{
+        await api.auth('user', {password: login.senha}, 'PUT', await api.token());
+        login.senha = '';
+        await api.renovar();
+        await abrirPainel();
+        avisar('Senha nova salva');
+      }catch(e){ console.error(e); login.erro = 'Não deu para salvar. Use pelo menos 6 caracteres, ou peça um link novo.'; }
+      finally{ login.ocupado = false; }
+    }
+
+    async function sair(){
+      menu.value = false;
+      try{ if(api.sessao) await api.auth('logout', null, 'POST', api.sessao.access_token); }catch(e){}
+      api.guardar(null); pararRonda();
+      sessao.value = null; briefings.value = []; tarefas.value = []; abertoId.value = null;
+      fase.value = 'entrar';
+    }
+
+    /* --- dados --- */
+    async function recarregar(){
+      const [b, t] = await Promise.all([
+        api.get('briefings', `select=${CAMPOS}&order=created_at.desc`),
+        api.get('tarefas', 'select=*&order=ordem.asc,criada_em.asc')
+      ]);
+      briefings.value = b.map(x=>Object.assign(x, {servicos: x.servicos || [], fotos: x.fotos || []}));
+      tarefas.value = t;
+      atualizadoEm.value = new Date().toISOString();
+    }
+
+    const filtrados = computed(()=>{
+      const q = busca.value.trim().toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'');
+      if(!q) return briefings.value;
+      return briefings.value.filter(b=>[b.empresa, b.nome, b.whatsapp, b.email, (b.servicos||[]).join(' '), b.respostas && b.respostas.segmento, b.respostas && b.respostas.cidade]
+        .join(' ').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').includes(q));
+    });
+    const porStatus = computed(()=>{
+      const o = {}; STATUS.forEach(s=>o[s.v]=[]);
+      filtrados.value.forEach(b=>(o[b.status] || o.novo).push(b));
+      // entregues: o mais recente primeiro; os outros por prazo e depois por chegada
+      for(const k of ['novo','esboco','producao']) o[k].sort((a,b)=>(a.prazo||'9999').localeCompare(b.prazo||'9999') || b.created_at.localeCompare(a.created_at));
+      o.entregue.sort((a,b)=>b.atualizado_em.localeCompare(a.atualizado_em));
+      return o;
+    });
+    const ativos = computed(()=>briefings.value.filter(b=>b.status!=='entregue').length);
+    const contagens = computed(()=>{
+      const c = {};
+      tarefas.value.forEach(t=>{ const x = c[t.briefing_id] || (c[t.briefing_id] = {total:0, feitas:0}); x.total++; if(t.feita) x.feitas++; });
+      return c;
+    });
+    const contagem = id => contagens.value[id] || {total:0, feitas:0};
+
+    /* --- aviso de briefing novo --- */
+    const ehNovo = b => b.origem!=='manual' && eu.value.visto_em && b.created_at > eu.value.visto_em;
+    const novos = computed(()=>briefings.value.filter(ehNovo));
+    async function marcarVisto(){
+      const agora = new Date().toISOString();
+      eu.value = Object.assign({}, eu.value, {visto_em: agora});
+      try{ await api.mudar('equipe', sessao.value.user.id, {visto_em: agora}, 'user_id'); }catch(e){ falha(e); }
+    }
+    watch(()=>novos.value.length, n=>{ document.title = (n ? `(${n}) ` : '') + 'Painel Korvex'; });
+
+    async function mudarNome(){
+      menu.value = false;
+      const nome = (prompt('Como seu nome aparece no painel?', eu.value.nome) || '').trim();
+      if(!nome || nome===eu.value.nome) return;
+      try{ await api.mudar('equipe', sessao.value.user.id, {nome}, 'user_id'); eu.value = Object.assign({}, eu.value, {nome}); avisar('Nome salvo'); }
+      catch(e){ falha(e); }
+    }
+
+    async function pedirAvisos(){
+      menu.value = false;
+      try{ permissao.value = await Notification.requestPermission(); }catch(e){}
+      if(permissao.value==='granted') avisar('Pronto: com o painel aberto, avisamos quando chegar briefing novo');
+      else avisar('O navegador bloqueou os avisos. Libere nas configurações do site.', true);
+    }
+
+    let ronda;
+    function iniciarRonda(){ pararRonda(); ronda = setInterval(()=>{ if(!document.hidden) procurarNovos(); }, INTERVALO); }
+    function pararRonda(){ clearInterval(ronda); }
+    document.addEventListener('visibilitychange', ()=>{ if(!document.hidden && fase.value==='painel') procurarNovos(); });
+    async function procurarNovos(){
+      try{
+        await recarregar();
+        const chegaram = briefings.value.filter(b=>!conhecidos.has(b.id) && b.origem!=='manual');
+        briefings.value.forEach(b=>conhecidos.add(b.id));
+        if(!chegaram.length) return;
+        const txt = chegaram.length===1 ? `Briefing novo: ${chegaram[0].empresa}` : `${chegaram.length} briefings novos`;
+        avisar(txt);
+        if(permissao.value==='granted'){
+          try{
+            const n = new Notification('Korvex · ' + txt, {body: chegaram.map(b=>b.empresa+' · '+(b.servicos||[]).join(', ')).join('\n'), icon:'assets/img/apple-touch-icon.png', tag:'korvex-briefing'});
+            n.onclick = ()=>{ window.focus(); abrir(chegaram[0].id); n.close(); };
+          }catch(e){}
+        }
+      }catch(e){ console.error(e); }
+    }
+
+    /* --- projeto aberto --- */
+    const atual = computed(()=>briefings.value.find(b=>b.id===abertoId.value) || null);
+    const tarefasAtual = computed(()=>tarefas.value.filter(t=>t.briefing_id===abertoId.value));
+    const paleta = computed(()=>atual.value ? coresDe(atual.value) : []);
+    const arquivos = computed(()=>{
+      const b = atual.value; if(!b) return [];
+      const lista = [...(b.logo ? [{caminho:b.logo, logo:true}] : []), ...b.fotos.map(c=>({caminho:c}))];
+      return lista.map(a=>{
+        const nome = (b.empresa||'cliente').replace(/[^\wÀ-ú\- ]+/g,'').trim().replace(/\s+/g,'-') + '_' + a.caminho.split('/').pop();
+        const url = assinadas[a.caminho];
+        return Object.assign(a, {nome, url, baixar: url ? url + '&download=' + encodeURIComponent(nome) : ''});
+      });
+    });
+
+    function abrir(id, semHistorico){
+      abertoId.value = id; luz.value = null; novaTarefa.value = ''; notaMsg.value = ''; erroFotos.value = '';
+      const b = atual.value; notaRascunho.value = b ? b.notas : '';
+      if(!semHistorico) history.pushState({p:id}, '', '#/p/' + id);
+      document.body.style.overflow = 'hidden';
+      if(b) carregarFotos(b);
+    }
+    function fechar(){
+      if(location.hash.startsWith('#/p/')) history.back();
+      else fecharSemVoltar();
+    }
+    function fecharSemVoltar(){ salvarNota(); abertoId.value = null; luz.value = null; document.body.style.overflow = ''; }
+    window.addEventListener('popstate', ()=>{
+      const hid = location.hash.match(/^#\/p\/([\w-]+)/);
+      if(hid) abrir(hid[1], true); else if(abertoId.value) fecharSemVoltar();
+    });
+    document.addEventListener('keydown', e=>{
+      if(e.key!=='Escape') return;
+      if(luz.value!==null) luz.value = null; else if(form.value) form.value = null; else if(abertoId.value) fechar();
+    });
+    document.addEventListener('click', ()=>{ menu.value = false; });
+
+    async function carregarFotos(b){
+      const faltam = [b.logo, ...b.fotos].filter(c=>c && !assinadas[c]);
+      if(!faltam.length) return;
+      try{
+        const r = await api.assinar(faltam);
+        r.forEach(x=>{ if(x.signedURL) assinadas[x.path] = SUPABASE_URL + '/storage/v1' + x.signedURL; });
+        if(r.some(x=>x.error)) erroFotos.value = 'Algumas fotos não foram encontradas no Storage.';
+      }catch(e){ console.error(e); erroFotos.value = 'Não conseguimos abrir as fotos agora.'; }
+    }
+    async function baixarTodos(){
+      for(const a of arquivos.value){
+        if(!a.baixar) continue;
+        const l = document.createElement('a'); l.href = a.baixar; l.download = a.nome; document.body.appendChild(l); l.click(); l.remove();
+        await new Promise(r=>setTimeout(r, 400));
+      }
+    }
+
+    function trocarLocal(b, campos){ Object.assign(b, campos); }
+    async function salvarCampo(b, campo, valor){
+      const antes = b[campo];
+      trocarLocal(b, {[campo]: valor});
+      try{ const [n] = await api.mudar('briefings', b.id, {[campo]: valor}); if(n) trocarLocal(b, {atualizado_em: n.atualizado_em}); }
+      catch(e){ trocarLocal(b, {[campo]: antes}); falha(e); throw e; }
+    }
+    async function mudarStatus(b, st){
+      if(b.status===st) return;
+      try{
+        await salvarCampo(b, 'status', st);
+        avisar(`${b.empresa}: ${STATUS.find(s=>s.v===st).t}`);
+        if(!abertoId.value) aba.value = st;
+      }catch(e){}
+    }
+    function soltar(st){
+      arrastoSobre.value = null;
+      const b = briefings.value.find(x=>x.id===arrastando.value);
+      arrastando.value = null;
+      if(b) mudarStatus(b, st);
+    }
+    async function salvarNota(){
+      const b = atual.value;
+      if(!b || notaRascunho.value===b.notas) return;
+      notaMsg.value = 'Salvando…';
+      try{ await salvarCampo(b, 'notas', notaRascunho.value); notaMsg.value = 'Salvo'; }catch(e){ notaMsg.value = 'Não salvou'; }
+    }
+
+    /* --- tarefas --- */
+    async function addTarefa(){
+      const titulo = novaTarefa.value.trim(); if(!titulo) return;
+      novaTarefa.value = '';
+      const ordem = tarefasAtual.value.reduce((m,t)=>Math.max(m,t.ordem), -1) + 1;
+      try{ const [t] = await api.inserir('tarefas', {briefing_id: abertoId.value, titulo, ordem}); tarefas.value.push(t); }
+      catch(e){ novaTarefa.value = titulo; falha(e); }
+    }
+    async function tarefasPadrao(b){
+      try{
+        const novas = await api.inserir('tarefas', modeloTarefas(b.servicos).map((titulo, ordem)=>({briefing_id: b.id, titulo, ordem})));
+        tarefas.value.push(...novas);
+      }catch(e){ falha(e); }
+    }
+    async function marcar(t){
+      t.feita = !t.feita;
+      try{ await api.mudar('tarefas', t.id, {feita: t.feita}); }
+      catch(e){ t.feita = !t.feita; falha(e); }
+    }
+    async function apagarTarefa(t){
+      const i = tarefas.value.indexOf(t);
+      tarefas.value.splice(i, 1);
+      try{ await api.apagar('tarefas', 'id=eq.' + t.id); }
+      catch(e){ tarefas.value.splice(i, 0, t); falha(e); }
+    }
+
+    /* --- cadastrar, editar e excluir --- */
+    function abrirNovo(){ form.value = {empresa:'', nome:'', whatsapp:'', email:'', servicos:[], status:'esboco', erro:'', ocupado:false}; }
+    function abrirEditar(b){ form.value = {id:b.id, empresa:b.empresa, nome:b.nome, whatsapp:b.whatsapp, email:b.email||'', servicos:[...b.servicos], erro:'', ocupado:false}; }
+    async function salvarForm(){
+      const f = form.value; f.erro = ''; f.ocupado = true;
+      const dados = {empresa:f.empresa, nome:f.nome, whatsapp:f.whatsapp, email:f.email||null, servicos:f.servicos};
+      try{
+        if(f.id){
+          const [n] = await api.mudar('briefings', f.id, dados);
+          trocarLocal(briefings.value.find(b=>b.id===f.id), n);
+          avisar('Dados salvos');
+        }else{
+          const [n] = await api.inserir('briefings', Object.assign(dados, {id: novoId(), status:f.status, origem:'manual'}));
+          n.servicos = n.servicos || []; n.fotos = n.fotos || [];
+          briefings.value.unshift(n); conhecidos.add(n.id);
+          aba.value = n.status;
+          abrir(n.id);
+        }
+        form.value = null;
+      }catch(e){ console.error(e); f.erro = 'Não deu para salvar. Confira a internet e tente de novo.'; f.ocupado = false; }
+    }
+    async function apagarProjeto(b){
+      if(!confirm(`Excluir "${b.empresa}" do painel? O briefing, as tarefas e as fotos somem de vez.`)) return;
+      try{
+        const caminhos = [b.logo, ...b.fotos].filter(Boolean);
+        if(caminhos.length){ try{ await api.apagarArquivos(caminhos); }catch(e){ console.error(e); } }
+        await api.apagar('briefings', 'id=eq.' + b.id);
+        fechar();
+        briefings.value = briefings.value.filter(x=>x.id!==b.id);
+        tarefas.value = tarefas.value.filter(t=>t.briefing_id!==b.id);
+        avisar('Projeto excluído');
+      }catch(e){ falha(e); }
+    }
+
+    onMounted(iniciar);
+
+    return {fase, login, sessao, eu, busca, aba, menu, toast, atualizadoEm, form, luz, erroFotos, novaTarefa, notaRascunho, notaMsg, arrastando, arrastoSobre, podeNotificar, permissao,
+      STATUS, SERVICOS, porStatus, ativos, contagem, novos, ehNovo, atual, tarefasAtual, paleta, arquivos,
+      iniciais, dataCurta, dataLonga, hora, atrasado, linkZap, linkInsta, rgb, alternar, coresDe, copiar,
+      entrar, esqueci, salvarSenha, sair, recarregar, marcarVisto, mudarNome, pedirAvisos, abrir, fechar, baixarTodos,
+      salvarCampo, mudarStatus, soltar, salvarNota, addTarefa, tarefasPadrao, marcar, apagarTarefa, abrirNovo, abrirEditar, salvarForm, apagarProjeto};
+  }
+}).mount('#app');
+</script>
+</body>
+</html>

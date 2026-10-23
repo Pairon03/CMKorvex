@@ -21,7 +21,8 @@ Os negócios de exemplo nos hologramas são fictícios. Tudo respeita "reduzir m
 
 ```
 index.html          página, estilos e código (tudo num arquivo)
-briefing.html       formulário de briefing para clientes (Vue via CDN, envio pelo FormSubmit)
+briefing.html       formulário de briefing para clientes (Vue via CDN, salva no Supabase)
+painel.html         painel interno de pedidos (só Cauã e Vitor), em /painel
 assets/fonts/       Michroma e Manrope (licença OFL)
 assets/img/         favicon, imagem de compartilhamento, K e telas da AB
 ```
@@ -34,7 +35,18 @@ Para configurar (uma vez):
 
 1. No Supabase, abra **SQL Editor**, cole `supabase/briefing.sql` e rode. Ele cria a tabela, o bucket e as permissões: visitantes só conseguem enviar, ninguém de fora lê nada.
 2. Em **Project Settings → API**, copie a Project URL e a chave `anon public` para `SUPABASE_URL` e `SUPABASE_ANON_KEY` em `briefing.html`. Nunca use a chave `service_role` no site.
-3. Para ver os briefings: **Table Editor → briefings** (fotos em **Storage → briefings**).
+3. Para ver os briefings: use o painel (abaixo) ou **Table Editor → briefings**.
+
+## Painel de pedidos
+
+Fica em `https://vmkorvex.vercel.app/painel` (fora do Google). Mostra todos os projetos em colunas por status (Novo briefing, Esboço, Em produção, Entregue), e cada projeto abre com contato, tarefas, anotações, prazo, paleta de cores, logo e fotos para baixar e o briefing completo. Clientes que não vieram pelo formulário podem ser cadastrados à mão. Ao entrar, o painel avisa os briefings que chegaram desde a última visita; com ele aberto, procura novos a cada minuto e pode mandar notificação do navegador (menu do topo → Ativar avisos).
+
+Para configurar (uma vez):
+
+1. No Supabase, **Authentication → Users → Add user → Create new user**: crie o login do Cauã e o do Vitor (marque **Auto Confirm User**).
+2. **SQL Editor → New query**: cole `supabase/painel.sql` e rode. Ele cria as tabelas `equipe` e `tarefas`, os campos novos do briefing e libera o acesso só para quem está na equipe (todo usuário que existia no Auth na hora). Pode rodar de novo sem perder nada.
+3. Em **Authentication → Sign In / Providers**, deixe desligado **Allow new users to sign up**.
+4. Para o "Esqueci a senha" funcionar, em **Authentication → URL Configuration** coloque `https://vmkorvex.vercel.app/painel` em **Site URL** (ou em Redirect URLs).
 
 ## Trocar contatos
 
