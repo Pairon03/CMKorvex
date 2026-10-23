@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Briefing Korvex</title>
-<meta name="description" content="Conte para a Korvex como você imagina o seu site ou landing page.">
+<meta name="description" content="Conte para a Korvex como você imagina o seu site, landing page, Instagram ou marca.">
 <meta name="theme-color" content="#07070A">
 <meta name="robots" content="noindex">
 <link rel="icon" href="assets/img/favicon.png">
@@ -48,7 +48,7 @@ h1{font-family:var(--f-display);font-weight:700;font-size:clamp(28px,6vw,44px);l
 h1 em{font-style:normal;background:linear-gradient(90deg,var(--accent),var(--accent-2));-webkit-background-clip:text;background-clip:text;color:transparent}
 .lead{color:var(--muted);max-width:58ch;margin:0 0 28px}
 /* progresso */
-.steps{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;margin:0 0 8px}
+.steps{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;gap:6px;margin:0 0 8px}
 .steps button{all:unset;cursor:pointer;height:4px;border-radius:4px;background:var(--line);transition:background .25s}
 .steps button.done{background:var(--accent)}
 .steps button.cur{background:linear-gradient(90deg,var(--accent),var(--accent-2))}
@@ -171,21 +171,21 @@ footer a{color:var(--muted)}
   </div>
 
   <template v-else>
-    <h1>Vamos desenhar o seu <em>site</em></h1>
+    <h1>Vamos desenhar o seu <em>projeto</em></h1>
     <p class="lead">Leva uns 10 minutos. Quanto mais detalhes você der, mais perto do que você imagina chega o primeiro esboço. Suas respostas ficam salvas neste aparelho até você enviar.</p>
 
     <div class="steps" role="tablist" aria-label="Etapas">
       <button v-for="(s,i) in etapas" :key="i" type="button"
-        :class="{done:i<step,cur:i===step}" :aria-label="(i+1)+'. '+s" :aria-current="i===step?'step':null"
+        :class="{done:i<step,cur:i===step}" :aria-label="(i+1)+'. '+s.t" :aria-current="i===step?'step':null"
         @click="irPara(i)"></button>
     </div>
-    <div class="steplabel">Etapa {{step+1}} de {{etapas.length}} · <b>{{etapas[step]}}</b></div>
+    <div class="steplabel">Etapa {{step+1}} de {{etapas.length}} · <b>{{etapas[step].t}}</b></div>
 
     <transition name="fade" mode="out-in">
     <div class="panel" :key="step">
 
       <!-- 1. Contato -->
-      <div v-if="step===0">
+      <div v-if="cur==='contato'">
         <h2>Sobre você e o negócio</h2>
         <p class="sub">Para sabermos com quem falar e o que a empresa faz.</p>
         <div class="grid">
@@ -229,29 +229,25 @@ footer a{color:var(--muted)}
         </div>
       </div>
 
-      <!-- 2. Projeto -->
-      <div v-if="step===1">
-        <h2>O projeto</h2>
-        <p class="sub">O que o site precisa fazer pelo seu negócio.</p>
+      <!-- 2. Serviços -->
+      <div v-if="cur==='servicos'">
+        <h2>O que você precisa</h2>
+        <p class="sub">Escolha os serviços. As próximas perguntas mudam conforme a sua escolha.</p>
         <div class="grid">
           <div class="field full">
-            <span class="lbl">Que tipo de projeto você quer? <span class="req">*</span></span>
+            <span class="lbl">Serviços <span class="req">*</span> <span class="hint">pode marcar mais de um</span></span>
             <div class="opts" role="group">
-              <button v-for="t in tipos" :key="t.v" type="button" class="opt" :aria-pressed="f.tipo===t.v" @click="f.tipo=t.v">
+              <button v-for="t in servicosOp" :key="t.v" type="button" class="opt" :aria-pressed="f.servicos.includes(t.v)" @click="toggleServico(t.v)">
                 <strong>{{t.v}}</strong><span>{{t.d}}</span>
               </button>
             </div>
-            <span class="err" v-if="erros.tipo">Escolha uma opção (pode ser "Ainda não sei").</span>
+            <span class="err" v-if="erros.servicos">Escolha pelo menos um serviço (pode ser "Ainda não sei").</span>
           </div>
           <div class="field full">
             <span class="lbl">Qual o principal objetivo? <span class="hint">pode marcar mais de um</span></span>
             <div class="chips">
               <button v-for="o in objetivosOp" :key="o" type="button" class="chip" :aria-pressed="f.objetivos.includes(o)" @click="toggle(f.objetivos,o)">{{o}}</button>
             </div>
-          </div>
-          <div class="field full">
-            <label for="cta">O que o visitante deve fazer ao entrar no site?</label>
-            <input id="cta" type="text" v-model.trim="f.cta" placeholder="Ex.: chamar no WhatsApp para fazer um pedido">
           </div>
           <div class="field full">
             <label for="publico">Quem é o seu cliente?</label>
@@ -268,19 +264,12 @@ footer a{color:var(--muted)}
               <option>O quanto antes</option><option>Em até 15 dias</option><option>Em até 1 mês</option><option>Sem pressa</option>
             </select>
           </div>
-          <div class="field">
-            <label for="dominio">Já tem domínio (www.)?</label>
-            <select id="dominio" v-model="f.dominio">
-              <option value="">Selecione</option>
-              <option>Sim, já tenho</option><option>Não, preciso de ajuda</option><option>Não sei o que é</option>
-            </select>
-          </div>
         </div>
       </div>
 
       <!-- 3. Identidade visual -->
-      <div v-if="step===2">
-        <h2>Identidade visual</h2>
+      <div v-if="cur==='identidade'">
+        <h2>{{temMarca ? 'Marca e identidade visual' : 'Identidade visual'}}</h2>
         <p class="sub">Cores, estilo e referências que têm a cara da sua marca.</p>
         <div class="grid">
           <div class="field full">
@@ -289,6 +278,25 @@ footer a{color:var(--muted)}
               <button v-for="o in ['Sim, tenho','Tenho, mas quero renovar','Não tenho']" :key="o" type="button" class="chip" :aria-pressed="f.logo===o" @click="f.logo=o">{{o}}</button>
             </div>
           </div>
+
+          <template v-if="temMarca">
+            <div class="field full">
+              <span class="lbl">O que a Korvex vai criar para a marca? <span class="hint">pode marcar mais de um</span></span>
+              <div class="chips">
+                <button v-for="o in marcaOp" :key="o" type="button" class="chip" :aria-pressed="f.marcaItens.includes(o)" @click="toggle(f.marcaItens,o)">{{o}}</button>
+              </div>
+            </div>
+            <div class="field full">
+              <span class="lbl">O nome da marca já está definido?</span>
+              <div class="chips">
+                <button v-for="o in ['Sim','Ainda não, quero ajuda com o nome']" :key="o" type="button" class="chip" :aria-pressed="f.marcaNome===o" @click="f.marcaNome=o">{{o}}</button>
+              </div>
+            </div>
+            <div class="field full">
+              <label for="marcaPercepcao">Como você quer que as pessoas vejam a sua marca?</label>
+              <textarea id="marcaPercepcao" v-model.trim="f.marcaPercepcao" placeholder="Ex.: confiável e próxima, como uma loja de bairro, mas com cara moderna"></textarea>
+            </div>
+          </template>
 
           <div class="field full">
             <span class="lbl">Paleta de cores da marca <span class="hint">toque no quadrado para escolher ou digite o código</span></span>
@@ -316,7 +324,7 @@ footer a{color:var(--muted)}
             </div>
           </div>
 
-          <div class="field full">
+          <div class="field full" v-if="temSite">
             <span class="lbl">Fundo do site</span>
             <div class="chips">
               <button v-for="o in ['Claro','Escuro','Tanto faz']" :key="o" type="button" class="chip" :aria-pressed="f.tema===o" @click="f.tema=o">{{o}}</button>
@@ -324,21 +332,32 @@ footer a{color:var(--muted)}
           </div>
 
           <div class="field full">
-            <label for="referencias">Sites ou perfis que você gosta <span class="hint">cole os links e diga o que gosta em cada um</span></label>
+            <label for="referencias">Sites, perfis ou marcas que você gosta <span class="hint">cole os links e diga o que gosta em cada um</span></label>
             <textarea id="referencias" v-model.trim="f.referencias" placeholder="https://... gosto das fotos grandes&#10;@perfil... gosto das cores"></textarea>
           </div>
           <div class="field full">
-            <label for="evitar">Algo que você NÃO quer no site?</label>
+            <label for="evitar">Algo que você NÃO quer de jeito nenhum?</label>
             <input id="evitar" type="text" v-model.trim="f.evitar" placeholder="Ex.: nada de cor rosa, nada muito poluído">
           </div>
         </div>
       </div>
 
-      <!-- 4. Estrutura -->
-      <div v-if="step===3">
-        <h2>Estrutura do site</h2>
+      <!-- 4. Estrutura do site -->
+      <div v-if="cur==='site'">
+        <h2>Estrutura {{f.servicos.includes('Landing page') ? 'da landing page' : 'do site'}}</h2>
         <p class="sub">Marque as seções e recursos que você imagina. A gente ajusta junto depois.</p>
         <div class="grid">
+          <div class="field full">
+            <label for="cta">O que o visitante deve fazer ao entrar?</label>
+            <input id="cta" type="text" v-model.trim="f.cta" placeholder="Ex.: chamar no WhatsApp para fazer um pedido">
+          </div>
+          <div class="field full">
+            <label for="dominio">Já tem domínio (www.)?</label>
+            <select id="dominio" v-model="f.dominio">
+              <option value="">Selecione</option>
+              <option>Sim, já tenho</option><option>Não, preciso de ajuda</option><option>Não sei o que é</option>
+            </select>
+          </div>
           <div class="field full">
             <span class="section-title">Seções</span>
             <div class="checks">
@@ -370,8 +389,84 @@ footer a{color:var(--muted)}
         </div>
       </div>
 
-      <!-- 5. Produtos e fotos -->
-      <div v-if="step===4">
+      <!-- 5. Instagram -->
+      <div v-if="cur==='instagram'">
+        <h2>Instagram</h2>
+        <p class="sub">Como está o perfil hoje e o que você quer que a Korvex faça nele.</p>
+        <div class="grid">
+          <div class="field">
+            <label for="igPerfil">Perfil (@)</label>
+            <input id="igPerfil" type="text" v-model.trim="f.igPerfil" placeholder="@suaempresa">
+          </div>
+          <div class="field">
+            <label for="igSeguidores">Quantos seguidores, mais ou menos?</label>
+            <select id="igSeguidores" v-model="f.igSeguidores">
+              <option value="">Selecione</option>
+              <option>Ainda não tenho perfil</option><option>Menos de 1 mil</option><option>De 1 mil a 10 mil</option><option>Mais de 10 mil</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="igFreqAtual">Com que frequência posta hoje?</label>
+            <select id="igFreqAtual" v-model="f.igFreqAtual">
+              <option value="">Selecione</option>
+              <option>Quase nunca</option><option>1 vez por semana</option><option>2 a 3 vezes por semana</option><option>Todo dia</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="igQuemCuida">Quem cuida do perfil hoje?</label>
+            <select id="igQuemCuida" v-model="f.igQuemCuida">
+              <option value="">Selecione</option>
+              <option>Eu mesmo</option><option>Alguém da equipe</option><option>Uma agência ou freelancer</option><option>Ninguém</option>
+            </select>
+          </div>
+          <div class="field full">
+            <span class="lbl">O que você quer que a Korvex faça? <span class="hint">pode marcar mais de um</span></span>
+            <div class="checks">
+              <label class="check" v-for="(o,i) in igPrecisaOp" :key="o.v">
+                <input type="checkbox" :id="'igp'+i" :value="o.v" v-model="f.igPrecisa">
+                <span>{{o.v}}<br><span class="hint">{{o.d}}</span></span>
+              </label>
+            </div>
+          </div>
+          <div class="field full">
+            <span class="lbl">Formatos que quer usar</span>
+            <div class="chips">
+              <button v-for="o in ['Posts no feed','Carrossel','Reels','Stories']" :key="o" type="button" class="chip" :aria-pressed="f.igFormatos.includes(o)" @click="toggle(f.igFormatos,o)">{{o}}</button>
+            </div>
+          </div>
+          <div class="field">
+            <label for="igFreq">Quantos posts por semana gostaria?</label>
+            <select id="igFreq" v-model="f.igFreq">
+              <option value="">Selecione</option>
+              <option>1 a 2</option><option>3 a 4</option><option>5 ou mais</option><option>Quero uma sugestão</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="igFotos">Quem produz as fotos e vídeos?</label>
+            <select id="igFotos" v-model="f.igFotos">
+              <option value="">Selecione</option>
+              <option>Eu mesmo, pelo celular</option><option>Tenho fotógrafo</option><option>Preciso de ajuda com isso</option>
+            </select>
+          </div>
+          <div class="field full">
+            <span class="lbl">Tom de voz da marca</span>
+            <div class="chips">
+              <button v-for="o in tomOp" :key="o" type="button" class="chip" :aria-pressed="f.igTom.includes(o)" @click="toggle(f.igTom,o,3)">{{o}}</button>
+            </div>
+          </div>
+          <div class="field full">
+            <label for="igTemas">Assuntos, datas e campanhas importantes</label>
+            <textarea id="igTemas" v-model.trim="f.igTemas" placeholder="Ex.: lançamentos de coleção, Dia das Mães, promoção de aniversário da loja"></textarea>
+          </div>
+          <div class="field full">
+            <label for="igIncomoda">O que mais te incomoda no perfil hoje?</label>
+            <textarea id="igIncomoda" v-model.trim="f.igIncomoda" placeholder="Ex.: feed sem padrão, poucos comentários, não sei o que postar"></textarea>
+          </div>
+        </div>
+      </div>
+
+      <!-- 6. Produtos e fotos -->
+      <div v-if="cur==='fotos'">
         <h2>Produtos e fotos</h2>
         <p class="sub">Com as fotos reais a gente já monta o esboço com a cara do seu negócio.</p>
         <div class="grid">
@@ -439,8 +534,8 @@ footer a{color:var(--muted)}
         </div>
       </div>
 
-      <!-- 6. Revisão -->
-      <div v-if="step===5">
+      <!-- 7. Revisão -->
+      <div v-if="cur==='revisao'">
         <h2>Revise e envie</h2>
         <p class="sub">Confira as respostas. Toque em "editar" para voltar a qualquer etapa.</p>
         <div class="review">
@@ -468,7 +563,7 @@ footer a{color:var(--muted)}
     </transition>
   </template>
 
-  <footer>Korvex · Sites e landing pages que vendem · <a href="https://vmkorvex.vercel.app/" target="_blank" rel="noopener">vmkorvex.vercel.app</a></footer>
+  <footer>Korvex · Sites, landing pages, Instagram e marca · <a href="https://vmkorvex.vercel.app/" target="_blank" rel="noopener">vmkorvex.vercel.app</a></footer>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/3.4.38/vue.global.prod.min.js"></script>
@@ -480,15 +575,16 @@ const ENDPOINT = 'https://formsubmit.co/' + DESTINO;
 const LIMITE = 9.5 * 1024 * 1024;   // FormSubmit aceita ~10 MB por envio
 const MAX_FOTOS = 15;
 const MAX_LADO = 1600;              // px do maior lado depois da otimização
-const STORAGE_KEY = 'korvex-briefing-v1';
+const STORAGE_KEY = 'korvex-briefing-v2';
 
 const { createApp, reactive, ref, computed, watch } = Vue;
 
 function vazio(){
   return {
     nome:'',empresa:'',whatsapp:'',email:'',cidade:'',instagram:'',segmento:'',siteAtual:'',
-    tipo:'',objetivos:[],cta:'',publico:'',diferencial:'',prazo:'',dominio:'',
-    logo:'',cores:['#1B2A6B','#F2B544'],semCores:false,estilos:[],tema:'',referencias:'',evitar:'',
+    servicos:[],objetivos:[],cta:'',publico:'',diferencial:'',prazo:'',dominio:'',
+    logo:'',marcaItens:[],marcaNome:'',marcaPercepcao:'',cores:['#1B2A6B','#F2B544'],semCores:false,estilos:[],tema:'',referencias:'',evitar:'',
+    igPerfil:'',igSeguidores:'',igFreqAtual:'',igQuemCuida:'',igPrecisa:[],igFormatos:[],igFreq:'',igFotos:'',igTom:[],igTemas:'',igIncomoda:'',
     secoes:['Início (topo com destaque)','Sobre','Contato / WhatsApp'],recursos:['Botão flutuante de WhatsApp'],textos:'',ideiaEstrutura:'',
     vende:'',produtos:[{nome:'',preco:'',desc:''}],linkArquivos:'',obs:''
   };
@@ -541,18 +637,55 @@ createApp({
 
     if(enviado.value){ try{ localStorage.removeItem(STORAGE_KEY); }catch(e){} }
 
-    const etapas = ['Contato','Projeto','Identidade visual','Estrutura','Produtos e fotos','Revisão'];
-    const tipos = [
-      {v:'Landing page',d:'Uma página focada em vender ou captar contatos'},
-      {v:'Site institucional',d:'Várias páginas apresentando a empresa'},
-      {v:'Catálogo / loja',d:'Mostrar produtos e receber pedidos'},
-      {v:'Portfólio',d:'Mostrar trabalhos, shows ou projetos'},
+    const servicosOp = [
+      {v:'Landing page',d:'Uma página com um objetivo só, como pedir orçamento no WhatsApp'},
+      {v:'Site',d:'Várias seções ou páginas apresentando a empresa'},
+      {v:'Instagram',d:'Conteúdo, calendário de posts e feed com a cara da marca'},
+      {v:'Marca e logo',d:'Criação ou renovação do logo, cores e estilo da marca'},
       {v:'Ainda não sei',d:'A Korvex ajuda a decidir'}
     ];
-    const objetivosOp = ['Vender produtos','Receber pedidos no WhatsApp','Captar orçamentos','Agendamentos','Apresentar a empresa','Passar mais credibilidade','Divulgar um lançamento'];
+    const SITES = ['Landing page','Site'];
+    const temSite = computed(()=>f.servicos.some(x=>SITES.includes(x)));
+    const temInsta = computed(()=>f.servicos.includes('Instagram'));
+    const temMarca = computed(()=>f.servicos.includes('Marca e logo'));
+    const etapas = computed(()=>[
+      {k:'contato',t:'Contato'},
+      {k:'servicos',t:'Serviços'},
+      {k:'identidade',t:temMarca.value?'Marca':'Identidade visual'},
+      ...(temSite.value?[{k:'site',t:'Estrutura do site'}]:[]),
+      ...(temInsta.value?[{k:'instagram',t:'Instagram'}]:[]),
+      {k:'fotos',t:'Produtos e fotos'},
+      {k:'revisao',t:'Revisão'}
+    ]);
+    const cur = computed(()=>etapas.value[step.value].k);
+    const idx = k => etapas.value.findIndex(e=>e.k===k);
+    // Landing page e site são excludentes; "Ainda não sei" exclui o resto
+    function toggleServico(v){
+      const s = f.servicos, i = s.indexOf(v); delete erros.servicos;
+      if(i>=0){ s.splice(i,1); return; }
+      if(v==='Ainda não sei') s.splice(0);
+      else{
+        const n = s.indexOf('Ainda não sei'); if(n>=0) s.splice(n,1);
+        if(SITES.includes(v)){ const o = s.findIndex(x=>SITES.includes(x)); if(o>=0) s.splice(o,1); }
+      }
+      s.push(v);
+    }
+    const objetivosOp = ['Vender produtos','Receber pedidos no WhatsApp','Captar orçamentos','Agendamentos','Apresentar a empresa','Passar mais credibilidade','Crescer no Instagram','Fortalecer a marca','Divulgar um lançamento'];
+    const marcaOp = ['Logo novo','Renovar o logo atual','Paleta de cores','Tipografia','Manual da marca','Cartão de visita e papelaria','Modelos de posts'];
+    const igPrecisaOp = [
+      {v:'Melhorar o conteúdo',d:'Posts com mais qualidade e estratégia'},
+      {v:'Calendário de posts',d:'Planejamento do que postar e quando'},
+      {v:'Padronizar o feed',d:'Visual dos posts com a identidade da marca'},
+      {v:'Criar os posts',d:'Artes e carrosséis prontos para postar'},
+      {v:'Legendas',d:'Textos e hashtags dos posts'},
+      {v:'Bio e destaques',d:'Arrumar a bio, a foto e as capas dos destaques'},
+      {v:'Reels e vídeos',d:'Roteiro e edição'}
+    ];
+    const tomOp = ['Descontraído','Profissional','Próximo','Inspirador','Educativo','Divertido','Sofisticado'];
     const estilosOp = ['Moderno','Minimalista','Sofisticado','Divertido','Acolhedor','Tecnológico','Ousado','Rústico','Clássico','Natural'];
     const secoesOp = [
       {v:'Início (topo com destaque)',d:'Primeira coisa que o visitante vê'},
+      {v:'Portfólio / trabalhos',d:'Projetos, shows ou cases'},
       {v:'Sobre',d:'História e valores da empresa'},
       {v:'Serviços',d:'O que você oferece'},
       {v:'Produtos / catálogo',d:'Vitrine com fotos e preços'},
@@ -599,14 +732,15 @@ createApp({
 
     function validar(i){
       Object.keys(erros).forEach(k=>delete erros[k]);
-      if(i===0){
+      const k = etapas.value[i].k;
+      if(k==='contato'){
         if(!f.nome) erros.nome=1;
         if(!f.empresa) erros.empresa=1;
         if(f.whatsapp.replace(/\D/g,'').length<10) erros.whatsapp=1;
         if(f.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(f.email)) erros.email=1;
         if(!f.segmento) erros.segmento=1;
       }
-      if(i===1 && !f.tipo) erros.tipo=1;
+      if(k==='servicos' && !f.servicos.length) erros.servicos=1;
       return Object.keys(erros).length===0;
     }
     const topo = ()=>window.scrollTo({top:0,behavior:'smooth'});
@@ -617,6 +751,9 @@ createApp({
       for(let k=step.value;k<i;k++){ if(!validar(k)){ step.value=k; topo(); return; } }
       step.value=i; topo();
     }
+
+    // o @ do contato já vale para a etapa do Instagram
+    watch(temInsta, on=>{ if(on && !f.igPerfil && f.instagram) f.igPerfil=f.instagram; });
 
     async function addFotos(lista){
       avisoFotos.value='';
@@ -657,17 +794,22 @@ createApp({
         ? f.produtos.filter(p=>p.nome).map(p=>`• ${p.nome}${p.preco?' — '+p.preco:''}${p.desc?'\n  '+p.desc:''}`).join('\n') || '—'
         : '—';
       return [
-        {titulo:'Contato',etapa:0,itens:[['Nome',v(f.nome)],['Empresa',v(f.empresa)],['WhatsApp',v(f.whatsapp)],['E-mail',v(f.email)],['Cidade',v(f.cidade)],['Instagram',v(f.instagram)],['O que faz',v(f.segmento)],['Site atual',v(f.siteAtual)]]},
-        {titulo:'Projeto',etapa:1,itens:[['Tipo',v(f.tipo)],['Objetivos',lista(f.objetivos)],['Ação do visitante',v(f.cta)],['Público',v(f.publico)],['Diferenciais',v(f.diferencial)],['Prazo',v(f.prazo)],['Domínio',v(f.dominio)]]},
-        {titulo:'Identidade visual',etapa:2,itens:[['Logo',v(f.logo)],['Paleta',f.semCores?'Quer sugestão da Korvex':f.cores.join(', ')],['Estilo',lista(f.estilos)],['Fundo',v(f.tema)],['Referências',v(f.referencias)],['Evitar',v(f.evitar)]]},
-        {titulo:'Estrutura',etapa:3,itens:[['Seções',lista(f.secoes)],['Recursos',lista(f.recursos)],['Textos',v(f.textos)],['Como imagina',v(f.ideiaEstrutura)]]},
-        {titulo:'Produtos e fotos',etapa:4,itens:[['Vende',v(f.vende)],['Itens',prods],['Logo enviado',logo.value?'Sim':'Não'],['Fotos enviadas',String(fotos.value.length)],['Link de arquivos',v(f.linkArquivos)],['Observações',v(f.obs)]]}
+        {titulo:'Contato',etapa:idx('contato'),itens:[['Nome',v(f.nome)],['Empresa',v(f.empresa)],['WhatsApp',v(f.whatsapp)],['E-mail',v(f.email)],['Cidade',v(f.cidade)],['Instagram',v(f.instagram)],['O que faz',v(f.segmento)],['Site atual',v(f.siteAtual)]]},
+        {titulo:'Serviços',etapa:idx('servicos'),itens:[['Serviços',lista(f.servicos)],['Objetivos',lista(f.objetivos)],['Público',v(f.publico)],['Diferenciais',v(f.diferencial)],['Prazo',v(f.prazo)]]},
+        {titulo:temMarca.value?'Marca':'Identidade visual',etapa:idx('identidade'),itens:[
+          ...(temMarca.value?[['Criar na marca',lista(f.marcaItens)],['Nome definido',v(f.marcaNome)],['Como quer ser vista',v(f.marcaPercepcao)]]:[]),
+          ['Logo',v(f.logo)],['Paleta',f.semCores?'Quer sugestão da Korvex':f.cores.join(', ')],['Estilo',lista(f.estilos)],
+          ...(temSite.value?[['Fundo do site',v(f.tema)]]:[]),
+          ['Referências',v(f.referencias)],['Evitar',v(f.evitar)]]},
+        ...(temSite.value?[{titulo:'Estrutura do site',etapa:idx('site'),itens:[['Ação do visitante',v(f.cta)],['Domínio',v(f.dominio)],['Seções',lista(f.secoes)],['Recursos',lista(f.recursos)],['Textos',v(f.textos)],['Como imagina',v(f.ideiaEstrutura)]]}]:[]),
+        ...(temInsta.value?[{titulo:'Instagram',etapa:idx('instagram'),itens:[['Perfil',v(f.igPerfil)],['Seguidores',v(f.igSeguidores)],['Posta hoje',v(f.igFreqAtual)],['Quem cuida',v(f.igQuemCuida)],['Quer que a Korvex faça',lista(f.igPrecisa)],['Formatos',lista(f.igFormatos)],['Posts por semana',v(f.igFreq)],['Fotos e vídeos',v(f.igFotos)],['Tom de voz',lista(f.igTom)],['Assuntos e datas',v(f.igTemas)],['Incomoda hoje',v(f.igIncomoda)]]}]:[]),
+        {titulo:'Produtos e fotos',etapa:idx('fotos'),itens:[['Vende',v(f.vende)],['Itens',prods],['Logo enviado',logo.value?'Sim':'Não'],['Fotos enviadas',String(fotos.value.length)],['Link de arquivos',v(f.linkArquivos)],['Observações',v(f.obs)]]}
       ];
     });
 
     function enviar(){
       erroEnvio.value='';
-      for(let k=0;k<5;k++){ if(!validar(k)){ step.value=k; topo(); return; } }
+      for(let k=0;k<etapas.value.length-1;k++){ if(!validar(k)){ step.value=k; topo(); return; } }
       if(totalBytes.value > LIMITE){ erroEnvio.value='Os arquivos passaram do limite. Remova algumas fotos e mande as demais por link.'; return; }
       enviando.value=true;
       try{
@@ -675,7 +817,7 @@ createApp({
         form.method='POST'; form.action=ENDPOINT; form.enctype='multipart/form-data'; form.hidden=true;
         const add = (name,value)=>{ const i=document.createElement('input'); i.type='hidden'; i.name=name; i.value=value; form.appendChild(i); };
         const volta = location.origin + location.pathname + '?enviado=1';
-        add('_subject', `Novo briefing: ${f.empresa} (${f.nome})`);
+        add('_subject', `Novo briefing: ${f.empresa} (${f.nome}) · ${f.servicos.join(', ')}`);
         add('_template','table');
         add('_captcha','false');
         add('_next', volta);
@@ -699,7 +841,7 @@ createApp({
     }
 
     return {enviado,f,step,erros,fotos,logo,processando,enviando,avisoFotos,erroEnvio,salvoMsg,dragLogo,dragFotos,
-      etapas,tipos,objetivosOp,estilosOp,secoesOp,recursosOp,mostraProdutos,totalBytes,pctUso,mb,LIMITE,MAX_FOTOS,
+      etapas,cur,servicosOp,temSite,temInsta,temMarca,toggleServico,marcaOp,igPrecisaOp,tomOp,objetivosOp,estilosOp,secoesOp,recursosOp,mostraProdutos,totalBytes,pctUso,mb,LIMITE,MAX_FOTOS,
       toggle,setHex,mascaraTel,avancar,voltar,irPara,addFotos,addLogo,removerFoto,removerLogo,resumo,enviar};
   }
 }).mount('#app');
