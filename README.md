@@ -39,12 +39,18 @@ Para configurar (uma vez):
 
 ## Painel de pedidos
 
-Fica em `https://vmkorvex.vercel.app/painel` (fora do Google). Mostra todos os projetos em colunas por status (Novo briefing, Esboço, Em produção, Entregue), e cada projeto abre com contato, tarefas, anotações, prazo, paleta de cores, logo e fotos para baixar e o briefing completo. Clientes que não vieram pelo formulário podem ser cadastrados à mão. Ao entrar, o painel avisa os briefings que chegaram desde a última visita; com ele aberto, procura novos a cada minuto e pode mandar notificação do navegador (menu do topo → Ativar avisos).
+Fica em `https://vmkorvex.vercel.app/painel` (fora do Google). Três abas:
+
+- **Dashboard**: faturamento, lucro, clientes que aceitaram, em andamento e concluídos; gráficos mês a mês de faturamento e lucro e de pedidos (recebidos, aceitos, entregues); taxa de aceite; pedidos por status; serviços mais vendidos; e o que precisa de atenção (parados, atrasados, sem resposta).
+- **Pedidos**: lista com filtro por status (Novo briefing, Proposta enviada, Esboço, Em produção, Parado, Entregue, Recusado). Cada pedido abre com contato, status, preço, custos e quanto já foi recebido, observações com autor e data, tarefas, prazo, paleta, logo e fotos para baixar e a descrição do briefing. Clientes que não vieram pelo formulário podem ser cadastrados à mão.
+- **Preços**: preço de referência de cada serviço; o pedido usa para sugerir o valor.
+
+O cliente conta como "aceitou" quando o pedido vai para Esboço, Em produção, Parado ou Entregue; o banco guarda essa data (e a da entrega) e é ela que monta os gráficos. Ao entrar, o painel avisa os briefings que chegaram desde a última visita; com ele aberto, procura novos a cada minuto e pode mandar notificação do navegador.
 
 Para configurar (uma vez):
 
 1. No Supabase, **Authentication → Users → Add user → Create new user**: crie o login do Cauã e o do Vitor (marque **Auto Confirm User**).
-2. **SQL Editor → New query**: cole `supabase/painel.sql` e rode. Ele cria as tabelas `equipe` e `tarefas`, os campos novos do briefing e libera o acesso só para quem está na equipe (todo usuário que existia no Auth na hora). Pode rodar de novo sem perder nada.
+2. **SQL Editor → New query**: cole `supabase/painel.sql` e rode. Ele cria as tabelas `equipe`, `tarefas`, `observacoes` e `precos`, os campos novos do briefing (status, valores e datas) e libera o acesso só para quem está na equipe (todo usuário que existia no Auth na hora). Pode rodar de novo sem perder nada.
 3. Em **Authentication → Sign In / Providers**, deixe desligado **Allow new users to sign up**.
 4. Para o "Esqueci a senha" funcionar, em **Authentication → URL Configuration** coloque `https://vmkorvex.vercel.app/painel` em **Site URL** (ou em Redirect URLs).
 
