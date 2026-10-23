@@ -93,7 +93,7 @@ button.chip[aria-pressed="true"] { color: var(--ink); background: color-mix(in s
 .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--c); box-shadow: 0 0 10px var(--c); flex: none; }
 
 /* entrar */
-.entrar { min-height: 100%; display: grid; place-items: center; padding: 32px var(--gr) 32px var(--gl);
+.entrar { min-height: 100vh; min-height: 100dvh; display: grid; place-items: center; padding: max(32px, env(safe-area-inset-top, 0px)) var(--gr) max(32px, env(safe-area-inset-bottom, 0px)) var(--gl);
   background: radial-gradient(60% 50% at 50% 100%, color-mix(in srgb, var(--n1) 16%, transparent), transparent 70%), var(--bg); }
 .entrar__box { width: min(400px, 100%); display: grid; gap: 18px; padding: 28px; border-radius: 20px; background: var(--surface); box-shadow: inset 0 0 0 1px var(--line); }
 .marca { display: flex; align-items: center; gap: 12px; }
