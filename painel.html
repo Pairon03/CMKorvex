@@ -11,13 +11,15 @@
 <link rel="preload" href="assets/fonts/manrope-var.woff" as="font" type="font/woff" crossorigin>
 <link rel="preload" href="assets/fonts/michroma.woff" as="font" type="font/woff" crossorigin>
 <style>
-/* Painel interno da Korvex: pedidos que chegam pelo briefing, status, tarefas e fotos.
-   Só Cauã e Vitor entram (tabela equipe no Supabase, ver supabase/painel.sql). */
+/* Painel interno da Korvex: dashboard (pedidos, faturamento e lucro por mês), pedidos com
+   status, fotos e observações, e tabela de preços. Só Cauã e Vitor entram
+   (tabela equipe no Supabase, ver supabase/painel.sql). */
 @font-face { font-family: 'Michroma'; src: url('assets/fonts/michroma.woff') format('woff'); font-weight: 400; font-display: swap; }
 @font-face { font-family: 'Manrope'; src: url('assets/fonts/manrope-var.woff') format('woff'); font-weight: 200 800; font-display: swap; }
 
 :root {
   --bg: #07070A;
+  --side: #0B0B10;
   --surface: #0E0E13;
   --surface-2: #15151C;
   --surface-3: #1C1C25;
@@ -34,11 +36,11 @@
   --ease-out: cubic-bezier(.23, 1, .32, 1);
   --gl: max(16px, env(safe-area-inset-left, 0px));
   --gr: max(16px, env(safe-area-inset-right, 0px));
-  --r: 14px;
+  --r: 16px;
   color-scheme: dark;
 }
 * { box-sizing: border-box; }
-html, body { height: 100%; }
+html, body { min-height: 100%; }
 body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--f-text); font-size: 15px; line-height: 1.5; overflow-x: clip; }
 h1, h2, h3, p, ul, ol, figure, dl, dd { margin: 0; }
 ul, ol { padding: 0; list-style: none; }
@@ -52,6 +54,7 @@ button { cursor: pointer; }
 .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 .muted { color: var(--muted); }
 .k { font: 700 11px var(--f-text); letter-spacing: .18em; text-transform: uppercase; color: var(--muted); }
+.num { font-variant-numeric: tabular-nums; }
 
 /* botões e campos */
 .btn {
@@ -66,6 +69,7 @@ button { cursor: pointer; }
 .btn--sm { min-height: 36px; padding: 0 12px; font-size: 13px; border-radius: 10px; }
 .btn--danger { color: var(--n1); }
 .btn--icon { width: 44px; padding: 0; }
+.btn--icon.btn--sm { width: 36px; }
 @media (hover: hover) {
   .btn:not(:disabled):hover { box-shadow: inset 0 0 0 1px var(--n2); }
   .btn--main:not(:disabled):hover { box-shadow: 0 0 28px -6px var(--n1); }
@@ -78,19 +82,30 @@ button { cursor: pointer; }
   transition: box-shadow 160ms ease;
 }
 .in:focus { box-shadow: inset 0 0 0 1px var(--n2), 0 0 0 3px color-mix(in srgb, var(--n2) 20%, transparent); }
-textarea.in { resize: vertical; min-height: 96px; line-height: 1.5; }
+textarea.in { resize: vertical; min-height: 84px; line-height: 1.5; }
+.dinheiro { position: relative; display: block; }
+.dinheiro::before { content: "R$"; position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--muted); font-size: 14px; font-weight: 700; pointer-events: none; }
+.dinheiro .in { padding-left: 38px; }
 .erro { color: var(--n1); font-size: 14px; font-weight: 600; }
+.ok { color: var(--ok); font-size: 14px; font-weight: 600; }
+.linkbtn { background: none; border: 0; padding: 0; color: var(--muted); font-size: 13px; text-decoration: underline; text-underline-offset: 3px; justify-self: start; }
 .chips { display: flex; flex-wrap: wrap; gap: 6px; }
-.chip { display: inline-flex; align-items: center; min-height: 26px; padding: 0 10px; border-radius: 99px; background: var(--surface-3); font-size: 12px; font-weight: 700; color: var(--muted); }
-button.chip { border: 0; min-height: 36px; padding: 0 14px; font-size: 13px; box-shadow: inset 0 0 0 1px var(--line); }
-button.chip[aria-pressed="true"] { color: var(--ink); background: color-mix(in srgb, var(--n2) 18%, var(--surface-2)); box-shadow: inset 0 0 0 1px var(--n2); }
+.chip { display: inline-flex; align-items: center; min-height: 26px; padding: 0 10px; border-radius: 99px; background: var(--surface-3); font-size: 12px; font-weight: 700; color: var(--muted); white-space: nowrap; }
+button.chip { border: 0; min-height: 36px; padding: 0 14px; font-size: 13px; box-shadow: inset 0 0 0 1px var(--line); gap: 8px; }
+button.chip[aria-pressed="true"] { color: var(--ink); background: color-mix(in srgb, var(--c, var(--n2)) 16%, var(--surface-2)); box-shadow: inset 0 0 0 1px var(--c, var(--n2)); }
+button.chip i { font-style: normal; opacity: .75; font-size: 12px; }
 
-/* status */
-.st-novo { --c: var(--n2); }
-.st-esboco { --c: var(--n3); }
-.st-producao { --c: var(--warn); }
-.st-entregue { --c: var(--ok); }
-.dot { width: 8px; height: 8px; border-radius: 50%; background: var(--c); box-shadow: 0 0 10px var(--c); flex: none; }
+/* status (sempre com nome ao lado da cor) */
+.st-novo { --c: #E23CCB; }
+.st-proposta { --c: #5BA8FF; }
+.st-esboco { --c: #9B4DFF; }
+.st-producao { --c: #FFB547; }
+.st-parado { --c: #FF2D4F; }
+.st-entregue { --c: #5EE6A8; }
+.st-recusado { --c: #7E8191; }
+.dot { width: 8px; height: 8px; border-radius: 50%; background: var(--c); box-shadow: 0 0 10px color-mix(in srgb, var(--c) 70%, transparent); flex: none; }
+.selo { display: inline-flex; align-items: center; gap: 8px; min-height: 28px; padding: 0 12px; border-radius: 99px; font-size: 12px; font-weight: 800; white-space: nowrap;
+  background: color-mix(in srgb, var(--c) 14%, transparent); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--c) 40%, transparent); }
 
 /* entrar */
 .entrar { min-height: 100vh; min-height: 100dvh; display: grid; place-items: center; padding: max(32px, env(safe-area-inset-top, 0px)) var(--gr) max(32px, env(safe-area-inset-bottom, 0px)) var(--gl);
@@ -100,84 +115,161 @@ button.chip[aria-pressed="true"] { color: var(--ink); background: color-mix(in s
 .marca img { width: 36px; height: 36px; }
 .marca b { font: 400 16px var(--f-display); letter-spacing: .08em; }
 .marca small { display: block; font-size: 12px; color: var(--muted); letter-spacing: .1em; text-transform: uppercase; }
-.linkbtn { background: none; border: 0; padding: 0; color: var(--muted); font-size: 13px; text-decoration: underline; text-underline-offset: 3px; justify-self: start; }
-.ok { color: var(--ok); font-size: 14px; font-weight: 600; }
+.carregando { min-height: 100vh; min-height: 100dvh; display: grid; place-items: center; color: var(--muted); }
 
-/* topo */
-.topo { position: sticky; top: 0; z-index: 20; background: color-mix(in srgb, var(--bg) 88%, transparent); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-bottom: 1px solid var(--line); padding-top: env(safe-area-inset-top, 0px); }
-.topo__in { display: flex; align-items: center; gap: 12px; padding: 12px var(--gr) 12px var(--gl); max-width: 1480px; margin: 0 auto; }
-.topo .marca { margin-right: auto; }
-.topo .busca { flex: 1; max-width: 360px; }
-.topo .busca .in { min-height: 40px; }
+/* estrutura: menu lateral + conteúdo */
+.app { display: grid; grid-template-columns: 248px minmax(0, 1fr); min-height: 100vh; min-height: 100dvh; }
+.lado { position: sticky; top: 0; height: 100vh; height: 100dvh; display: flex; flex-direction: column; gap: 28px; padding: 24px 16px; overflow-y: auto; background: linear-gradient(180deg, color-mix(in srgb, var(--n3) 8%, var(--side)), var(--side) 40%); border-right: 1px solid var(--line); }
+.lado .marca { padding: 0 8px; }
+.perfil { display: grid; justify-items: center; gap: 4px; padding: 18px 12px; border-radius: var(--r); background: var(--surface); box-shadow: inset 0 0 0 1px var(--line); text-align: center; }
+.perfil .avatar { width: 56px; height: 56px; font-size: 18px; margin-bottom: 6px; }
+.perfil b { font-weight: 800; font-size: 15px; }
+.perfil span { font-size: 12px; color: var(--muted); overflow-wrap: anywhere; }
+.avatar { width: 40px; height: 40px; border-radius: 50%; border: 0; display: grid; place-items: center; font: 800 14px var(--f-text); background: linear-gradient(140deg, var(--n1), var(--n3)); color: #fff; flex: none; }
+.nav { display: grid; gap: 4px; }
+.nav button { display: flex; align-items: center; gap: 12px; min-height: 46px; padding: 0 14px; border: 0; border-radius: 12px; background: none; color: var(--muted); font-weight: 700; font-size: 14px; text-align: left; position: relative; transition: background-color 160ms ease, color 160ms ease; }
+.nav button svg { width: 20px; height: 20px; flex: none; }
+.nav button:hover { background: var(--surface-2); color: var(--ink); }
+.nav button[aria-current="page"] { color: var(--ink); background: linear-gradient(100deg, color-mix(in srgb, var(--n1) 22%, transparent), color-mix(in srgb, var(--n2) 8%, transparent)); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--n1) 40%, transparent); }
+.nav .badge { margin-left: auto; min-width: 22px; height: 22px; padding: 0 6px; border-radius: 99px; background: var(--n1); color: #fff; font-size: 12px; font-weight: 800; display: grid; place-items: center; }
+.lado__pe { margin-top: auto; }
+
+.conteudo { min-width: 0; padding: 28px clamp(16px, 3vw, 40px) 60px; }
+.cabeca { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; margin-bottom: 22px; }
+.cabeca h1 { font: 400 clamp(20px, 2.2vw, 26px)/1.2 var(--f-display); }
+.cabeca .k { margin-bottom: 4px; }
+.cabeca__acoes { margin-left: auto; display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.seg { display: inline-flex; padding: 3px; border-radius: 12px; background: var(--surface); box-shadow: inset 0 0 0 1px var(--line); }
+.seg button { border: 0; background: none; min-height: 34px; padding: 0 12px; border-radius: 9px; font-size: 13px; font-weight: 700; color: var(--muted); }
+.seg button[aria-pressed="true"] { background: var(--surface-3); color: var(--ink); }
+
+/* topo e menu de baixo no celular */
+.topo-cel, .baixo { display: none; }
+@media (max-width: 900px) {
+  .app { grid-template-columns: 1fr; }
+  .lado { display: none; }
+  .topo-cel { display: flex; align-items: center; gap: 12px; position: sticky; top: 0; z-index: 20; padding: calc(10px + env(safe-area-inset-top, 0px)) var(--gr) 10px var(--gl); background: color-mix(in srgb, var(--bg) 88%, transparent); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-bottom: 1px solid var(--line); }
+  .topo-cel .marca { margin-right: auto; }
+  .conteudo { padding: 18px var(--gr) calc(96px + env(safe-area-inset-bottom, 0px)) var(--gl); }
+  .baixo { display: grid; grid-template-columns: repeat(3, 1fr); position: fixed; z-index: 20; left: 0; right: 0; bottom: 0; padding: 6px var(--gr) calc(6px + env(safe-area-inset-bottom, 0px)) var(--gl); background: color-mix(in srgb, var(--side) 92%, transparent); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-top: 1px solid var(--line); }
+  .baixo button { display: grid; justify-items: center; gap: 2px; min-height: 52px; padding: 6px 0; border: 0; background: none; color: var(--muted); font-size: 11px; font-weight: 700; border-radius: 12px; position: relative; }
+  .baixo button svg { width: 22px; height: 22px; }
+  .baixo button[aria-current="page"] { color: var(--ink); }
+  .baixo button[aria-current="page"] svg { color: var(--n1); filter: drop-shadow(0 0 8px var(--n1)); }
+  .baixo .badge { position: absolute; top: 4px; left: calc(50% + 6px); min-width: 18px; height: 18px; padding: 0 5px; border-radius: 99px; background: var(--n1); color: #fff; font-size: 11px; display: grid; place-items: center; }
+}
 .quem { position: relative; }
-.menu { position: absolute; right: 0; top: calc(100% + 8px); min-width: 230px; padding: 8px; border-radius: 14px; background: var(--surface-2); box-shadow: inset 0 0 0 1px var(--line), 0 20px 50px -10px #000; display: grid; gap: 2px; z-index: 30; }
+.menu { position: absolute; right: 0; top: calc(100% + 8px); min-width: 240px; padding: 8px; border-radius: 14px; background: var(--surface-2); box-shadow: inset 0 0 0 1px var(--line), 0 20px 50px -10px #000; display: grid; gap: 2px; z-index: 30; }
 .menu button { text-align: left; background: none; border: 0; padding: 10px 12px; border-radius: 8px; font-size: 14px; font-weight: 600; }
 .menu button:hover { background: var(--surface-3); }
 .menu p { padding: 8px 12px; font-size: 13px; color: var(--muted); }
-.avatar { width: 40px; height: 40px; border-radius: 50%; border: 0; display: grid; place-items: center; font: 800 14px var(--f-text); background: linear-gradient(140deg, var(--n1), var(--n3)); color: #fff; }
-
-main { max-width: 1480px; margin: 0 auto; padding: 20px var(--gr) 60px var(--gl); }
 
 /* aviso de briefing novo */
-.aviso { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; padding: 14px 16px; border-radius: var(--r); margin-bottom: 18px;
+.aviso { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; padding: 14px 16px; border-radius: var(--r); margin-bottom: 20px;
   background: linear-gradient(100deg, color-mix(in srgb, var(--n1) 16%, var(--surface)), color-mix(in srgb, var(--n2) 10%, var(--surface)));
   box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--n1) 45%, transparent); }
 .aviso p { flex: 1 1 260px; }
 .aviso b { font-weight: 800; }
-
-/* resumo do topo */
-.resumo { display: flex; align-items: end; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-bottom: 16px; }
-.resumo h1 { font: 400 clamp(20px, 2.4vw, 28px)/1.2 var(--f-display); }
-
-/* abas do celular */
-.abas { display: none; gap: 6px; overflow-x: auto; margin: 0 calc(-1 * var(--gr)) 14px calc(-1 * var(--gl)); padding: 2px var(--gr) 4px var(--gl); scrollbar-width: none; }
-.abas::-webkit-scrollbar { display: none; }
-.aba { display: inline-flex; align-items: center; gap: 8px; min-height: 40px; padding: 0 14px; border-radius: 99px; border: 0; background: var(--surface-2); box-shadow: inset 0 0 0 1px var(--line); font-weight: 700; font-size: 13px; white-space: nowrap; color: var(--muted); }
-.aba[aria-selected="true"] { color: var(--ink); box-shadow: inset 0 0 0 1px var(--c); background: color-mix(in srgb, var(--c) 12%, var(--surface-2)); }
-.aba i { font-style: normal; font-size: 12px; opacity: .8; }
-
-/* quadro */
-.quadro { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; align-items: start; }
-.col { border-radius: 18px; background: var(--surface); box-shadow: inset 0 0 0 1px var(--line); padding: 12px; min-height: 140px; transition: box-shadow 160ms ease; }
-.col.alvo { box-shadow: inset 0 0 0 2px var(--c); }
-.col__h { display: flex; align-items: center; gap: 10px; padding: 4px 4px 12px; }
-.col__h h2 { font: 800 13px var(--f-text); letter-spacing: .12em; text-transform: uppercase; }
-.col__h span { margin-left: auto; font-size: 13px; color: var(--muted); font-weight: 700; }
-.cards { display: grid; gap: 10px; }
-.vazio { padding: 18px 8px; text-align: center; color: var(--muted); font-size: 13px; }
-.card { position: relative; display: grid; gap: 8px; width: 100%; text-align: left; border: 0; padding: 14px; border-radius: 14px; background: var(--surface-2); box-shadow: inset 0 0 0 1px var(--line);
-  transition: transform 160ms var(--ease-out), box-shadow 200ms ease; }
-.card:active { transform: scale(.98); }
-@media (hover: hover) { .card:hover { box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--c) 70%, transparent), 0 10px 30px -14px var(--c); } }
-.card h3 { font-size: 16px; font-weight: 800; line-height: 1.3; padding-right: 18px; overflow-wrap: anywhere; }
-.card .quem2 { font-size: 13px; color: var(--muted); }
-.card__pe { display: flex; align-items: center; gap: 10px; font-size: 12px; color: var(--muted); font-weight: 600; }
-.card__pe .barra { flex: 1; height: 4px; border-radius: 4px; background: var(--surface-3); overflow: hidden; }
-.card__pe .barra i { display: block; height: 100%; background: var(--c); }
-.card .pisca { position: absolute; top: 14px; right: 14px; }
-.card .atrasado { color: var(--n1); }
-.pisca { width: 10px; height: 10px; border-radius: 50%; background: var(--n1); box-shadow: 0 0 0 0 var(--n1); animation: pisca 1.8s infinite; }
+.pisca { display: inline-block; width: 10px; height: 10px; border-radius: 50%; background: var(--n1); animation: pisca 1.8s infinite; flex: none; }
 @keyframes pisca { 0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--n1) 70%, transparent); } 100% { box-shadow: 0 0 0 10px transparent; } }
-.cores { display: flex; gap: 4px; }
-.cores i { width: 14px; height: 14px; border-radius: 4px; box-shadow: inset 0 0 0 1px rgba(255,255,255,.15); }
 
-@media (max-width: 900px) {
-  .abas { display: flex; }
-  .quadro { grid-template-columns: 1fr; }
-  .col { display: none; background: none; box-shadow: none; padding: 0; }
-  .col.ativa { display: block; }
-  .col__h { display: none; }
-  .topo .busca { display: none; }
-  .busca-cel { display: block !important; margin-bottom: 12px; }
-}
-.busca-cel { display: none; }
+/* dashboard */
+.cartao { position: relative; border-radius: var(--r); padding: 18px; background: linear-gradient(160deg, var(--surface-2), var(--surface) 60%); box-shadow: inset 0 0 0 1px var(--line); min-width: 0; overflow: hidden; }
+.cartao > h2 { font: 800 15px var(--f-text); margin-bottom: 2px; }
+.cartao > h2 + p { font-size: 13px; color: var(--muted); margin-bottom: 14px; }
+.kpis { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 14px; margin-bottom: 14px; }
+.kpi { display: grid; align-content: start; gap: 2px; min-height: 168px; }
+.kpi .rot { font-size: 13px; font-weight: 700; color: var(--muted); }
+.kpi .val { font: 800 clamp(24px, 2.2vw, 32px)/1.15 var(--f-text); letter-spacing: -.01em; margin-top: 6px; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; position: relative; }
+.kpi .sub { font-size: 12px; color: var(--muted); position: relative; }
+.kpi .sub b { color: var(--ink); font-weight: 700; }
+.kpi svg.spark { position: absolute; left: 0; right: 0; bottom: 0; width: 100%; height: 56px; }
+.kpi--destaque { background: linear-gradient(150deg, color-mix(in srgb, var(--n1) 30%, var(--surface-2)), color-mix(in srgb, var(--n3) 18%, var(--surface)) 70%); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--n1) 45%, transparent); }
+.kpi--destaque .rot, .kpi--destaque .sub { color: color-mix(in srgb, var(--ink) 78%, transparent); }
+.grade { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 14px; }
+.c8 { grid-column: span 8; } .c4 { grid-column: span 4; } .c6 { grid-column: span 6; }
+@media (max-width: 1280px) { .kpis { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (max-width: 1100px) { .c8, .c4, .c6 { grid-column: span 12; } }
+@media (max-width: 640px) { .kpis { grid-template-columns: 1fr 1fr; gap: 10px; } .kpi { min-height: 140px; padding: 14px; } .kpi .val { font-size: 22px; } .kpis .kpi:first-child { grid-column: span 2; } }
 
-/* projeto (gaveta) */
+.legenda { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 13px; color: var(--muted); font-weight: 600; margin-bottom: 10px; }
+.legenda span { display: inline-flex; align-items: center; gap: 8px; }
+.legenda i { width: 10px; height: 10px; border-radius: 3px; background: var(--c); }
+.grafico { position: relative; }
+.grafico svg { display: block; width: 100%; height: auto; overflow: visible; }
+.grafico .eixo { fill: var(--muted); font-size: 11px; font-family: var(--f-text); font-weight: 600; }
+.grafico .linha-grade { stroke: var(--line); stroke-width: 1; }
+.grafico .faixa { fill: transparent; cursor: default; }
+.grafico .faixa.ativa { fill: rgba(255,255,255,.04); }
+.dica { position: absolute; z-index: 5; pointer-events: none; min-width: 170px; padding: 10px 12px; border-radius: 10px; background: var(--surface-3); box-shadow: inset 0 0 0 1px var(--line), 0 14px 30px -10px #000; font-size: 13px; transform: translate(-50%, calc(-100% - 10px)); white-space: nowrap; }
+.dica b { display: block; margin-bottom: 4px; font-size: 12px; color: var(--muted); }
+.dica b::first-letter { text-transform: uppercase; }
+.dica p { display: flex; align-items: center; gap: 12px; justify-content: space-between; }
+.dica p span { display: inline-flex; align-items: center; gap: 6px; color: var(--muted); }
+.dica p i { width: 8px; height: 8px; border-radius: 2px; background: var(--c); }
+.dica p em { font-style: normal; font-weight: 800; font-variant-numeric: tabular-nums; }
+.vazio-graf { display: grid; place-items: center; min-height: 180px; color: var(--muted); font-size: 14px; text-align: center; padding: 20px; }
+
+.rosca { display: grid; justify-items: center; gap: 16px; padding-top: 6px; }
+.rosca__in { position: relative; width: 180px; height: 180px; }
+.rosca__in svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+.rosca__meio { position: absolute; inset: 0; display: grid; place-content: center; text-align: center; }
+.rosca__meio b { font: 800 34px/1 var(--f-text); font-variant-numeric: tabular-nums; }
+.rosca__meio span { font-size: 12px; color: var(--muted); margin-top: 4px; }
+.rosca .legenda { justify-content: center; margin: 0; }
+
+.barras { display: grid; gap: 14px; }
+.barra-l { display: grid; gap: 6px; }
+.barra-l header { display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 700; }
+.barra-l header em { margin-left: auto; font-style: normal; color: var(--muted); font-weight: 600; font-size: 13px; font-variant-numeric: tabular-nums; text-align: right; }
+.trilho { height: 10px; border-radius: 99px; background: var(--surface-3); overflow: hidden; }
+.trilho i { display: block; height: 100%; border-radius: 99px; background: linear-gradient(90deg, color-mix(in srgb, var(--c) 55%, var(--surface-3)), var(--c)); }
+
+.atencao { display: grid; gap: 8px; }
+.atencao button { display: flex; align-items: center; gap: 12px; width: 100%; text-align: left; border: 0; padding: 12px; border-radius: 12px; background: var(--surface-2); box-shadow: inset 0 0 0 1px var(--line); }
+.atencao button:hover { box-shadow: inset 0 0 0 1px var(--c); }
+.atencao b { font-weight: 800; display: block; }
+.atencao small { color: var(--muted); font-size: 12px; }
+.atencao .selo { margin-left: auto; }
+
+/* pedidos */
+.filtros { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; }
+.filtros--rola { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; margin-left: calc(-1 * var(--gl)); margin-right: calc(-1 * var(--gr)); padding: 2px var(--gr) 4px var(--gl); }
+.filtros--rola::-webkit-scrollbar { display: none; }
+@media (min-width: 901px) { .filtros--rola { flex-wrap: wrap; margin: 0 0 14px; padding: 0; } }
+.busca { flex: 1 1 260px; max-width: 380px; }
+.tabela { width: 100%; border-collapse: separate; border-spacing: 0; }
+.tabela th { text-align: left; font: 700 11px var(--f-text); letter-spacing: .14em; text-transform: uppercase; color: var(--muted); padding: 8px 14px 10px; white-space: nowrap; }
+.tabela td { padding: 14px; border-top: 1px solid var(--line); vertical-align: middle; }
+.tabela tbody tr { cursor: pointer; transition: background-color 140ms ease; }
+.tabela tbody tr:hover { background: var(--surface-2); }
+.tabela td.dir, .tabela th.dir { text-align: right; }
+.tabela .cli b { display: flex; align-items: center; gap: 8px; font-weight: 800; }
+.tabela .cli small { color: var(--muted); font-size: 13px; }
+.tabela .atrasado { color: var(--n1); font-weight: 700; }
+.mini { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--muted); white-space: nowrap; }
+.mini .trilho { width: 56px; height: 6px; --c: var(--ok); }
+.cards-ped { display: none; gap: 10px; }
+.card-ped { display: grid; gap: 10px; width: 100%; text-align: left; border: 0; padding: 14px; border-radius: 14px; background: var(--surface); box-shadow: inset 0 0 0 1px var(--line); }
+.card-ped header { display: flex; align-items: start; gap: 10px; }
+.card-ped h3 { font-size: 16px; font-weight: 800; line-height: 1.3; overflow-wrap: anywhere; flex: 1; }
+.card-ped .pe { display: flex; align-items: center; gap: 12px; font-size: 13px; color: var(--muted); flex-wrap: wrap; }
+.card-ped .pe b { color: var(--ink); }
+@media (max-width: 900px) { .tabela-wrap { display: none; } .cards-ped { display: grid; } }
+.vazio { padding: 32px 12px; text-align: center; color: var(--muted); }
+
+/* preços */
+.precos { display: grid; gap: 10px; max-width: 820px; }
+.preco { display: grid; grid-template-columns: minmax(140px, 1fr) 170px minmax(0, 2fr) auto; gap: 10px; align-items: center; padding: 12px; border-radius: 14px; background: var(--surface); box-shadow: inset 0 0 0 1px var(--line); }
+.preco b { font-weight: 800; }
+@media (max-width: 700px) { .preco { grid-template-columns: 1fr auto; } .preco .dinheiro, .preco .desc { grid-column: 1 / -1; } .preco .x { grid-row: 1; grid-column: 2; } }
+
+/* pedido aberto (gaveta) */
 .fundo { position: fixed; inset: 0; z-index: 40; background: rgba(0,0,0,.6); backdrop-filter: blur(2px); }
-.gaveta { position: fixed; z-index: 41; top: 0; right: 0; bottom: 0; width: min(760px, 100%); background: var(--bg); box-shadow: -1px 0 0 var(--line), -30px 0 80px -20px #000;
+.gaveta { position: fixed; z-index: 41; top: 0; right: 0; bottom: 0; width: min(780px, 100%); background: var(--bg); box-shadow: -1px 0 0 var(--line), -30px 0 80px -20px #000;
   overflow-y: auto; overscroll-behavior: contain; padding-bottom: calc(40px + env(safe-area-inset-bottom, 0px)); }
 .gaveta__topo { position: sticky; top: 0; z-index: 2; display: flex; align-items: center; gap: 10px; padding: calc(12px + env(safe-area-inset-top, 0px)) var(--gr) 12px var(--gl); background: color-mix(in srgb, var(--bg) 90%, transparent); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-bottom: 1px solid var(--line); }
-.gaveta__topo .k { flex: 1; }
+.gaveta__topo .k { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .gaveta__in { padding: 20px var(--gr) 0 var(--gl); display: grid; gap: 26px; }
 .gaveta h1 { font: 400 clamp(20px, 3vw, 26px)/1.25 var(--f-display); overflow-wrap: anywhere; }
 .contato { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
@@ -186,11 +278,16 @@ main { max-width: 1480px; margin: 0 auto; padding: 20px var(--gr) 60px var(--gl)
 .bloco > h2 small { margin-left: auto; font-size: 12px; letter-spacing: 0; text-transform: none; font-weight: 600; }
 .painel { padding: 16px; border-radius: var(--r); background: var(--surface); box-shadow: inset 0 0 0 1px var(--line); }
 .status-sel { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
-.status-sel button { display: flex; align-items: center; justify-content: center; gap: 8px; min-height: 48px; padding: 6px; border-radius: 12px; border: 0; background: var(--surface-2); box-shadow: inset 0 0 0 1px var(--line); font-size: 13px; font-weight: 700; color: var(--muted); text-align: center; line-height: 1.2; }
+.status-sel button { display: flex; align-items: center; justify-content: center; gap: 8px; min-height: 46px; padding: 6px; border-radius: 12px; border: 0; background: var(--surface-2); box-shadow: inset 0 0 0 1px var(--line); font-size: 13px; font-weight: 700; color: var(--muted); text-align: center; line-height: 1.2; }
 .status-sel button[aria-pressed="true"] { color: var(--ink); background: color-mix(in srgb, var(--c) 16%, var(--surface-2)); box-shadow: inset 0 0 0 1px var(--c); }
-@media (max-width: 520px) { .status-sel { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 560px) { .status-sel { grid-template-columns: 1fr 1fr; } }
 .linha2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-@media (max-width: 520px) { .linha2 { grid-template-columns: 1fr; } }
+.linha3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+@media (max-width: 560px) { .linha2, .linha3 { grid-template-columns: 1fr; } }
+.contas { display: flex; flex-wrap: wrap; gap: 8px 20px; margin-top: 14px; font-size: 14px; color: var(--muted); align-items: center; }
+.contas b { color: var(--ink); font-variant-numeric: tabular-nums; }
+.contas .lucro b { color: var(--ok); }
+.contas .prejuizo b { color: var(--n1); }
 
 .tarefas { display: grid; gap: 2px; }
 .tarefa { display: flex; align-items: center; gap: 12px; padding: 6px 4px 6px 8px; border-radius: 10px; }
@@ -200,24 +297,32 @@ main { max-width: 1480px; margin: 0 auto; padding: 20px var(--gr) 60px var(--gl)
 .tarefa input[type=checkbox]:checked { background: var(--ok); box-shadow: none; }
 .tarefa input[type=checkbox]:checked::after { content: ""; width: 10px; height: 6px; border: solid #07070A; border-width: 0 0 2.5px 2.5px; transform: translateY(-1px) rotate(-45deg); }
 .tarefa.feita span { color: var(--muted); text-decoration: line-through; }
-.tarefa .x { width: 32px; height: 32px; border: 0; border-radius: 8px; background: none; color: var(--muted); font-size: 18px; line-height: 1; opacity: .6; }
-.tarefa .x:hover { opacity: 1; background: var(--surface-3); color: var(--n1); }
-.nova-tarefa { display: flex; gap: 8px; margin-top: 8px; }
-.nova-tarefa .in { flex: 1; }
+.x { width: 32px; height: 32px; border: 0; border-radius: 8px; background: none; color: var(--muted); font-size: 18px; line-height: 1; opacity: .6; flex: none; }
+.x:hover { opacity: 1; background: var(--surface-3); color: var(--n1); }
+.nova { display: flex; gap: 8px; margin-top: 8px; }
+.nova .in { flex: 1; }
+
+.obs { display: grid; gap: 12px; }
+.ob { display: flex; gap: 12px; }
+.ob .avatar { width: 32px; height: 32px; font-size: 12px; }
+.ob__c { flex: 1; min-width: 0; padding: 10px 12px; border-radius: 4px 14px 14px 14px; background: var(--surface-2); box-shadow: inset 0 0 0 1px var(--line); }
+.ob__c header { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--muted); margin-bottom: 4px; }
+.ob__c header b { color: var(--ink); font-size: 13px; }
+.ob__c header .x { margin-left: auto; width: 26px; height: 26px; font-size: 16px; }
+.ob__c p { white-space: pre-wrap; overflow-wrap: anywhere; }
+.nova-ob { display: grid; gap: 8px; }
 
 .paleta { display: flex; flex-wrap: wrap; gap: 10px; }
 .cor { display: grid; gap: 6px; width: 96px; border: 0; padding: 0; background: none; text-align: left; }
 .cor i { display: block; height: 64px; border-radius: 12px; box-shadow: inset 0 0 0 1px rgba(255,255,255,.12); }
 .cor span { font: 700 13px ui-monospace, Menlo, Consolas, monospace; }
 .cor small { font-size: 11px; color: var(--muted); margin-top: -4px; }
-
 .galeria { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 8px; }
 .foto { position: relative; aspect-ratio: 1; border-radius: 12px; overflow: hidden; border: 0; padding: 0; background: var(--surface-2); box-shadow: inset 0 0 0 1px var(--line); }
 .foto img { width: 100%; height: 100%; object-fit: cover; }
 .foto--logo { background: repeating-conic-gradient(#1a1a22 0 25%, #22222c 0 50%) 0 0 / 16px 16px; }
 .foto--logo img { object-fit: contain; padding: 10px; }
 .foto em { position: absolute; left: 6px; bottom: 6px; font-style: normal; font-size: 11px; font-weight: 800; padding: 2px 8px; border-radius: 99px; background: rgba(0,0,0,.7); }
-
 .briefing { display: grid; gap: 12px; }
 .briefing section { padding: 14px 16px; border-radius: var(--r); background: var(--surface); box-shadow: inset 0 0 0 1px var(--line); }
 .briefing h3 { font: 800 14px var(--f-text); margin-bottom: 8px; }
@@ -232,7 +337,7 @@ main { max-width: 1480px; margin: 0 auto; padding: 20px var(--gr) 60px var(--gl)
 .acoes { display: flex; gap: 8px; justify-content: flex-end; flex-wrap: wrap; }
 .luz { position: fixed; inset: 0; z-index: 60; background: rgba(4,4,6,.94); display: grid; grid-template-rows: auto 1fr; }
 .luz__topo { display: flex; align-items: center; gap: 8px; padding: calc(10px + env(safe-area-inset-top, 0px)) var(--gr) 10px var(--gl); }
-.luz__topo span { flex: 1; font-size: 13px; color: var(--muted); }
+.luz__topo span { flex: 1; font-size: 13px; color: var(--muted); min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .luz__img { display: grid; place-items: center; padding: 0 var(--gr) 20px var(--gl); min-height: 0; position: relative; }
 .luz__img img { max-width: 100%; max-height: 100%; object-fit: contain; border-radius: 8px; }
 .luz__nav { position: absolute; top: 50%; transform: translateY(-50%); }
@@ -240,7 +345,7 @@ main { max-width: 1480px; margin: 0 auto; padding: 20px var(--gr) 60px var(--gl)
 
 .toast { position: fixed; z-index: 70; left: 50%; bottom: calc(20px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); max-width: calc(100% - 32px); padding: 12px 18px; border-radius: 12px; background: var(--surface-3); box-shadow: inset 0 0 0 1px var(--line), 0 20px 40px -10px #000; font-weight: 700; font-size: 14px; }
 .toast.ruim { box-shadow: inset 0 0 0 1px var(--n1); }
-.carregando { min-height: 60vh; display: grid; place-items: center; color: var(--muted); }
+@media (max-width: 900px) { .toast { bottom: calc(84px + env(safe-area-inset-bottom, 0px)); } }
 
 .sobe-enter-active, .sobe-leave-active { transition: opacity 200ms ease, transform 260ms var(--ease-out); }
 .sobe-enter-from, .sobe-leave-to { opacity: 0; transform: translateX(-50%) translateY(10px); }
@@ -254,6 +359,16 @@ main { max-width: 1480px; margin: 0 auto; padding: 20px var(--gr) 60px var(--gl)
 </style>
 </head>
 <body>
+<!-- ícones -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-dash" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9" rx="2"/><rect x="14" y="3" width="7" height="5" rx="2"/><rect x="14" y="12" width="7" height="9" rx="2"/><rect x="3" y="16" width="7" height="5" rx="2"/></symbol>
+  <symbol id="i-ped" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4h6a1 1 0 0 1 1 1v1H8V5a1 1 0 0 1 1-1Z"/><path d="M16 5h2a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h2"/><path d="M8 12h8M8 16h5"/></symbol>
+  <symbol id="i-preco" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12V4a1 1 0 0 1 1-1h8l9 9-9 9-9-9Z"/><circle cx="8" cy="8" r="1.5"/></symbol>
+  <symbol id="i-sair" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 4h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-3"/><path d="M10 17l-5-5 5-5M5 12h11"/></symbol>
+  <symbol id="i-sino" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 1 1 12 0c0 7 3 8 3 8H3s3-1 3-8"/><path d="M10 20a2 2 0 0 0 4 0"/></symbol>
+  <symbol id="i-lapis" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h4L19 9l-4-4L4 16v4Z"/><path d="M13.5 6.5l4 4"/></symbol>
+</svg>
+
 <div id="app" v-cloak>
 
   <div v-if="fase==='carregando'" class="carregando">Carregando…</div>
@@ -297,85 +412,265 @@ main { max-width: 1480px; margin: 0 auto; padding: 20px var(--gr) 60px var(--gl)
   </div>
 
   <!-- Painel -->
-  <template v-else>
-    <header class="topo">
-      <div class="topo__in">
-        <div class="marca">
-          <img src="assets/img/k-mark-160.webp" alt="">
-          <div><b>KORVEX</b><small>Painel</small></div>
-        </div>
-        <label class="busca"><span class="sr">Buscar</span>
-          <input class="in" type="search" v-model="busca" placeholder="Buscar cliente, empresa ou serviço">
-        </label>
-        <button class="btn btn--main" @click="abrirNovo"><span aria-hidden="true">+</span> Projeto</button>
-        <div class="quem">
-          <button class="avatar" @click.stop="menu=!menu" :aria-expanded="menu" :title="eu.nome">{{ iniciais(eu.nome) }}</button>
-          <div class="menu" v-if="menu" @click.stop>
-            <p>{{ eu.nome }} · {{ sessao.user.email }}</p>
-            <button v-if="podeNotificar && permissao!=='granted'" @click="pedirAvisos">Ativar avisos neste aparelho</button>
-            <p v-else-if="permissao==='granted'">Avisos ligados neste aparelho</p>
-            <button @click="mudarNome">Mudar meu nome</button>
-            <button @click="recarregar(); menu=false">Atualizar lista</button>
-            <button @click="sair">Sair</button>
-          </div>
+  <div v-else class="app">
+    <aside class="lado">
+      <div class="marca">
+        <img src="assets/img/k-mark-160.webp" alt="">
+        <div><b>KORVEX</b><small>Painel</small></div>
+      </div>
+      <div class="perfil">
+        <span class="avatar">{{ iniciais(eu.nome) }}</span>
+        <b>{{ eu.nome }}</b>
+        <span>{{ sessao.user.email }}</span>
+      </div>
+      <nav class="nav" aria-label="Seções">
+        <button v-for="t in ABAS" :key="t.v" :aria-current="aba===t.v ? 'page' : null" @click="irAba(t.v)">
+          <svg><use :href="'#'+t.i"/></svg>{{ t.t }}
+          <span v-if="t.v==='pedidos' && novos.length" class="badge">{{ novos.length }}</span>
+        </button>
+      </nav>
+      <div class="lado__pe nav">
+        <button v-if="podeNotificar && permissao!=='granted'" @click="pedirAvisos"><svg><use href="#i-sino"/></svg>Ativar avisos</button>
+        <button @click="mudarNome"><svg><use href="#i-lapis"/></svg>Mudar meu nome</button>
+        <button @click="sair"><svg><use href="#i-sair"/></svg>Sair</button>
+      </div>
+    </aside>
+
+    <header class="topo-cel">
+      <div class="marca">
+        <img src="assets/img/k-mark-160.webp" alt="">
+        <div><b>KORVEX</b><small>Painel</small></div>
+      </div>
+      <div class="quem">
+        <button class="avatar" @click.stop="menu=!menu" :aria-expanded="menu" :title="eu.nome">{{ iniciais(eu.nome) }}</button>
+        <div class="menu" v-if="menu" @click.stop>
+          <p>{{ eu.nome }} · {{ sessao.user.email }}</p>
+          <button v-if="podeNotificar && permissao!=='granted'" @click="pedirAvisos">Ativar avisos neste aparelho</button>
+          <p v-else-if="permissao==='granted'">Avisos ligados neste aparelho</p>
+          <button @click="mudarNome">Mudar meu nome</button>
+          <button @click="recarregar(); menu=false">Atualizar</button>
+          <button @click="sair">Sair</button>
         </div>
       </div>
     </header>
 
-    <main>
+    <main class="conteudo">
       <div class="aviso" v-if="novos.length">
         <span class="pisca" aria-hidden="true"></span>
         <p><b>{{ novos.length===1 ? '1 briefing novo' : novos.length+' briefings novos' }}</b> desde sua última visita:
           {{ novos.map(b=>b.empresa).join(', ') }}.</p>
+        <button class="btn btn--sm" @click="verNovos">Ver</button>
         <button class="btn btn--sm" @click="marcarVisto">Ok, vi</button>
       </div>
 
-      <div class="resumo">
-        <div>
-          <p class="k">Pedidos</p>
-          <h1>{{ ativos }} em andamento</h1>
-        </div>
-        <p class="muted" v-if="atualizadoEm">Atualizado às {{ hora(atualizadoEm) }}</p>
-      </div>
-
-      <label class="busca-cel"><span class="sr">Buscar</span>
-        <input class="in" type="search" v-model="busca" placeholder="Buscar cliente, empresa ou serviço">
-      </label>
-
-      <div class="abas" role="tablist">
-        <button v-for="s in STATUS" :key="s.v" class="aba" :class="'st-'+s.v" role="tab" :aria-selected="aba===s.v" @click="aba=s.v">
-          <span class="dot"></span>{{ s.t }} <i>{{ porStatus[s.v].length }}</i>
-        </button>
-      </div>
-
-      <div class="quadro">
-        <section v-for="s in STATUS" :key="s.v" class="col" :class="['st-'+s.v, {ativa: aba===s.v, alvo: arrastoSobre===s.v}]"
-          @dragover.prevent="arrastoSobre=s.v" @dragleave="arrastoSobre=null" @drop.prevent="soltar(s.v)">
-          <div class="col__h"><span class="dot"></span><h2>{{ s.t }}</h2><span>{{ porStatus[s.v].length }}</span></div>
-          <div class="cards">
-            <button v-for="b in porStatus[s.v]" :key="b.id" class="card" :class="'st-'+b.status" draggable="true"
-              @dragstart="arrastando=b.id" @dragend="arrastando=null; arrastoSobre=null" @click="abrir(b.id)">
-              <span v-if="ehNovo(b)" class="pisca" title="Chegou desde sua última visita"></span>
-              <h3>{{ b.empresa }}</h3>
-              <p class="quem2">{{ b.nome }} · {{ b.origem==='manual' ? 'cadastrado à mão' : 'briefing de '+dataCurta(b.created_at) }}</p>
-              <div class="chips" v-if="b.servicos.length"><span class="chip" v-for="x in b.servicos" :key="x">{{ x }}</span></div>
-              <div class="cores" v-if="coresDe(b).length"><i v-for="c in coresDe(b)" :key="c" :style="{background:c}"></i></div>
-              <div class="card__pe">
-                <template v-if="contagem(b.id).total">
-                  <span>{{ contagem(b.id).feitas }}/{{ contagem(b.id).total }} tarefas</span>
-                  <span class="barra"><i :style="{width: (contagem(b.id).feitas/contagem(b.id).total*100)+'%'}"></i></span>
-                </template>
-                <span v-else>Sem tarefas</span>
-                <span v-if="b.prazo" :class="{atrasado: atrasado(b)}">até {{ dataCurta(b.prazo) }}</span>
-              </div>
-            </button>
-            <p v-if="!porStatus[s.v].length" class="vazio">{{ busca ? 'Nada encontrado' : 'Nenhum projeto aqui' }}</p>
+      <!-- ===== Dashboard ===== -->
+      <template v-if="aba==='dash'">
+        <div class="cabeca">
+          <div>
+            <p class="k">Dashboard</p>
+            <h1>Olá, {{ primeiroNome }}</h1>
           </div>
-        </section>
-      </div>
+          <div class="cabeca__acoes">
+            <div class="seg" role="group" aria-label="Período">
+              <button v-for="p in PERIODOS" :key="p.v" :aria-pressed="periodo===p.v" @click="periodo=p.v">{{ p.t }}</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="kpis">
+          <article class="cartao kpi kpi--destaque">
+            <p class="rot">Faturamento</p>
+            <p class="val">{{ brl(totais.faturamento) }}</p>
+            <p class="sub">{{ rotPeriodo }} · <b>{{ brl(totais.recebido) }}</b> já recebido</p>
+            <svg class="spark" viewBox="0 0 100 40" preserveAspectRatio="none" aria-hidden="true" v-html="spark(serieMes('faturamento'), '#FFFFFF')"></svg>
+          </article>
+          <article class="cartao kpi">
+            <p class="rot">Lucro</p>
+            <p class="val">{{ brl(totais.lucro) }}</p>
+            <p class="sub">{{ totais.faturamento ? Math.round(totais.lucro/totais.faturamento*100)+'% do faturamento' : 'Preencha valor e custo nos pedidos' }}</p>
+            <svg class="spark" viewBox="0 0 100 40" preserveAspectRatio="none" aria-hidden="true" v-html="spark(serieMes('lucro'), '#E8479F')"></svg>
+          </article>
+          <article class="cartao kpi">
+            <p class="rot">Clientes que aceitaram</p>
+            <p class="val">{{ totais.aceitos }}</p>
+            <p class="sub">{{ rotPeriodo }} · <b>{{ totais.recebidos }}</b> pedidos recebidos</p>
+            <svg class="spark" viewBox="0 0 100 40" preserveAspectRatio="none" aria-hidden="true" v-html="spark(serieMes('aceitos'), '#8A63F5')"></svg>
+          </article>
+          <article class="cartao kpi">
+            <p class="rot">Em andamento</p>
+            <p class="val">{{ contaStatus.esboco + contaStatus.producao }}</p>
+            <p class="sub"><b>{{ contaStatus.parado }}</b> parado{{ contaStatus.parado===1?'':'s' }} · <b>{{ contaStatus.novo + contaStatus.proposta }}</b> aguardando resposta</p>
+          </article>
+          <article class="cartao kpi">
+            <p class="rot">Concluídos</p>
+            <p class="val">{{ totais.concluidos }}</p>
+            <p class="sub">{{ rotPeriodo }} · <b>{{ brl(aReceber) }}</b> a receber</p>
+            <svg class="spark" viewBox="0 0 100 40" preserveAspectRatio="none" aria-hidden="true" v-html="spark(serieMes('concluidos'), '#B08A17')"></svg>
+          </article>
+        </div>
+
+        <div class="grade">
+          <section class="cartao c8">
+            <h2>Faturamento e lucro por mês</h2>
+            <p>Pelo mês em que o cliente fechou. Lucro é o valor cobrado menos os custos.</p>
+            <grafico-barras :meses="meses" :series="seriesDinheiro" :formato="brl" :eixo="brlCurto" vazio="Ainda não há pedidos com valor. Coloque o preço em cada pedido para ver o gráfico."></grafico-barras>
+          </section>
+
+          <section class="cartao c4">
+            <h2>Taxa de aceite</h2>
+            <p>Dos pedidos que já tiveram resposta, quantos fecharam.</p>
+            <div class="rosca" v-if="aceite.total">
+              <div class="rosca__in">
+                <svg viewBox="0 0 120 120" aria-hidden="true">
+                  <defs><linearGradient id="gradRosca" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FF2D4F"/><stop offset="1" stop-color="#E23CCB"/></linearGradient></defs>
+                  <circle cx="60" cy="60" r="48" fill="none" stroke="#1C1C25" stroke-width="14"/>
+                  <circle v-if="aceite.sim" cx="60" cy="60" r="48" fill="none" stroke="url(#gradRosca)" stroke-width="14" :stroke-linecap="aceite.pct<100 ? 'round' : 'butt'"
+                    :stroke-dasharray="(aceite.pct/100*301.6) + ' 301.6'"/>
+                </svg>
+                <div class="rosca__meio"><b>{{ aceite.pct }}%</b><span>aceitaram</span></div>
+              </div>
+              <div class="legenda">
+                <span style="--c:#E8479F"><i></i>{{ aceite.sim }} aceitaram</span>
+                <span style="--c:#4A4C57"><i></i>{{ aceite.nao }} recusaram</span>
+              </div>
+            </div>
+            <p v-else class="vazio-graf">Quando um pedido for aceito ou recusado, a taxa aparece aqui.</p>
+          </section>
+
+          <section class="cartao c8">
+            <h2>Pedidos por mês</h2>
+            <p>Quantos chegaram, quantos clientes aceitaram e quantos foram entregues.</p>
+            <grafico-barras :meses="meses" :series="seriesPedidos" :formato="String" :eixo="String" vazio="Ainda não há pedidos neste período."></grafico-barras>
+          </section>
+
+          <section class="cartao c4">
+            <h2>Pedidos por status</h2>
+            <p>Situação de todos os pedidos agora.</p>
+            <div class="barras">
+              <div v-for="s in STATUS" :key="s.v" class="barra-l" :class="'st-'+s.v">
+                <header><span class="dot"></span>{{ s.t }}<em>{{ contaStatus[s.v] }}</em></header>
+                <div class="trilho"><i :style="{width: contaStatus[s.v]/maxStatus*100+'%'}"></i></div>
+              </div>
+            </div>
+          </section>
+
+          <section class="cartao c6">
+            <h2>Serviços mais vendidos</h2>
+            <p>Pedidos aceitos nos {{ rotPeriodo.toLowerCase() }} e quanto cada serviço faturou.</p>
+            <div class="barras" v-if="porServico.length">
+              <div v-for="s in porServico" :key="s.nome" class="barra-l" style="--c:#8A63F5">
+                <header>{{ s.nome }}<em>{{ s.qtd }} pedido{{ s.qtd===1?'':'s' }} · {{ brl(s.valor) }}</em></header>
+                <div class="trilho"><i :style="{width: s.qtd/porServico[0].qtd*100+'%'}"></i></div>
+              </div>
+            </div>
+            <p v-else class="vazio-graf">Nenhum pedido aceito nos {{ rotPeriodo.toLowerCase() }}.</p>
+          </section>
+
+          <section class="cartao c6">
+            <h2>Precisa de atenção</h2>
+            <p>Parados, atrasados e pedidos esperando resposta há mais de 3 dias.</p>
+            <div class="atencao" v-if="atencao.length">
+              <button v-for="a in atencao" :key="a.b.id" :class="'st-'+a.b.status" @click="abrir(a.b.id)">
+                <span><b>{{ a.b.empresa }}</b><small>{{ a.motivo }}</small></span>
+                <span class="selo"><span class="dot"></span>{{ rotStatus(a.b.status) }}</span>
+              </button>
+            </div>
+            <p v-else class="vazio-graf">Tudo em dia.</p>
+          </section>
+        </div>
+      </template>
+
+      <!-- ===== Pedidos ===== -->
+      <template v-else-if="aba==='pedidos'">
+        <div class="cabeca">
+          <div>
+            <p class="k">Pedidos</p>
+            <h1>{{ filtroAtivo.t }}</h1>
+          </div>
+          <div class="cabeca__acoes">
+            <button class="btn btn--main" @click="abrirNovo"><span aria-hidden="true">+</span> Novo pedido</button>
+          </div>
+        </div>
+
+        <div class="filtros">
+          <label class="busca"><span class="sr">Buscar</span>
+            <input class="in" type="search" v-model="busca" placeholder="Buscar cliente, empresa ou serviço">
+          </label>
+        </div>
+        <div class="filtros filtros--rola" role="group" aria-label="Filtrar por status">
+          <button v-for="f in FILTROS" :key="f.v" class="chip" :class="f.st ? 'st-'+f.st : ''" :aria-pressed="filtro===f.v" @click="filtro=f.v">
+            <span v-if="f.st" class="dot"></span>{{ f.t }} <i>{{ contaFiltro(f) }}</i>
+          </button>
+        </div>
+
+        <div class="cartao tabela-wrap" style="padding:4px" v-if="lista.length">
+          <table class="tabela">
+            <thead><tr><th>Cliente</th><th>Status</th><th>Serviços</th><th class="dir">Valor</th><th>Tarefas</th><th>Prazo</th><th>Chegou</th></tr></thead>
+            <tbody>
+              <tr v-for="b in lista" :key="b.id" @click="abrir(b.id)" tabindex="0" @keydown.enter="abrir(b.id)">
+                <td class="cli"><b><span v-if="ehNovo(b)" class="pisca" title="Chegou desde sua última visita"></span>{{ b.empresa }}</b><small>{{ b.nome }}</small></td>
+                <td :class="'st-'+b.status"><span class="selo"><span class="dot"></span>{{ rotStatus(b.status) }}</span></td>
+                <td><div class="chips"><span class="chip" v-for="x in b.servicos" :key="x">{{ x }}</span></div></td>
+                <td class="dir num"><template v-if="b.valor!=null">{{ brl(b.valor) }}<br><small class="muted">{{ b.recebido>=b.valor ? 'pago' : brl(b.recebido)+' recebido' }}</small></template><span v-else class="muted">—</span></td>
+                <td><span class="mini" v-if="contagem(b.id).total"><span class="trilho"><i :style="{width: contagem(b.id).feitas/contagem(b.id).total*100+'%'}"></i></span>{{ contagem(b.id).feitas }}/{{ contagem(b.id).total }}</span><span v-else class="muted">—</span></td>
+                <td :class="{atrasado: atrasado(b)}">{{ b.prazo ? dataCurta(b.prazo) : '—' }}</td>
+                <td class="muted">{{ b.origem==='manual' ? 'à mão' : dataCurta(b.created_at) }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="cards-ped" v-if="lista.length">
+          <button v-for="b in lista" :key="b.id" class="card-ped" @click="abrir(b.id)">
+            <header><h3>{{ b.empresa }}</h3><span :class="'st-'+b.status" class="selo"><span class="dot"></span>{{ rotStatus(b.status) }}</span></header>
+            <div class="chips" v-if="b.servicos.length"><span class="chip" v-for="x in b.servicos" :key="x">{{ x }}</span></div>
+            <div class="pe">
+              <span v-if="ehNovo(b)" class="pisca"></span>
+              <span>{{ b.nome }}</span>
+              <b v-if="b.valor!=null">{{ brl(b.valor) }}</b>
+              <span v-if="contagem(b.id).total">{{ contagem(b.id).feitas }}/{{ contagem(b.id).total }} tarefas</span>
+              <span v-if="b.prazo" :class="{erro: atrasado(b)}">até {{ dataCurta(b.prazo) }}</span>
+            </div>
+          </button>
+        </div>
+        <p v-if="!lista.length" class="cartao vazio">{{ busca ? 'Nada encontrado.' : 'Nenhum pedido aqui.' }}</p>
+      </template>
+
+      <!-- ===== Preços ===== -->
+      <template v-else>
+        <div class="cabeca">
+          <div>
+            <p class="k">Preços</p>
+            <h1>Tabela de preços</h1>
+          </div>
+        </div>
+        <p class="muted" style="max-width:640px;margin-bottom:18px">Preço de referência de cada serviço. No pedido, o botão "Usar a tabela" soma os serviços escolhidos e preenche o preço, que você pode ajustar.</p>
+        <div class="precos">
+          <div v-for="p in precos" :key="p.servico" class="preco">
+            <b>{{ p.servico }}</b>
+            <label class="dinheiro"><span class="sr">Preço de {{ p.servico }}</span>
+              <input class="in num" inputmode="decimal" placeholder="0" :value="p.valor ? paraCampo(p.valor) : ''" @change="salvarPreco(p, 'valor', deCampo($event.target.value) || 0); $event.target.value = p.valor ? paraCampo(p.valor) : ''">
+            </label>
+            <label class="desc"><span class="sr">O que está incluso</span>
+              <input class="in" :value="p.descricao" placeholder="O que está incluso" @change="salvarPreco(p, 'descricao', $event.target.value)">
+            </label>
+            <button class="x" @click="apagarPreco(p)" :aria-label="'Apagar '+p.servico">×</button>
+          </div>
+          <form class="nova" @submit.prevent="addPreco">
+            <input class="in" v-model="novoServico" placeholder="Outro serviço (ex.: Manutenção mensal)" aria-label="Novo serviço">
+            <button class="btn" :disabled="!novoServico.trim()">Adicionar</button>
+          </form>
+        </div>
+      </template>
     </main>
 
-    <!-- Projeto -->
+    <nav class="baixo" aria-label="Seções">
+      <button v-for="t in ABAS" :key="t.v" :aria-current="aba===t.v ? 'page' : null" @click="irAba(t.v)">
+        <svg><use :href="'#'+t.i"/></svg>{{ t.t }}
+        <span v-if="t.v==='pedidos' && novos.length" class="badge">{{ novos.length }}</span>
+      </button>
+    </nav>
+
+    <!-- Pedido aberto -->
     <transition name="esm"><div v-if="atual" class="fundo" @click="fechar"></div></transition>
     <transition name="gav">
       <aside v-if="atual" class="gaveta" role="dialog" aria-modal="true" :aria-label="atual.empresa">
@@ -396,11 +691,59 @@ main { max-width: 1480px; margin: 0 auto; padding: 20px var(--gr) 60px var(--gl)
           </div>
 
           <section class="bloco">
-            <h2>Status</h2>
+            <h2>Status <small v-if="atual.aceito_em">aceito em {{ dataCurta(atual.aceito_em) }}<template v-if="atual.concluido_em"> · entregue em {{ dataCurta(atual.concluido_em) }}</template></small></h2>
             <div class="status-sel">
               <button v-for="s in STATUS" :key="s.v" :class="'st-'+s.v" :aria-pressed="atual.status===s.v" @click="mudarStatus(atual, s.v)">
                 <span class="dot"></span>{{ s.t }}
               </button>
+            </div>
+          </section>
+
+          <section class="bloco">
+            <h2>Valores</h2>
+            <div class="painel">
+              <div class="linha3">
+                <label class="campo"><span>Preço cobrado</span>
+                  <span class="dinheiro"><input class="in num" inputmode="decimal" :value="paraCampo(atual.valor)" placeholder="0,00" @change="salvarDinheiro(atual, 'valor', $event)"></span>
+                </label>
+                <label class="campo"><span>Custos</span>
+                  <span class="dinheiro"><input class="in num" inputmode="decimal" :value="paraCampo(atual.custo)" placeholder="0,00" @change="salvarDinheiro(atual, 'custo', $event)"></span>
+                </label>
+                <label class="campo"><span>Já recebido</span>
+                  <span class="dinheiro"><input class="in num" inputmode="decimal" :value="atual.recebido ? paraCampo(atual.recebido) : ''" placeholder="0,00" @change="salvarDinheiro(atual, 'recebido', $event)"></span>
+                </label>
+              </div>
+              <div class="contas">
+                <template v-if="atual.valor!=null">
+                  <span :class="lucroDe(atual) < 0 ? 'prejuizo' : 'lucro'">Lucro <b>{{ brl(lucroDe(atual)) }}</b></span>
+                  <span>Falta receber <b>{{ brl(Math.max(0, atual.valor - (atual.recebido||0))) }}</b></span>
+                </template>
+                <button v-if="sugestao(atual) && sugestao(atual)!==atual.valor" class="btn btn--sm" @click="usarTabela(atual)">Usar a tabela: {{ brl(sugestao(atual)) }}</button>
+                <span v-else-if="!sugestao(atual) && atual.servicos.length && !precos.some(p=>p.valor>0)" class="muted">Preencha a aba Preços para o painel sugerir o valor.</span>
+              </div>
+            </div>
+          </section>
+
+          <section class="bloco">
+            <h2>Observações <small v-if="obsAtual.length">{{ obsAtual.length }}</small></h2>
+            <div class="painel obs">
+              <div class="ob" v-if="atual.notas">
+                <span class="avatar" style="background:var(--surface-3)"><svg width="16" height="16"><use href="#i-lapis"/></svg></span>
+                <div class="ob__c"><header><b>Anotação</b></header><p>{{ atual.notas }}</p></div>
+              </div>
+              <div class="ob" v-for="o in obsAtual" :key="o.id">
+                <span class="avatar">{{ iniciais(nomeAutor(o)) }}</span>
+                <div class="ob__c">
+                  <header><b>{{ nomeAutor(o) }}</b>{{ dataHora(o.criada_em) }}
+                    <button v-if="o.autor===sessao.user.id" class="x" @click="apagarObs(o)" aria-label="Apagar observação">×</button></header>
+                  <p>{{ o.texto }}</p>
+                </div>
+              </div>
+              <p v-if="!obsAtual.length && !atual.notas" class="muted">Nenhuma observação ainda. Anote o que o cliente falou, o que foi combinado e por que o pedido parou.</p>
+              <form class="nova-ob" @submit.prevent="addObs">
+                <textarea class="in" v-model="novaObs" placeholder="Escreva uma observação…" aria-label="Nova observação" @keydown.ctrl.enter="addObs" @keydown.meta.enter="addObs"></textarea>
+                <div class="acoes"><button class="btn" :disabled="!novaObs.trim()">Salvar observação</button></div>
+              </form>
             </div>
           </section>
 
@@ -414,9 +757,9 @@ main { max-width: 1480px; margin: 0 auto; padding: 20px var(--gr) 60px var(--gl)
                 </li>
               </ul>
               <p v-else class="muted" style="margin-bottom:10px">Nenhuma tarefa ainda.
-                <button class="linkbtn" @click="tarefasPadrao(atual)">Criar a lista padrão para {{ atual.servicos.length ? atual.servicos.join(' + ') : 'este projeto' }}</button>
+                <button class="linkbtn" @click="tarefasPadrao(atual)">Criar a lista padrão para {{ atual.servicos.length ? atual.servicos.join(' + ') : 'este pedido' }}</button>
               </p>
-              <form class="nova-tarefa" @submit.prevent="addTarefa">
+              <form class="nova" @submit.prevent="addTarefa">
                 <input class="in" v-model="novaTarefa" placeholder="O que falta fazer?" aria-label="Nova tarefa">
                 <button class="btn" :disabled="!novaTarefa.trim()">Adicionar</button>
               </form>
@@ -424,16 +767,15 @@ main { max-width: 1480px; margin: 0 auto; padding: 20px var(--gr) 60px var(--gl)
           </section>
 
           <section class="bloco">
-            <h2>Anotações <small>{{ notaMsg }}</small></h2>
+            <h2>Prazo</h2>
             <div class="linha2">
               <label class="campo"><span>Prazo de entrega</span>
-                <input class="in" type="date" :value="atual.prazo || ''" @change="salvarCampo(atual, 'prazo', $event.target.value || null)">
+                <input class="in" type="date" :value="atual.prazo || ''" @change="salvarCampo(atual, 'prazo', $event.target.value || null).catch(()=>{})">
               </label>
               <label class="campo"><span>Prazo que o cliente pediu</span>
                 <input class="in" :value="(atual.respostas && atual.respostas.prazo) || '—'" readonly>
               </label>
             </div>
-            <textarea class="in" v-model="notaRascunho" @blur="salvarNota" placeholder="Valor combinado, ideias, o que o cliente falou na ligação…" aria-label="Anotações"></textarea>
           </section>
 
           <section class="bloco" v-if="paleta.length || (atual.respostas && atual.respostas.semCores)">
@@ -460,7 +802,7 @@ main { max-width: 1480px; margin: 0 auto; padding: 20px var(--gr) 60px var(--gl)
           </section>
 
           <section class="bloco" v-if="atual.resumo && atual.resumo.length">
-            <h2>Briefing completo</h2>
+            <h2>Descrição do briefing</h2>
             <div class="briefing">
               <section v-for="bl in atual.resumo" :key="bl.titulo">
                 <h3>{{ bl.titulo }}</h3>
@@ -470,21 +812,21 @@ main { max-width: 1480px; margin: 0 auto; padding: 20px var(--gr) 60px var(--gl)
           </section>
 
           <section class="bloco">
-            <h2>Projeto</h2>
+            <h2>Pedido</h2>
             <div class="acoes" style="justify-content:flex-start">
               <button class="btn btn--sm" @click="abrirEditar(atual)">Editar dados do cliente</button>
-              <button class="btn btn--sm btn--danger" @click="apagarProjeto(atual)">Excluir projeto</button>
+              <button class="btn btn--sm btn--danger" @click="apagarProjeto(atual)">Excluir pedido</button>
             </div>
           </section>
         </div>
       </aside>
     </transition>
 
-    <!-- Novo / editar projeto -->
+    <!-- Novo / editar pedido -->
     <transition name="esm"><div v-if="form" class="fundo" style="z-index:49" @click="form=null"></div></transition>
     <transition name="esm">
       <form v-if="form" class="janela" @submit.prevent="salvarForm">
-        <h2>{{ form.id ? 'Editar cliente' : 'Novo projeto' }}</h2>
+        <h2>{{ form.id ? 'Editar cliente' : 'Novo pedido' }}</h2>
         <p v-if="!form.id" class="muted">Para clientes que não vieram pelo formulário de briefing.</p>
         <label class="campo"><span>Empresa ou projeto</span><input class="in" v-model.trim="form.empresa" required></label>
         <label class="campo"><span>Nome do contato</span><input class="in" v-model.trim="form.nome" required></label>
@@ -494,12 +836,17 @@ main { max-width: 1480px; margin: 0 auto; padding: 20px var(--gr) 60px var(--gl)
         </div>
         <div class="campo"><span>Serviços</span>
           <div class="chips">
-            <button v-for="x in SERVICOS" :key="x" type="button" class="chip" :aria-pressed="form.servicos.includes(x)" @click="alternar(form.servicos, x)">{{ x }}</button>
+            <button v-for="x in servicosOp" :key="x" type="button" class="chip" :aria-pressed="form.servicos.includes(x)" @click="alternar(form.servicos, x)">{{ x }}</button>
           </div>
         </div>
-        <label v-if="!form.id" class="campo"><span>Começa em</span>
-          <select class="in" v-model="form.status"><option v-for="s in STATUS" :key="s.v" :value="s.v">{{ s.t }}</option></select>
-        </label>
+        <div class="linha2" v-if="!form.id">
+          <label class="campo"><span>Status</span>
+            <select class="in" v-model="form.status"><option v-for="s in STATUS" :key="s.v" :value="s.v">{{ s.t }}</option></select>
+          </label>
+          <label class="campo"><span>Preço cobrado</span>
+            <span class="dinheiro"><input class="in num" inputmode="decimal" v-model="form.valor" :placeholder="sugestao(form) ? paraCampo(sugestao(form)) : '0,00'"></span>
+          </label>
+        </div>
         <p v-if="form.erro" class="erro">{{ form.erro }}</p>
         <div class="acoes">
           <button class="btn" type="button" @click="form=null">Cancelar</button>
@@ -509,7 +856,7 @@ main { max-width: 1480px; margin: 0 auto; padding: 20px var(--gr) 60px var(--gl)
     </transition>
 
     <!-- Foto em tela cheia -->
-    <div v-if="luz!==null && arquivos[luz]" class="luz" @click.self="luz=null" @keydown.esc="luz=null">
+    <div v-if="luz!==null && arquivos[luz]" class="luz" @click.self="luz=null">
       <div class="luz__topo">
         <span>{{ arquivos[luz].nome }} · {{ luz+1 }} de {{ arquivos.length }}</span>
         <a class="btn btn--sm" :href="arquivos[luz].baixar" download>Baixar</a>
@@ -522,7 +869,7 @@ main { max-width: 1480px; margin: 0 auto; padding: 20px var(--gr) 60px var(--gl)
         <button v-if="arquivos.length>1" class="btn btn--icon luz__nav luz__nav--b" @click="luz=(luz+1)%arquivos.length" aria-label="Próxima">›</button>
       </div>
     </div>
-  </template>
+  </div>
 
   <transition name="sobe"><div v-if="toast" class="toast" :class="{ruim: toast.ruim}" role="status">{{ toast.texto }}</div></transition>
 </div>
@@ -541,13 +888,30 @@ const INTERVALO = 60 * 1000;        // de quanto em quanto tempo procura briefin
 
 const STATUS = [
   {v:'novo', t:'Novo briefing'},
+  {v:'proposta', t:'Proposta enviada'},
   {v:'esboco', t:'Esboço'},
   {v:'producao', t:'Em produção'},
-  {v:'entregue', t:'Entregue'}
+  {v:'parado', t:'Parado'},
+  {v:'entregue', t:'Entregue'},
+  {v:'recusado', t:'Recusado'}
 ];
-const SERVICOS = ['Landing page','Site','Instagram','Marca e logo','Ainda não sei'];
+const ACEITOS = ['esboco','producao','parado','entregue'];   // cliente fechou (igual ao painel.sql)
+const FILTROS = [
+  {v:'todos', t:'Todos os pedidos', de: ()=>true},
+  {v:'andamento', t:'Em andamento', de: b=>['esboco','producao'].includes(b.status)},
+  ...STATUS.map(s=>({v:s.v, t:s.t, st:s.v, de: b=>b.status===s.v}))
+];
+const ABAS = [
+  {v:'dash', t:'Dashboard', i:'i-dash'},
+  {v:'pedidos', t:'Pedidos', i:'i-ped'},
+  {v:'precos', t:'Preços', i:'i-preco'}
+];
+const PERIODOS = [{v:6, t:'6 meses'}, {v:12, t:'12 meses'}];
+const SERVICOS = ['Landing page','Site','Instagram','Marca e logo'];
+// séries dos gráficos: ordem fixa, validada para daltonismo no fundo escuro
+const COR = {s1:'#8A63F5', s2:'#E8479F', s3:'#B08A17'};
 
-// Lista de tarefas que o botão "lista padrão" cria, conforme os serviços do projeto
+// Lista de tarefas que o botão "lista padrão" cria, conforme os serviços do pedido
 function modeloTarefas(servicos){
   const s = servicos || [];
   const t = ['Ligar para o cliente e tirar dúvidas do briefing', 'Enviar proposta com valor e prazo'];
@@ -601,38 +965,113 @@ const api = {
   },
   get(tabela, q){ return this.req(`/rest/v1/${tabela}?${q}`); },
   inserir(tabela, linha){ return this.req(`/rest/v1/${tabela}`, {metodo:'POST', corpo: linha, headers:{Prefer:'return=representation'}}); },
-  mudar(tabela, id, campos, chave='id'){ return this.req(`/rest/v1/${tabela}?${chave}=eq.${id}`, {metodo:'PATCH', corpo: campos, headers:{Prefer:'return=representation'}}); },
+  mudar(tabela, id, campos, chave='id'){ return this.req(`/rest/v1/${tabela}?${chave}=eq.${encodeURIComponent(id)}`, {metodo:'PATCH', corpo: campos, headers:{Prefer:'return=representation'}}); },
   apagar(tabela, filtro){ return this.req(`/rest/v1/${tabela}?${filtro}`, {metodo:'DELETE'}); },
   assinar(caminhos){ return this.req(`/storage/v1/object/sign/${BUCKET}`, {metodo:'POST', corpo:{expiresIn: 3600, paths: caminhos}}); },
   apagarArquivos(caminhos){ return this.req(`/storage/v1/object/${BUCKET}`, {metodo:'DELETE', corpo:{prefixes: caminhos}}); }
 };
 
-const CAMPOS = 'id,created_at,status,nome,empresa,whatsapp,email,servicos,resumo,respostas,logo,fotos,origem,notas,prazo,atualizado_em';
+const CAMPOS = 'id,created_at,status,nome,empresa,whatsapp,email,servicos,resumo,respostas,logo,fotos,origem,notas,prazo,atualizado_em,valor,custo,recebido,aceito_em,concluido_em,recusado_em';
 
-const { createApp, reactive, ref, computed, watch, onMounted } = Vue;
+const { createApp, reactive, ref, computed, watch, onMounted, onBeforeUnmount } = Vue;
 
-createApp({
+/* ===== números e datas ===== */
+const fmtBRL0 = new Intl.NumberFormat('pt-BR', {style:'currency', currency:'BRL', maximumFractionDigits: 0});
+const fmtBRL2 = new Intl.NumberFormat('pt-BR', {style:'currency', currency:'BRL'});
+const brl = v => { v = Number(v)||0; return (Number.isInteger(v) ? fmtBRL0 : fmtBRL2).format(v); };
+const brlCurto = v => v>=1000 ? 'R$ ' + (v/1000).toLocaleString('pt-BR', {maximumFractionDigits: 1}) + ' mil' : fmtBRL0.format(v);
+const chaveMes = d => { d = new Date(d); return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0'); };
+function escala(max){
+  // teto "redondo" com 4 linhas de grade
+  if(max<=0) return {teto: 4, passos: [0,1,2,3,4]};
+  const bruto = max/4, mag = Math.pow(10, Math.floor(Math.log10(bruto)));
+  const passo = [1,2,2.5,5,10].map(m=>m*mag).find(p=>p>=bruto);
+  return {teto: passo*4, passos: [0,1,2,3,4].map(i=>i*passo)};
+}
+
+/* ===== gráfico de barras agrupadas (SVG) ===== */
+const GraficoBarras = {
+  props: {meses: Array, series: Array, formato: Function, eixo: Function, vazio: String},
+  setup(props){
+    const ativo = ref(null), raiz = ref(null), L = ref(720);
+    const A = 250, ME = 64, MB = 26, MT = 8;
+    // o SVG acompanha a largura real do cartão, para o texto dos eixos não encolher no celular
+    let obs;
+    onMounted(()=>{ obs = new ResizeObserver(([e])=>{ if(e.contentRect.width) L.value = Math.round(e.contentRect.width); }); watch(raiz, el=>{ obs.disconnect(); if(el) obs.observe(el); }, {immediate:true}); });
+    onBeforeUnmount(()=>obs && obs.disconnect());
+    const temDados = computed(()=>props.series.some(s=>s.valores.some(v=>v)));
+    const esc = computed(()=>escala(Math.max(...props.series.flatMap(s=>s.valores), 0)));
+    const larg = computed(()=>(L.value-ME)/props.meses.length);
+    const y = v => MT + (A-MT-MB) * (1 - v/esc.value.teto);
+    const barras = computed(()=>{
+      const n = props.series.length, g = larg.value, bw = Math.min(22, (g*0.66 - (n-1)*2)/n), total = n*bw + (n-1)*2;
+      const out = [];
+      props.meses.forEach((m, i)=>{
+        props.series.forEach((s, j)=>{
+          const v = Math.max(0, s.valores[i] || 0), x = ME + i*g + (g-total)/2 + j*(bw+2), topo = y(v), base = y(0);
+          const h = base - topo, r = Math.min(4, bw/2, h);
+          // cantos de cima arredondados, presos na base
+          const d = h<=0 ? '' : `M${x},${base} V${topo+r} Q${x},${topo} ${x+r},${topo} H${x+bw-r} Q${x+bw},${topo} ${x+bw},${topo+r} V${base} Z`;
+          out.push({k: i+'-'+j, d, cor: s.cor});
+        });
+      });
+      return out;
+    });
+    const dica = computed(()=>{
+      if(ativo.value===null) return null;
+      const x = (ME + (ativo.value+0.5)*larg.value)/L.value*100;
+      const topo = y(Math.max(0, ...props.series.map(s=>s.valores[ativo.value]||0)))/A*100;
+      return {left: Math.min(84, Math.max(16, x)) + '%', top: Math.max(14, topo) + '%'};
+    });
+    const rotulo = computed(()=>props.series.map(s=>s.nome+': '+s.valores.map((v,i)=>props.meses[i].curto+' '+props.formato(v)).join(', ')).join('. '));
+    return {ativo, raiz, L, A, ME, MB, temDados, esc, larg, y, barras, dica, rotulo};
+  },
+  template: `
+    <div class="grafico" v-if="temDados" ref="raiz" @mouseleave="ativo=null">
+      <div class="legenda"><span v-for="s in series" :key="s.nome" :style="{'--c': s.cor}"><i></i>{{ s.nome }}</span></div>
+      <svg :viewBox="'0 0 '+L+' '+A" role="img" :aria-label="rotulo">
+        <g v-for="p in esc.passos" :key="p">
+          <line class="linha-grade" :x1="ME" :x2="L" :y1="y(p)" :y2="y(p)" :stroke-dasharray="p ? '3 4' : null"/>
+          <text class="eixo" :x="ME-10" :y="y(p)+4" text-anchor="end">{{ eixo(p) }}</text>
+        </g>
+        <rect v-for="(m,i) in meses" :key="'f'+i" class="faixa" :class="{ativa: ativo===i}" :x="ME+i*larg" y="0" :width="larg" :height="A-MB"
+          @mouseenter="ativo=i" @click="ativo=i"/>
+        <path v-for="b in barras" :key="b.k" :d="b.d" :fill="b.cor" pointer-events="none"/>
+        <text v-for="(m,i) in meses" :key="'m'+i" class="eixo" :x="ME+(i+0.5)*larg" :y="A-6" text-anchor="middle">{{ larg<30 && (meses.length-1-i)%2 ? '' : m.curto }}</text>
+      </svg>
+      <div class="dica" v-if="dica" :style="dica">
+        <b>{{ meses[ativo].longo }}</b>
+        <p v-for="s in series" :key="s.nome" :style="{'--c': s.cor}"><span><i></i>{{ s.nome }}</span><em>{{ formato(s.valores[ativo]||0) }}</em></p>
+      </div>
+    </div>
+    <p v-else class="vazio-graf">{{ vazio }}</p>`
+};
+
+const app = createApp({
   setup(){
     const fase = ref('carregando');
     const login = reactive({email:'', senha:'', erro:'', ok:'', ocupado:false});
     const sessao = ref(null);
     const eu = ref({nome:'', visto_em:null});
+    const equipe = ref([]);
     const briefings = ref([]);
     const tarefas = ref([]);
+    const observacoes = ref([]);
+    const precos = ref([]);
+    const aba = ref('dash');
+    const periodo = ref(6);
+    const filtro = ref('todos');
     const busca = ref('');
-    const aba = ref('novo');
     const menu = ref(false);
     const toast = ref(null);
-    const atualizadoEm = ref(null);
     const abertoId = ref(null);
     const form = ref(null);
     const luz = ref(null);
     const assinadas = reactive({});     // caminho -> url assinada
     const erroFotos = ref('');
     const novaTarefa = ref('');
-    const notaRascunho = ref('');
-    const notaMsg = ref('');
-    const arrastando = ref(null), arrastoSobre = ref(null);
+    const novaObs = ref('');
+    const novoServico = ref('');
     const podeNotificar = 'Notification' in window;
     const permissao = ref(podeNotificar ? Notification.permission : 'denied');
     let conhecidos = new Set();
@@ -640,21 +1079,33 @@ createApp({
     /* --- utilidades --- */
     let tt;
     function avisar(texto, ruim){ clearTimeout(tt); toast.value = {texto, ruim}; tt = setTimeout(()=>toast.value=null, ruim ? 5000 : 2600); }
-    const falha = e => { console.error(e); avisar(e && e.status===403 ? 'Sem permissão. Confira se o painel.sql foi rodado.' : 'Não deu certo. Confira a internet e tente de novo.', true); };
+    const falha = e => { console.error(e); avisar(e && e.status===403 ? 'Sem permissão. Confira se o painel.sql foi rodado.' : (e && e.status===400 ? 'O banco recusou. Rode o painel.sql de novo no Supabase.' : 'Não deu certo. Confira a internet e tente de novo.'), true); };
     const iniciais = n => (n||'?').split(/\s+/).filter(Boolean).slice(0,2).map(p=>p[0].toUpperCase()).join('');
     const dt = s => s && s.length===10 ? new Date(s+'T12:00:00') : new Date(s);
+    const hora = s => new Date(s).toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'});
     const dataCurta = s => dt(s).toLocaleDateString('pt-BR', {day:'2-digit', month:'short'}).replace('.', '');
     const dataLonga = s => dt(s).toLocaleDateString('pt-BR', {day:'numeric', month:'long', year:'numeric'}) + ' às ' + hora(s);
-    const hora = s => new Date(s).toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'});
+    const dataHora = s => dataCurta(s) + ', ' + hora(s);
     const hoje = () => new Date().toISOString().slice(0,10);
-    const atrasado = b => b.prazo && b.status!=='entregue' && b.prazo < hoje();
+    const atrasado = b => b.prazo && !['entregue','recusado'].includes(b.status) && b.prazo < hoje();
+    const rotStatus = v => (STATUS.find(s=>s.v===v) || STATUS[0]).t;
     function linkZap(tel){ let d = tel.replace(/\D/g,''); if(d.length<=11) d = '55'+d; return 'https://wa.me/'+d; }
     function linkInsta(i){ return /^https?:/.test(i) ? i : 'https://instagram.com/'+i.replace(/^@/,'').replace(/^.*instagram\.com\//,''); }
     function rgb(hex){ const n = parseInt(hex.slice(1),16); return `RGB ${n>>16} ${(n>>8)&255} ${n&255}`; }
-    const novoId = () => crypto.randomUUID ? crypto.randomUUID() : '10000000-1000-4000-8000-100000000000'.replace(/[018]/g, c=>(c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c/4).toString(16));
     function alternar(arr, v){ const i = arr.indexOf(v); i>=0 ? arr.splice(i,1) : arr.push(v); }
+    const novoId = () => crypto.randomUUID ? crypto.randomUUID() : '10000000-1000-4000-8000-100000000000'.replace(/[018]/g, c=>(c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c/4).toString(16));
     const coresDe = b => (b.respostas && !b.respostas.semCores && Array.isArray(b.respostas.cores)) ? b.respostas.cores : [];
     async function copiar(t){ try{ await navigator.clipboard.writeText(t); avisar(t+' copiado'); }catch(e){ avisar(t); } }
+    // "1.234,56", "1234,5" ou "1234.56" → número; vazio → null
+    function deCampo(txt){
+      txt = String(txt||'').replace(/[^\d,.-]/g,'').trim(); if(!txt) return null;
+      if(txt.includes(',')) txt = txt.replace(/\./g,'').replace(',', '.');
+      else if(/^\d{1,3}(\.\d{3})+$/.test(txt)) txt = txt.replace(/\./g,'');
+      const n = Number(txt); return isFinite(n) ? Math.round(n*100)/100 : null;
+    }
+    const paraCampo = v => v==null || v==='' ? '' : Number(v).toLocaleString('pt-BR', {minimumFractionDigits: Number.isInteger(Number(v)) ? 0 : 2, maximumFractionDigits: 2});
+    const lucroDe = b => (Number(b.valor)||0) - (Number(b.custo)||0);
+    const primeiroNome = computed(()=>(eu.value.nome||'').split(' ')[0]);
 
     /* --- entrar e sair --- */
     async function iniciar(){
@@ -674,15 +1125,14 @@ createApp({
       const s = api.sessao;
       if(!s.user) s.user = await api.auth('user', null, 'GET', await api.token());
       sessao.value = s;
-      const linha = await api.get('equipe', `select=nome,visto_em&user_id=eq.${s.user.id}`);
+      const linha = await api.get('equipe', `select=user_id,nome,visto_em&user_id=eq.${s.user.id}`);
       if(!linha.length){ fase.value = 'semacesso'; return; }
       eu.value = linha[0];
       await recarregar();
       conhecidos = new Set(briefings.value.map(b=>b.id));
       fase.value = 'painel';
       const hid = location.hash.match(/^#\/p\/([\w-]+)/);
-      if(hid && briefings.value.some(b=>b.id===hid[1])) abrir(hid[1], true);
-      else if(!porStatus.value.novo.length) aba.value = STATUS.find(x=>porStatus.value[x.v].length)?.v || 'novo';
+      if(hid && briefings.value.some(b=>b.id===hid[1])){ aba.value = 'pedidos'; abrir(hid[1], true); }
       iniciarRonda();
     }
 
@@ -720,42 +1170,120 @@ createApp({
       menu.value = false;
       try{ if(api.sessao) await api.auth('logout', null, 'POST', api.sessao.access_token); }catch(e){}
       api.guardar(null); pararRonda();
-      sessao.value = null; briefings.value = []; tarefas.value = []; abertoId.value = null;
+      sessao.value = null; briefings.value = []; tarefas.value = []; observacoes.value = []; abertoId.value = null;
       fase.value = 'entrar';
     }
 
     /* --- dados --- */
+    const numeros = x => Object.assign(x, {servicos: x.servicos || [], fotos: x.fotos || [], recebido: Number(x.recebido)||0,
+      valor: x.valor==null ? null : Number(x.valor), custo: x.custo==null ? null : Number(x.custo)});
     async function recarregar(){
-      const [b, t] = await Promise.all([
+      const [b, t, o, p, e] = await Promise.all([
         api.get('briefings', `select=${CAMPOS}&order=created_at.desc`),
-        api.get('tarefas', 'select=*&order=ordem.asc,criada_em.asc')
+        api.get('tarefas', 'select=*&order=ordem.asc,criada_em.asc'),
+        api.get('observacoes', 'select=*&order=criada_em.asc'),
+        api.get('precos', 'select=*&order=ordem.asc,servico.asc'),
+        api.get('equipe', 'select=user_id,nome')
       ]);
-      briefings.value = b.map(x=>Object.assign(x, {servicos: x.servicos || [], fotos: x.fotos || []}));
-      tarefas.value = t;
-      atualizadoEm.value = new Date().toISOString();
+      briefings.value = b.map(numeros);
+      tarefas.value = t; observacoes.value = o; equipe.value = e;
+      precos.value = p.map(x=>Object.assign(x, {valor: Number(x.valor)||0}));
     }
 
-    const filtrados = computed(()=>{
-      const q = busca.value.trim().toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'');
-      if(!q) return briefings.value;
-      return briefings.value.filter(b=>[b.empresa, b.nome, b.whatsapp, b.email, (b.servicos||[]).join(' '), b.respostas && b.respostas.segmento, b.respostas && b.respostas.cidade]
-        .join(' ').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').includes(q));
+    /* --- dashboard --- */
+    const meses = computed(()=>{
+      const out = [], d = new Date();
+      for(let i=periodo.value-1; i>=0; i--){
+        const m = new Date(d.getFullYear(), d.getMonth()-i, 1);
+        out.push({chave: chaveMes(m), curto: m.toLocaleDateString('pt-BR', {month:'short'}).replace('.','').replace(/^./, c=>c.toUpperCase()), longo: m.toLocaleDateString('pt-BR', {month:'long', year:'numeric'})});
+      }
+      return out;
     });
-    const porStatus = computed(()=>{
-      const o = {}; STATUS.forEach(s=>o[s.v]=[]);
-      filtrados.value.forEach(b=>(o[b.status] || o.novo).push(b));
-      // entregues: o mais recente primeiro; os outros por prazo e depois por chegada
-      for(const k of ['novo','esboco','producao']) o[k].sort((a,b)=>(a.prazo||'9999').localeCompare(b.prazo||'9999') || b.created_at.localeCompare(a.created_at));
-      o.entregue.sort((a,b)=>b.atualizado_em.localeCompare(a.atualizado_em));
+    const rotPeriodo = computed(()=>`Últimos ${periodo.value} meses`);
+    const dentroDoPeriodo = computed(()=>new Set(meses.value.map(m=>m.chave)));
+    const porMes = computed(()=>{
+      const o = {}; meses.value.forEach(m=>o[m.chave] = {recebidos:0, aceitos:0, concluidos:0, faturamento:0, lucro:0});
+      for(const b of briefings.value){
+        const r = o[chaveMes(b.created_at)]; if(r) r.recebidos++;
+        if(b.aceito_em){ const a = o[chaveMes(b.aceito_em)]; if(a){ a.aceitos++; a.faturamento += b.valor||0; a.lucro += b.valor!=null ? lucroDe(b) : 0; } }
+        if(b.concluido_em){ const c = o[chaveMes(b.concluido_em)]; if(c) c.concluidos++; }
+      }
       return o;
     });
-    const ativos = computed(()=>briefings.value.filter(b=>b.status!=='entregue').length);
+    const serieMes = k => meses.value.map(m=>porMes.value[m.chave][k]);
+    const totais = computed(()=>{
+      const t = {recebidos:0, aceitos:0, concluidos:0, faturamento:0, lucro:0};
+      Object.values(porMes.value).forEach(m=>{ for(const k in m) t[k] += m[k]; });
+      t.recebido = briefings.value.filter(b=>b.aceito_em && dentroDoPeriodo.value.has(chaveMes(b.aceito_em))).reduce((s,b)=>s+(b.recebido||0), 0);
+      return t;
+    });
+    const aReceber = computed(()=>briefings.value.filter(b=>ACEITOS.includes(b.status) && b.valor).reduce((s,b)=>s+Math.max(0, b.valor-(b.recebido||0)), 0));
+    const seriesDinheiro = computed(()=>[
+      {nome:'Faturamento', cor:COR.s1, valores: serieMes('faturamento')},
+      {nome:'Lucro', cor:COR.s2, valores: serieMes('lucro')}
+    ]);
+    const seriesPedidos = computed(()=>[
+      {nome:'Recebidos', cor:COR.s1, valores: serieMes('recebidos')},
+      {nome:'Aceitos', cor:COR.s2, valores: serieMes('aceitos')},
+      {nome:'Entregues', cor:COR.s3, valores: serieMes('concluidos')}
+    ]);
+    const contaStatus = computed(()=>{ const c = {}; STATUS.forEach(s=>c[s.v]=0); briefings.value.forEach(b=>c[b.status] = (c[b.status]||0)+1); return c; });
+    const maxStatus = computed(()=>Math.max(1, ...Object.values(contaStatus.value)));
+    const aceite = computed(()=>{
+      const sim = briefings.value.filter(b=>ACEITOS.includes(b.status)).length, nao = contaStatus.value.recusado;
+      return {sim, nao, total: sim+nao, pct: sim+nao ? Math.round(sim/(sim+nao)*100) : 0};
+    });
+    const porServico = computed(()=>{
+      const o = {};
+      for(const b of briefings.value){
+        if(!b.aceito_em || !dentroDoPeriodo.value.has(chaveMes(b.aceito_em))) continue;
+        const lista = b.servicos.length ? b.servicos : ['Sem serviço'];
+        lista.forEach(s=>{
+          const x = o[s] || (o[s] = {nome:s, qtd:0, valor:0});
+          x.qtd++; x.valor += (b.valor||0)/lista.length;   // valor do pedido dividido entre os serviços
+        });
+      }
+      return Object.values(o).sort((a,b)=>b.qtd-a.qtd || b.valor-a.valor);
+    });
+    const atencao = computed(()=>{
+      const tres = Date.now() - 3*864e5, out = [];
+      for(const b of briefings.value){
+        if(b.status==='parado') out.push({b, motivo:'Parado desde ' + dataCurta(b.atualizado_em), p:0});
+        else if(atrasado(b)) out.push({b, motivo:'O prazo era ' + dataCurta(b.prazo), p:1});
+        else if(['novo','proposta'].includes(b.status) && new Date(b.atualizado_em) < tres) out.push({b, motivo:(b.status==='novo' ? 'Sem resposta desde ' : 'Proposta enviada em ') + dataCurta(b.atualizado_em), p:2});
+      }
+      return out.sort((a,b)=>a.p-b.p).slice(0, 6);
+    });
+    function spark(valores, cor){
+      if(!valores.some(v=>v)) return '';
+      const max = Math.max(...valores), n = valores.length;
+      const pts = valores.map((v,i)=>[i/(n-1)*100, 38 - (Math.max(0,v)/max)*28]);
+      let d = `M${pts[0][0]},${pts[0][1]}`;
+      for(let i=1;i<n;i++){ const [x0,y0] = pts[i-1], [x1,y1] = pts[i], cx = (x0+x1)/2; d += ` C${cx},${y0} ${cx},${y1} ${x1},${y1}`; }
+      const id = 'g' + cor.replace('#','');
+      return `<defs><linearGradient id="${id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${cor}" stop-opacity=".32"/><stop offset="1" stop-color="${cor}" stop-opacity="0"/></linearGradient></defs>`
+        + `<path d="${d} L100,40 L0,40 Z" fill="url(#${id})"/><path d="${d}" fill="none" stroke="${cor}" stroke-width="2" vector-effect="non-scaling-stroke" stroke-opacity=".85"/>`;
+    }
+
+    /* --- pedidos --- */
+    const filtroAtivo = computed(()=>FILTROS.find(f=>f.v===filtro.value) || FILTROS[0]);
+    const contaFiltro = f => briefings.value.filter(f.de).length;
+    const lista = computed(()=>{
+      const q = busca.value.trim().toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'');
+      let l = briefings.value.filter(filtroAtivo.value.de);
+      if(q) l = l.filter(b=>[b.empresa, b.nome, b.whatsapp, b.email, b.servicos.join(' '), b.respostas && b.respostas.segmento, b.respostas && b.respostas.cidade]
+        .join(' ').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').includes(q));
+      const ordem = {parado:0, novo:1, proposta:2, esboco:3, producao:3, entregue:5, recusado:6};
+      return [...l].sort((a,b)=>(ordem[a.status]??4)-(ordem[b.status]??4) || b.created_at.localeCompare(a.created_at));
+    });
     const contagens = computed(()=>{
       const c = {};
       tarefas.value.forEach(t=>{ const x = c[t.briefing_id] || (c[t.briefing_id] = {total:0, feitas:0}); x.total++; if(t.feita) x.feitas++; });
       return c;
     });
     const contagem = id => contagens.value[id] || {total:0, feitas:0};
+    const servicosOp = computed(()=>[...new Set([...SERVICOS, ...precos.value.map(p=>p.servico)])]);
+    function irAba(v){ aba.value = v; menu.value = false; window.scrollTo({top:0}); }
 
     /* --- aviso de briefing novo --- */
     const ehNovo = b => b.origem!=='manual' && eu.value.visto_em && b.created_at > eu.value.visto_em;
@@ -765,14 +1293,19 @@ createApp({
       eu.value = Object.assign({}, eu.value, {visto_em: agora});
       try{ await api.mudar('equipe', sessao.value.user.id, {visto_em: agora}, 'user_id'); }catch(e){ falha(e); }
     }
+    function verNovos(){ filtro.value = 'novo'; irAba('pedidos'); }
     watch(()=>novos.value.length, n=>{ document.title = (n ? `(${n}) ` : '') + 'Painel Korvex'; });
 
     async function mudarNome(){
       menu.value = false;
       const nome = (prompt('Como seu nome aparece no painel?', eu.value.nome) || '').trim();
       if(!nome || nome===eu.value.nome) return;
-      try{ await api.mudar('equipe', sessao.value.user.id, {nome}, 'user_id'); eu.value = Object.assign({}, eu.value, {nome}); avisar('Nome salvo'); }
-      catch(e){ falha(e); }
+      try{
+        await api.mudar('equipe', sessao.value.user.id, {nome}, 'user_id');
+        eu.value = Object.assign({}, eu.value, {nome});
+        const e = equipe.value.find(x=>x.user_id===sessao.value.user.id); if(e) e.nome = nome;
+        avisar('Nome salvo');
+      }catch(e){ falha(e); }
     }
 
     async function pedirAvisos(){
@@ -803,9 +1336,11 @@ createApp({
       }catch(e){ console.error(e); }
     }
 
-    /* --- projeto aberto --- */
+    /* --- pedido aberto --- */
     const atual = computed(()=>briefings.value.find(b=>b.id===abertoId.value) || null);
     const tarefasAtual = computed(()=>tarefas.value.filter(t=>t.briefing_id===abertoId.value));
+    const obsAtual = computed(()=>observacoes.value.filter(o=>o.briefing_id===abertoId.value));
+    const nomeAutor = o => (equipe.value.find(e=>e.user_id===o.autor) || {}).nome || 'Equipe';
     const paleta = computed(()=>atual.value ? coresDe(atual.value) : []);
     const arquivos = computed(()=>{
       const b = atual.value; if(!b) return [];
@@ -818,17 +1353,16 @@ createApp({
     });
 
     function abrir(id, semHistorico){
-      abertoId.value = id; luz.value = null; novaTarefa.value = ''; notaMsg.value = ''; erroFotos.value = '';
-      const b = atual.value; notaRascunho.value = b ? b.notas : '';
+      abertoId.value = id; luz.value = null; novaTarefa.value = ''; novaObs.value = ''; erroFotos.value = '';
       if(!semHistorico) history.pushState({p:id}, '', '#/p/' + id);
       document.body.style.overflow = 'hidden';
-      if(b) carregarFotos(b);
+      if(atual.value) carregarFotos(atual.value);
     }
     function fechar(){
       if(location.hash.startsWith('#/p/')) history.back();
       else fecharSemVoltar();
     }
-    function fecharSemVoltar(){ salvarNota(); abertoId.value = null; luz.value = null; document.body.style.overflow = ''; }
+    function fecharSemVoltar(){ abertoId.value = null; luz.value = null; document.body.style.overflow = ''; }
     window.addEventListener('popstate', ()=>{
       const hid = location.hash.match(/^#\/p\/([\w-]+)/);
       if(hid) abrir(hid[1], true); else if(abertoId.value) fecharSemVoltar();
@@ -856,32 +1390,40 @@ createApp({
       }
     }
 
-    function trocarLocal(b, campos){ Object.assign(b, campos); }
     async function salvarCampo(b, campo, valor){
       const antes = b[campo];
-      trocarLocal(b, {[campo]: valor});
-      try{ const [n] = await api.mudar('briefings', b.id, {[campo]: valor}); if(n) trocarLocal(b, {atualizado_em: n.atualizado_em}); }
-      catch(e){ trocarLocal(b, {[campo]: antes}); falha(e); throw e; }
+      b[campo] = valor;
+      try{
+        const [n] = await api.mudar('briefings', b.id, {[campo]: valor});
+        if(n){ numeros(n); ['atualizado_em','aceito_em','concluido_em','recusado_em'].forEach(k=>b[k] = n[k]); }
+      }
+      catch(e){ b[campo] = antes; falha(e); throw e; }
     }
     async function mudarStatus(b, st){
       if(b.status===st) return;
-      try{
-        await salvarCampo(b, 'status', st);
-        avisar(`${b.empresa}: ${STATUS.find(s=>s.v===st).t}`);
-        if(!abertoId.value) aba.value = st;
-      }catch(e){}
+      try{ await salvarCampo(b, 'status', st); avisar(`${b.empresa}: ${rotStatus(st)}`); }catch(e){}
     }
-    function soltar(st){
-      arrastoSobre.value = null;
-      const b = briefings.value.find(x=>x.id===arrastando.value);
-      arrastando.value = null;
-      if(b) mudarStatus(b, st);
+    async function salvarDinheiro(b, campo, ev){
+      let v = deCampo(ev.target.value);
+      if(campo==='recebido' && v==null) v = 0;
+      if(v!==b[campo]){ try{ await salvarCampo(b, campo, v); avisar('Valor salvo'); }catch(e){} }
+      ev.target.value = campo==='recebido' && !b.recebido ? '' : paraCampo(b[campo]);
     }
-    async function salvarNota(){
-      const b = atual.value;
-      if(!b || notaRascunho.value===b.notas) return;
-      notaMsg.value = 'Salvando…';
-      try{ await salvarCampo(b, 'notas', notaRascunho.value); notaMsg.value = 'Salvo'; }catch(e){ notaMsg.value = 'Não salvou'; }
+    const sugestao = b => (b.servicos||[]).reduce((s, x)=>s + ((precos.value.find(p=>p.servico===x) || {}).valor || 0), 0);
+    function usarTabela(b){ salvarCampo(b, 'valor', sugestao(b)).then(()=>avisar('Preço da tabela aplicado'), ()=>{}); }
+
+    /* --- observações --- */
+    async function addObs(){
+      const texto = novaObs.value.trim(); if(!texto) return;
+      novaObs.value = '';
+      try{ const [o] = await api.inserir('observacoes', {briefing_id: abertoId.value, texto}); observacoes.value.push(o); }
+      catch(e){ novaObs.value = texto; falha(e); }
+    }
+    async function apagarObs(o){
+      if(!confirm('Apagar esta observação?')) return;
+      const i = observacoes.value.indexOf(o); observacoes.value.splice(i, 1);
+      try{ await api.apagar('observacoes', 'id=eq.' + o.id); }
+      catch(e){ observacoes.value.splice(i, 0, o); falha(e); }
     }
 
     /* --- tarefas --- */
@@ -910,8 +1452,29 @@ createApp({
       catch(e){ tarefas.value.splice(i, 0, t); falha(e); }
     }
 
+    /* --- preços --- */
+    async function salvarPreco(p, campo, valor){
+      if(p[campo]===valor) return;
+      const antes = p[campo]; p[campo] = valor;
+      try{ await api.mudar('precos', p.servico, {[campo]: valor}, 'servico'); avisar('Preço salvo'); }
+      catch(e){ p[campo] = antes; falha(e); }
+    }
+    async function addPreco(){
+      const servico = novoServico.value.trim(); if(!servico) return;
+      if(precos.value.some(p=>p.servico.toLowerCase()===servico.toLowerCase())){ avisar('Esse serviço já está na tabela', true); return; }
+      novoServico.value = '';
+      try{ const [p] = await api.inserir('precos', {servico, ordem: precos.value.length}); precos.value.push(Object.assign(p, {valor: Number(p.valor)||0})); }
+      catch(e){ novoServico.value = servico; falha(e); }
+    }
+    async function apagarPreco(p){
+      if(!confirm(`Tirar "${p.servico}" da tabela de preços? Os pedidos não mudam.`)) return;
+      const i = precos.value.indexOf(p); precos.value.splice(i, 1);
+      try{ await api.apagar('precos', 'servico=eq.' + encodeURIComponent(p.servico)); }
+      catch(e){ precos.value.splice(i, 0, p); falha(e); }
+    }
+
     /* --- cadastrar, editar e excluir --- */
-    function abrirNovo(){ form.value = {empresa:'', nome:'', whatsapp:'', email:'', servicos:[], status:'esboco', erro:'', ocupado:false}; }
+    function abrirNovo(){ form.value = {empresa:'', nome:'', whatsapp:'', email:'', servicos:[], status:'proposta', valor:'', erro:'', ocupado:false}; }
     function abrirEditar(b){ form.value = {id:b.id, empresa:b.empresa, nome:b.nome, whatsapp:b.whatsapp, email:b.email||'', servicos:[...b.servicos], erro:'', ocupado:false}; }
     async function salvarForm(){
       const f = form.value; f.erro = ''; f.ocupado = true;
@@ -919,20 +1482,20 @@ createApp({
       try{
         if(f.id){
           const [n] = await api.mudar('briefings', f.id, dados);
-          trocarLocal(briefings.value.find(b=>b.id===f.id), n);
+          Object.assign(briefings.value.find(b=>b.id===f.id), numeros(n));
           avisar('Dados salvos');
         }else{
-          const [n] = await api.inserir('briefings', Object.assign(dados, {id: novoId(), status:f.status, origem:'manual'}));
-          n.servicos = n.servicos || []; n.fotos = n.fotos || [];
-          briefings.value.unshift(n); conhecidos.add(n.id);
-          aba.value = n.status;
+          const valor = deCampo(f.valor) ?? (sugestao(f) || null);
+          const [n] = await api.inserir('briefings', Object.assign(dados, {id: novoId(), status:f.status, origem:'manual', valor}));
+          briefings.value.unshift(numeros(n)); conhecidos.add(n.id);
+          if(aba.value!=='pedidos') irAba('pedidos');
           abrir(n.id);
         }
         form.value = null;
       }catch(e){ console.error(e); f.erro = 'Não deu para salvar. Confira a internet e tente de novo.'; f.ocupado = false; }
     }
     async function apagarProjeto(b){
-      if(!confirm(`Excluir "${b.empresa}" do painel? O briefing, as tarefas e as fotos somem de vez.`)) return;
+      if(!confirm(`Excluir "${b.empresa}" do painel? O briefing, as tarefas, as observações e as fotos somem de vez.`)) return;
       try{
         const caminhos = [b.logo, ...b.fotos].filter(Boolean);
         if(caminhos.length){ try{ await api.apagarArquivos(caminhos); }catch(e){ console.error(e); } }
@@ -940,19 +1503,26 @@ createApp({
         fechar();
         briefings.value = briefings.value.filter(x=>x.id!==b.id);
         tarefas.value = tarefas.value.filter(t=>t.briefing_id!==b.id);
-        avisar('Projeto excluído');
+        observacoes.value = observacoes.value.filter(o=>o.briefing_id!==b.id);
+        avisar('Pedido excluído');
       }catch(e){ falha(e); }
     }
 
     onMounted(iniciar);
 
-    return {fase, login, sessao, eu, busca, aba, menu, toast, atualizadoEm, form, luz, erroFotos, novaTarefa, notaRascunho, notaMsg, arrastando, arrastoSobre, podeNotificar, permissao,
-      STATUS, SERVICOS, porStatus, ativos, contagem, novos, ehNovo, atual, tarefasAtual, paleta, arquivos,
-      iniciais, dataCurta, dataLonga, hora, atrasado, linkZap, linkInsta, rgb, alternar, coresDe, copiar,
+    return {fase, login, sessao, eu, briefings, precos, aba, periodo, filtro, busca, menu, toast, form, luz, erroFotos, novaTarefa, novaObs, novoServico, podeNotificar, permissao,
+      STATUS, FILTROS, ABAS, PERIODOS, primeiroNome,
+      meses, rotPeriodo, serieMes, totais, aReceber, seriesDinheiro, seriesPedidos, contaStatus, maxStatus, aceite, porServico, atencao, spark,
+      filtroAtivo, contaFiltro, lista, contagem, servicosOp, irAba, novos, ehNovo, verNovos,
+      atual, tarefasAtual, obsAtual, nomeAutor, paleta, arquivos,
+      iniciais, dataCurta, dataLonga, dataHora, atrasado, rotStatus, linkZap, linkInsta, rgb, alternar, copiar, brl, brlCurto, deCampo, paraCampo, lucroDe, sugestao,
       entrar, esqueci, salvarSenha, sair, recarregar, marcarVisto, mudarNome, pedirAvisos, abrir, fechar, baixarTodos,
-      salvarCampo, mudarStatus, soltar, salvarNota, addTarefa, tarefasPadrao, marcar, apagarTarefa, abrirNovo, abrirEditar, salvarForm, apagarProjeto};
+      salvarCampo, mudarStatus, salvarDinheiro, usarTabela, addObs, apagarObs, addTarefa, tarefasPadrao, marcar, apagarTarefa,
+      salvarPreco, addPreco, apagarPreco, abrirNovo, abrirEditar, salvarForm, apagarProjeto};
   }
-}).mount('#app');
+});
+app.component('grafico-barras', GraficoBarras);
+app.mount('#app');
 </script>
 </body>
 </html>

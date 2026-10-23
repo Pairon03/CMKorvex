@@ -59,6 +59,44 @@ drop trigger if exists briefings_atualizado on public.briefings;
 create trigger briefings_atualizado before update on public.briefings
   for each row execute function public.marca_atualizacao();
 
+-- Status, valores e datas do dashboard ----------------------------------------
+-- novo → proposta → esboco → producao → entregue; parado e recusado a qualquer momento.
+-- "Aceitou" = passou para esboço, produção, parado ou entregue.
+alter table public.briefings drop constraint if exists briefings_status_check;
+alter table public.briefings add constraint briefings_status_check
+  check (status in ('novo', 'proposta', 'esboco', 'producao', 'parado', 'entregue', 'recusado'));
+
+alter table public.briefings
+  add column if not exists valor        numeric(12,2),            -- preço cobrado do cliente
+  add column if not exists custo        numeric(12,2),            -- gastos do projeto (domínio, anúncios, terceiros)
+  add column if not exists recebido     numeric(12,2) not null default 0,
+  add column if not exists aceito_em    timestamptz,              -- quando o cliente fechou
+  add column if not exists concluido_em timestamptz,              -- quando foi entregue
+  add column if not exists recusado_em  timestamptz;
+
+create or replace function public.marca_status()
+returns trigger language plpgsql as $$
+begin
+  if new.status in ('esboco', 'producao', 'parado', 'entregue') then
+    new.aceito_em := coalesce(new.aceito_em, now());
+  elsif new.status in ('novo', 'proposta', 'recusado') then
+    new.aceito_em := null;
+  end if;
+  new.concluido_em := case when new.status = 'entregue' then coalesce(new.concluido_em, now()) end;
+  new.recusado_em  := case when new.status = 'recusado' then coalesce(new.recusado_em, now()) end;
+  return new;
+end $$;
+
+drop trigger if exists briefings_status on public.briefings;
+create trigger briefings_status before insert or update of status on public.briefings
+  for each row execute function public.marca_status();
+
+-- projetos que já estavam andando antes do dashboard
+update public.briefings set aceito_em = atualizado_em
+  where aceito_em is null and status in ('esboco', 'producao', 'parado', 'entregue');
+update public.briefings set concluido_em = atualizado_em
+  where concluido_em is null and status = 'entregue';
+
 -- Acesso da equipe (substitui o acesso aberto a qualquer login do briefing.sql)
 revoke all on public.briefings from authenticated;
 grant select, insert, update, delete on public.briefings to authenticated;
@@ -98,3 +136,43 @@ drop policy if exists "equipe apaga fotos" on storage.objects;
 create policy "equipe apaga fotos" on storage.objects
   for delete to authenticated
   using (bucket_id = 'briefings' and public.is_equipe());
+
+-- Observações ----------------------------------------------------------------
+-- Histórico do pedido: cada observação guarda quem escreveu e quando.
+create table if not exists public.observacoes (
+  id          uuid primary key default gen_random_uuid(),
+  briefing_id uuid not null references public.briefings (id) on delete cascade,
+  autor       uuid default auth.uid() references public.equipe (user_id) on delete set null,
+  texto       text not null,
+  criada_em   timestamptz not null default now()
+);
+create index if not exists observacoes_briefing on public.observacoes (briefing_id, criada_em);
+
+alter table public.observacoes enable row level security;
+revoke all on public.observacoes from anon, authenticated;
+grant select, insert, update, delete on public.observacoes to authenticated;
+
+drop policy if exists "equipe cuida das observacoes" on public.observacoes;
+create policy "equipe cuida das observacoes" on public.observacoes
+  for all to authenticated using (public.is_equipe()) with check (public.is_equipe());
+
+-- Tabela de preços -------------------------------------------------------------
+-- Preço de referência de cada serviço; o painel usa para sugerir o valor do pedido.
+create table if not exists public.precos (
+  servico   text primary key,
+  valor     numeric(12,2) not null default 0,
+  descricao text not null default '',
+  ordem     integer not null default 0
+);
+
+insert into public.precos (servico, ordem) values
+  ('Landing page', 0), ('Site', 1), ('Instagram', 2), ('Marca e logo', 3)
+on conflict (servico) do nothing;
+
+alter table public.precos enable row level security;
+revoke all on public.precos from anon, authenticated;
+grant select, insert, update, delete on public.precos to authenticated;
+
+drop policy if exists "equipe cuida dos precos" on public.precos;
+create policy "equipe cuida dos precos" on public.precos
+  for all to authenticated using (public.is_equipe()) with check (public.is_equipe());
